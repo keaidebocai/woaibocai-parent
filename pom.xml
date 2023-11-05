@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>woaibocai-model</module>
+        <module>woaibocai-manager</module>
     </modules>
 
     <!-- 指定父工程 -->
