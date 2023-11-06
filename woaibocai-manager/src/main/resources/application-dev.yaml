@@ -1,0 +1,18 @@
+server:
+  port: 16289
+# 配置数据库连接信息
+spring:
+  # Redis的相关配置
+  data:
+    redis:
+      host: 192.168.31.9
+      port: 6379
+      password: Fyk@20010628
+      database: 0
+      connect-timeout: 1800000
+      lettuce:
+        pool:
+          max-active: 20
+          max-wait: -1
+          max-idle: 5
+          min-idle: 0

@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: woaibocai-manager
+  profiles:
+    active: dev,druid,mp

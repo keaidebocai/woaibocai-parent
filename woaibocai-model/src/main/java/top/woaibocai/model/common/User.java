@@ -1,21 +1,20 @@
-package top.woaibocai.model.entity.blog;
+package top.woaibocai.model.common;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
  * 
- * @TableName blog_link
+ * @TableName user
  */
-@TableName(value ="blog_link")
+@TableName(value ="user")
 @Data
-public class Link implements Serializable {
+public class User implements Serializable {
     /**
      * 主键
      */
@@ -23,35 +22,60 @@ public class Link implements Serializable {
     private Long id;
 
     /**
-     * 友链名称
+     * 用户名
      */
-    private String linkName;
+    private String userName;
 
     /**
-     * logo链接
+     * 密码
      */
-    private String logo;
+    private String password;
 
     /**
-     * 描述
+     * 昵称
      */
-    private String description;
+    private String nickName;
 
     /**
-     * 网络地址
+     * 头像
      */
-    private String address;
+    private String avatar;
 
     /**
-     * 审核状态(0:不通过,1:通过)
+     * 用户性别(0:男，1:女，2:沃尔玛购物袋，3:阿帕奇武装直升机)
+     */
+    private String sex;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 手机号
+     */
+    private String phone;
+
+    /**
+     * 状态(0:正常,1:封禁)
      */
     private String status;
+
+    /**
+     * 乐观锁
+     */
+    private String version;
 
     /**
      * 逻辑删除
      */
     @TableLogic
     private Integer isDeleted;
+
+    /**
+     * 允许评论(0:允许，1：不允许)
+     */
+    private Integer commontStatus;
 
     /**
      * 创建时间
@@ -65,4 +89,5 @@ public class Link implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
 }
