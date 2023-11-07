@@ -11,6 +11,7 @@
     <modules>
         <module>woaibocai-model</module>
         <module>woaibocai-manager</module>
+        <module>woaibocai-common</module>
     </modules>
 
     <!-- 指定父工程 -->
