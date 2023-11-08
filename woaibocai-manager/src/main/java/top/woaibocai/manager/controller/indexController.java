@@ -37,7 +37,7 @@ public class indexController {
 
     @Operation(summary = "用refresh_token更新失效的token")
     @PutMapping("authorizations")
-    public Result<LoginVo> authorizations(@RequestHeader(name = "Authorization") String token){
+    public Result<LoginVo> authorizations(@RequestHeader(name = "refresh_token") String token){
         String newToken = token.replace("Bearer ", "");
         LoginVo loginVo = userService.authorizations(newToken);
         return Result.build(loginVo,200,"操作成功！");
