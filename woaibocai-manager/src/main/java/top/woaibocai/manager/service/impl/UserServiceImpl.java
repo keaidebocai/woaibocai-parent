@@ -81,7 +81,9 @@ public class UserServiceImpl implements UserService {
                 .set("user::token:" + token, userInfoByRefresh_tokenJson,1, TimeUnit.MINUTES);
         LoginVo loginVo = new LoginVo();
         loginVo.setToken(token);
+        System.out.println("token = " + token);
         loginVo.setRefresh_token(refresh_token);
+        System.out.println("refresh_token = " + refresh_token);
         return loginVo;
     }
 }
