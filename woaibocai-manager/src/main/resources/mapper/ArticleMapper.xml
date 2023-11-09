@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.woaibocai.manager.mapper.ArticleMapper">
+    <update id="updateArticleStatus">
+        update
+            blog_article
+        set
+            title=#{title},is_top=#{isTop},is_commont=#{isCommont},status=#{status},update_time=now()
+        where
+            id=#{id}
+    </update>
+    <delete id="deletedArticleById">
+        delete from blog_article where id=#{id}
+    </delete>
     <!--IPage<ArticlePageVo> findPage(@Param("page") IPage<ArticlePageVo> page);-->
     <select id="findPage" resultType="top.woaibocai.model.vo.manager.ArticlePageVo">
         select

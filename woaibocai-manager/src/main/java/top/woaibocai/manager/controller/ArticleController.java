@@ -4,16 +4,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import top.woaibocai.manager.service.ArticleService;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.entity.blog.Article;
+import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.dto.UpdateArticleStatusDto;
 import top.woaibocai.model.vo.manager.ArticlePageVo;
-
-import java.util.List;
 
 /**
  * @program: woaibocai-parent
@@ -33,5 +29,17 @@ public class ArticleController {
     public Result<IPage<ArticlePageVo>> findAllPage(@PathVariable Integer current,
                                                     @PathVariable Integer size){
         return articleService.findPage(current,size);
+    }
+    @Operation(summary = "更新文章各个的状态")
+    @PostMapping("updateArticleStatus")
+    public Result updateArticleStatus(@RequestBody UpdateArticleStatusDto updateArticleStatusDto){
+        articleService.updateArticleStatus(updateArticleStatusDto);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
+    @Operation(summary = "删除文章")
+    @DeleteMapping("deleteById/{id}")
+    public Result DeletedArticleById(@PathVariable Integer id){
+        articleService.deletedArticleById(id);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
     }
 }

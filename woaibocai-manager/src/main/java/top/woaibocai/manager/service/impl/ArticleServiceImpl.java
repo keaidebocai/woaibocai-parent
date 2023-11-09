@@ -10,6 +10,7 @@ import top.woaibocai.manager.mapper.ArticleMapper;
 import top.woaibocai.manager.service.ArticleService;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.dto.UpdateArticleStatusDto;
 import top.woaibocai.model.entity.blog.Article;
 import top.woaibocai.model.vo.manager.ArticlePageVo;
 
@@ -30,5 +31,15 @@ public class ArticleServiceImpl implements ArticleService {
         IPage<ArticlePageVo> page = new Page<>(current,size);
         IPage<ArticlePageVo> iPage = articleMapper.findPage(page);
         return Result.build(iPage, ResultCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public void updateArticleStatus(UpdateArticleStatusDto updateArticleStatusDto) {
+        articleMapper.updateArticleStatus(updateArticleStatusDto);
+    }
+
+    @Override
+    public void deletedArticleById(Integer id) {
+        articleMapper.deletedArticleById(id);
     }
 }

@@ -6,8 +6,7 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import top.woaibocai.manager.service.UserService;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.common.User;
-import top.woaibocai.model.dto.UserLoginDTO;
+import top.woaibocai.model.dto.UserLoginDto;
 import top.woaibocai.model.vo.LoginVo;
 
 /**
@@ -24,7 +23,7 @@ public class indexController {
     private UserService userService;
     @Operation(summary = "登录")
     @PostMapping("login")
-    public Result<LoginVo> login(@RequestBody UserLoginDTO userLoginDTO){
+    public Result<LoginVo> login(@RequestBody UserLoginDto userLoginDTO){
         LoginVo loginVo = userService.login(userLoginDTO);
         return Result.build(loginVo,200,"操作成功！");
     }

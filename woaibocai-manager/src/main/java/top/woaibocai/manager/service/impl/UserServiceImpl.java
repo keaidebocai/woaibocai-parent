@@ -11,7 +11,7 @@ import top.woaibocai.manager.service.UserService;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.common.User;
-import top.woaibocai.model.dto.UserLoginDTO;
+import top.woaibocai.model.dto.UserLoginDto;
 import top.woaibocai.model.vo.LoginVo;
 
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
     @Override
-    public LoginVo login(UserLoginDTO userLoginDTO) {
+    public LoginVo login(UserLoginDto userLoginDTO) {
         //1.先根据userName查询数据库
         User user = userMapper.selectByUserName(userLoginDTO.getUserName());
         //如果有，那就对比密码是否正确

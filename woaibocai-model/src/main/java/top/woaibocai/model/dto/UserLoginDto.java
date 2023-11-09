@@ -1,6 +1,5 @@
 package top.woaibocai.model.dto;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -12,7 +11,7 @@ import lombok.Data;
  **/
 @Schema(description = "登录信息")
 @Data
-public class UserLoginDTO {
+public class UserLoginDto {
     @Schema(description = "用户名")
     private String userName;
 
