@@ -27,8 +27,10 @@ public class ArticleController {
     @Operation(summary = "获取文章列表")
     @GetMapping("findAllPage/{current}/{size}")
     public Result<IPage<ArticlePageVo>> findAllPage(@PathVariable Integer current,
-                                                    @PathVariable Integer size){
-        return articleService.findPage(current,size);
+                                                    @PathVariable Integer size,
+                                                    @RequestHeader(name = "Authorization") String token){
+        String newToken = token.replace("Bearer ", "");
+        return articleService.findPage(current,size,newToken);
     }
     @Operation(summary = "更新文章各个的状态")
     @PostMapping("updateArticleStatus")

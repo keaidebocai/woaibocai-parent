@@ -8,7 +8,7 @@ import top.woaibocai.model.vo.manager.ArticlePageVo;
 import java.util.List;
 
 public interface ArticleService {
-    Result<IPage<ArticlePageVo>> findPage(Integer current, Integer size);
+    Result<IPage<ArticlePageVo>> findPage(Integer current, Integer size,String newToken);
 
     void updateArticleStatus(UpdateArticleStatusDto updateArticleStatusDto);
 

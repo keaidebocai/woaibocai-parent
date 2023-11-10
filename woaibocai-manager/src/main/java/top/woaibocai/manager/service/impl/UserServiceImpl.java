@@ -63,17 +63,18 @@ public class UserServiceImpl implements UserService {
         String userInfoJson = redisTemplate.opsForValue().get("user::token:" + token);
         if (!StringUtils.hasText(userInfoJson)){
 //            throw new BoCaiException(ResultCodeEnum.LOGIN_AUTH);
-            return Result.build(null,ResultCodeEnum.LOGIN_AUTH);
+            return Result.build(null,ResultCodeEnum.LOGIN_NOLL);
         }
         User userInfo = JSON.parseObject(userInfoJson, User.class);
+        userInfo.setPassword("你难道没有自己的密码吗？");
         return Result.build(userInfo,ResultCodeEnum.SUCCESS);
     }
     //用refresh_token更新失效的token
     @Override
-    public LoginVo authorizations(String refresh_token) {
+    public Result<LoginVo> authorizations(String refresh_token) {
         String userInfoByRefresh_tokenJson = redisTemplate.opsForValue().get("user::refresh_token:" + refresh_token);
         if (!StringUtils.hasText(userInfoByRefresh_tokenJson)){
-            throw new BoCaiException(ResultCodeEnum.LOGIN_AUTH);
+            return  Result.build(null,ResultCodeEnum.LOGIN_AUTH);
         }
         String token = UUID.randomUUID().toString().replace("-", "");
         redisTemplate
@@ -84,6 +85,6 @@ public class UserServiceImpl implements UserService {
         System.out.println("token = " + token);
         loginVo.setRefresh_token(refresh_token);
         System.out.println("refresh_token = " + refresh_token);
-        return loginVo;
+        return Result.build(loginVo,ResultCodeEnum.SUCCESS);
     }
 }

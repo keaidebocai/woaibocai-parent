@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import top.woaibocai.common.exception.BoCaiException;
 import top.woaibocai.manager.mapper.ArticleMapper;
 import top.woaibocai.manager.service.ArticleService;
 import top.woaibocai.model.common.Result;
@@ -26,8 +29,15 @@ import java.util.List;
 public class ArticleServiceImpl implements ArticleService {
     @Resource
     private ArticleMapper articleMapper;
+    @Resource
+    private RedisTemplate<String,String> redisTemplate;
     @Override
-    public Result<IPage<ArticlePageVo>> findPage(Integer current, Integer size) {
+    public Result<IPage<ArticlePageVo>> findPage(Integer current, Integer size,String newToken) {
+        String userInfoJson = redisTemplate.opsForValue().get("user::token:" + newToken);
+        if (!StringUtils.hasText(userInfoJson)){
+            return Result.build(null,ResultCodeEnum.LOGIN_NOLL);
+//            throw new BoCaiException(ResultCodeEnum.LOGIN_NOLL);
+        }
         IPage<ArticlePageVo> page = new Page<>(current,size);
         IPage<ArticlePageVo> iPage = articleMapper.findPage(page);
         return Result.build(iPage, ResultCodeEnum.SUCCESS);
