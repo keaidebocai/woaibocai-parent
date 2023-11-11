@@ -62,8 +62,8 @@ public class UserServiceImpl implements UserService {
         //先根据token查寻，如果为空那就返回过期重新登录，否则返回
         String userInfoJson = redisTemplate.opsForValue().get("user::token:" + token);
         if (!StringUtils.hasText(userInfoJson)){
-//            throw new BoCaiException(ResultCodeEnum.LOGIN_AUTH);
-            return Result.build(null,ResultCodeEnum.LOGIN_NOLL);
+            throw new BoCaiException(ResultCodeEnum.LOGIN_NOLL);
+//            return Result.build(null,ResultCodeEnum.LOGIN_NOLL);
         }
         User userInfo = JSON.parseObject(userInfoJson, User.class);
         userInfo.setPassword("你难道没有自己的密码吗？");
