@@ -2,7 +2,6 @@ package top.woaibocai.manager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 /**
  * @program: woaibocai-parent
  * @description: 后台管理模块16289
