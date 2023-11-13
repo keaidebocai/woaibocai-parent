@@ -6,7 +6,7 @@ import top.woaibocai.model.vo.LoginVo;
 
 public interface UserService{
 
-    LoginVo login(UserLoginDto userLoginDTO);
+    Result<String> login(UserLoginDto userLoginDTO);
 
     Result getUserInfo(String token);
     //用refresh_token更新失效的token

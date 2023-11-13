@@ -31,16 +31,18 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
     @Override
-    public LoginVo login(UserLoginDto userLoginDTO) {
+    public Result<String> login(UserLoginDto userLoginDTO) {
         //1.先根据userName查询数据库
         User user = userMapper.selectByUserName(userLoginDTO.getUserName());
         //如果有，那就对比密码是否正确
         if (user == null){
-            throw new BoCaiException(ResultCodeEnum.LOGIN_ERROR);
+            return Result.build(null,ResultCodeEnum.LOGIN_ERROR);
+//            throw new BoCaiException(ResultCodeEnum.LOGIN_ERROR);
         }
         //密码不一致那就返回登陆失败
         if (!user.getPassword().equals(userLoginDTO.getPassword())){
-            throw new BoCaiException(ResultCodeEnum.LOGIN_ERROR);
+            return Result.build(null,ResultCodeEnum.LOGIN_ERROR);
+            //            throw new BoCaiException(ResultCodeEnum.LOGIN_ERROR);
         }
         //密码一致，创建token并封装loginVo返回
         LoginVo loginVo = new LoginVo();
@@ -54,7 +56,8 @@ public class UserServiceImpl implements UserService {
                         .set("user::refresh_token:" + refresh_token ,user.getUserName(),7,TimeUnit.DAYS);
         loginVo.setToken(token);
         loginVo.setRefresh_token(refresh_token);
-        return loginVo;
+        String loginToString = JSON.toJSONString(loginVo);
+        return Result.build(loginToString,ResultCodeEnum.SUCCESS);
     }
 
     @Override

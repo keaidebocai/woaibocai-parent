@@ -23,9 +23,8 @@ public class indexController {
     private UserService userService;
     @Operation(summary = "登录")
     @PostMapping("login")
-    public Result<LoginVo> login(@RequestBody UserLoginDto userLoginDTO){
-        LoginVo loginVo = userService.login(userLoginDTO);
-        return Result.build(loginVo,200,"操作成功！");
+    public Result<String> login(@RequestBody UserLoginDto userLoginDTO){
+        return userService.login(userLoginDTO);
     }
     @Operation(summary = "获取用户信息")
     @GetMapping("userInfo")
