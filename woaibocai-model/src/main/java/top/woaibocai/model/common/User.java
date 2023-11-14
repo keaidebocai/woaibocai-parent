@@ -71,6 +71,12 @@ public class User implements Serializable {
     private String status;
 
     /**
+     * refresh_token
+     */
+    @Schema(description = "refresh_token")
+    private String RefreshToken;
+
+    /**
      * 乐观锁
      */
     @Schema(description = "乐观锁")
