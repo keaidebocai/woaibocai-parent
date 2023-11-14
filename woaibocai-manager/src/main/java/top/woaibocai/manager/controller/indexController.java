@@ -29,16 +29,23 @@ public class indexController {
     @Operation(summary = "获取用户信息")
     @GetMapping("userInfo")
     public Result getUserInfo(@RequestHeader(name = "Authorization") String token){
+        System.out.println("token = " + token);
         String newToken = token.replace("Bearer ", "");
         return userService.getUserInfo(newToken);
     }
 
     @Operation(summary = "用refresh_token更新失效的token")
-    @GetMapping("authorizations")
-    public Result<LoginVo> authorizations(@RequestHeader(name = "refresh_token") String token){
-        String newToken = token.replace("Bearer ", "");
-        return userService.authorizations(newToken);
+    @PostMapping("authorizations")
+    public Result<String> authorizations(String refresh_token){
+        return userService.authorizations(refresh_token);
     }
 
+    @Operation(summary = "退出")
+    @PostMapping("logout")
+    public Result logout(@RequestHeader(name = "Authorization") String token,
+                         @RequestBody LoginVo loginVo){
+        String newToken = token.replace("Bearer ", "");
+        return userService.logout(newToken,loginVo);
+    }
 
 }
