@@ -10,6 +10,7 @@ public interface UserService{
 
     Result getUserInfo(String token);
     //用refresh_token更新失效的token
-    Result<LoginVo> authorizations(String newToken);
+    Result<String> authorizations(String refresh_token);
 
+    Result logout(String newToken,LoginVo loginVo);
 }
