@@ -110,7 +110,8 @@ public class UserServiceImpl implements UserService {
             throw new HttpException();
         }
         //2.分别在redis里查询两条token是否存在，可以不查token
-        //查token //3.删除redis里的两条token
+        //查token
+        // 3.删除redis里的两条token
         String refresh_tokenByRedis = redisTemplate.opsForValue().get("user::refresh_token:" + loginVo.getRefresh_token());
         if (!StringUtils.isEmpty(refresh_tokenByRedis)) {
             redisTemplate.delete("user::refresh_token:" + loginVo.getRefresh_token());
