@@ -13,6 +13,7 @@ import top.woaibocai.manager.mapper.ArticleMapper;
 import top.woaibocai.manager.service.ArticleService;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.dto.QueryArticleCriteria;
 import top.woaibocai.model.dto.UpdateArticleStatusDto;
 import top.woaibocai.model.entity.blog.Article;
 import top.woaibocai.model.vo.manager.ArticlePageVo;
@@ -32,14 +33,14 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource
     private RedisTemplate<String,String> redisTemplate;
     @Override
-    public Result<IPage<ArticlePageVo>> findPage(Integer current, Integer size,String newToken) {
-        String userInfoJson = redisTemplate.opsForValue().get("user::token:" + newToken);
-        if (!StringUtils.hasText(userInfoJson)){
-            return Result.build(null,ResultCodeEnum.LOGIN_NOLL);
-//            throw new BoCaiException(ResultCodeEnum.LOGIN_NOLL);
-        }
+    public Result<IPage<ArticlePageVo>> findPage(Integer current, Integer size, String newToken, QueryArticleCriteria queryArticleCriteria) {
+//        String userInfoJson = redisTemplate.opsForValue().get("user::token:" + newToken);
+//        if (!StringUtils.hasText(userInfoJson)){
+//            return Result.build(null,ResultCodeEnum.LOGIN_NOLL);
+////            throw new BoCaiException(ResultCodeEnum.LOGIN_NOLL);
+//        }
         IPage<ArticlePageVo> page = new Page<>(current,size);
-        IPage<ArticlePageVo> iPage = articleMapper.findPage(page);
+        IPage<ArticlePageVo> iPage = articleMapper.findPage(page,queryArticleCriteria);
         return Result.build(iPage, ResultCodeEnum.SUCCESS);
     }
 

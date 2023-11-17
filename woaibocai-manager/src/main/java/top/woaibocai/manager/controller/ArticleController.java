@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import top.woaibocai.manager.service.ArticleService;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.dto.QueryArticleCriteria;
 import top.woaibocai.model.dto.UpdateArticleStatusDto;
 import top.woaibocai.model.vo.manager.ArticlePageVo;
 
@@ -25,12 +26,13 @@ public class ArticleController {
     private ArticleService articleService;
 
     @Operation(summary = "获取文章列表")
-    @GetMapping("findAllPage/{current}/{size}")
+    @PostMapping("findAllPage/{current}/{size}")
     public Result<IPage<ArticlePageVo>> findAllPage(@PathVariable Integer current,
                                                     @PathVariable Integer size,
-                                                    @RequestHeader(name = "Authorization") String token){
+                                                    @RequestHeader(name = "Authorization") String token,
+                                                    @RequestBody QueryArticleCriteria queryArticleCriteria){
         String newToken = token.replace("Bearer ", "");
-        return articleService.findPage(current,size,newToken);
+        return articleService.findPage(current,size,newToken,queryArticleCriteria);
     }
     @Operation(summary = "更新文章各个的状态")
     @PostMapping("updateArticleStatus")

@@ -18,6 +18,29 @@
             id,title,is_top,view_count,is_commont,status,is_deleted,create_time,update_time
         from
             blog_article
-        order by create_time
+        <where>
+            <if test="queryArticleCriteria.title != null and queryArticleCriteria.title != ''">
+                and title like concat('%',#{queryArticleCriteria.title},'%')
+            </if>
+            <if test="queryArticleCriteria.isTop != null and queryArticleCriteria.isTop != ''">
+                and is_top=#{queryArticleCriteria.isTop}
+            </if>
+            <if test="queryArticleCriteria.isCommont != null and queryArticleCriteria.isCommont != ''">
+                and is_commont=#{queryArticleCriteria.isCommont}
+            </if>
+            <if test="queryArticleCriteria.status != null and queryArticleCriteria.status != ''">
+                and status=#{queryArticleCriteria.status}
+            </if>
+        </where>
+        <choose>
+            <when test="queryArticleCriteria.orderBy = '0'">
+                order by view_count
+            </when>
+            <otherwise>
+                order by create_time
+            </otherwise>
+        </choose>
+
+
     </select>
 </mapper>
