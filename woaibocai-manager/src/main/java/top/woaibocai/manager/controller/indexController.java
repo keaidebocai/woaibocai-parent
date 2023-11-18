@@ -17,7 +17,7 @@ import top.woaibocai.model.vo.LoginVo;
  **/
 @Tag(name = "登录注册")
 @RestController
-@RequestMapping("admin/api/manager")
+@RequestMapping("admin/api/manager/")
 public class indexController {
     @Resource
     private UserService userService;
@@ -28,10 +28,8 @@ public class indexController {
     }
     @Operation(summary = "获取用户信息")
     @GetMapping("userInfo")
-    public Result getUserInfo(@RequestHeader(name = "Authorization") String token){
-        System.out.println("token = " + token);
-        String newToken = token.replace("Bearer ", "");
-        return userService.getUserInfo(newToken);
+    public Result getUserInfo(){
+        return userService.getUserInfo();
     }
 
     @Operation(summary = "用refresh_token更新失效的token")

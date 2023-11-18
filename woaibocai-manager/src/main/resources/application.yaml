@@ -2,4 +2,4 @@ spring:
   application:
     name: woaibocai-manager
   profiles:
-    active: dev,druid,mp
+    active: dev,druid,mp,noAuthUrls

@@ -9,9 +9,9 @@
         where
             id=#{id}
     </update>
-    <delete id="deletedArticleById">
-        delete from blog_article where id=#{id}
-    </delete>
+    <update id="deletedArticleById">
+        update blog_article set is_deleted=1 where id=#{id}
+    </update>
     <!--IPage<ArticlePageVo> findPage(@Param("page") IPage<ArticlePageVo> page);-->
     <select id="findPage" resultType="top.woaibocai.model.vo.manager.ArticlePageVo">
         select
@@ -19,6 +19,7 @@
         from
             blog_article
         <where>
+            is_deleted=0
             <if test="queryArticleCriteria.title != null and queryArticleCriteria.title != ''">
                 and title like concat('%',#{queryArticleCriteria.title},'%')
             </if>

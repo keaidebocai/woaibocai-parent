@@ -33,12 +33,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource
     private RedisTemplate<String,String> redisTemplate;
     @Override
-    public Result<IPage<ArticlePageVo>> findPage(Integer current, Integer size, String newToken, QueryArticleCriteria queryArticleCriteria) {
-//        String userInfoJson = redisTemplate.opsForValue().get("user::token:" + newToken);
-//        if (!StringUtils.hasText(userInfoJson)){
-//            return Result.build(null,ResultCodeEnum.LOGIN_NOLL);
-////            throw new BoCaiException(ResultCodeEnum.LOGIN_NOLL);
-//        }
+    public Result<IPage<ArticlePageVo>> findPage(Integer current, Integer size, QueryArticleCriteria queryArticleCriteria) {
         IPage<ArticlePageVo> page = new Page<>(current,size);
         IPage<ArticlePageVo> iPage = articleMapper.findPage(page,queryArticleCriteria);
         return Result.build(iPage, ResultCodeEnum.SUCCESS);

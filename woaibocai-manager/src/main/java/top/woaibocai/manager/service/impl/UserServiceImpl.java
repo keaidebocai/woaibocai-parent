@@ -6,6 +6,7 @@ import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.common.exception.HttpException;
+import top.woaibocai.common.utils.AuthContextUtil;
 import top.woaibocai.manager.mapper.UserMapper;
 import top.woaibocai.manager.service.UserService;
 import top.woaibocai.model.common.Result;
@@ -68,15 +69,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result getUserInfo(String token) {
-        //先根据token查寻，如果为空那就返回过期重新登录，否则返回
-        String userInfoJson = redisTemplate.opsForValue().get("user::token:" + token);
-        if (StringUtils.isEmpty(userInfoJson)){
-//            throw new BoCaiException(ResultCodeEnum.LOGIN_NOLL);
-//            return Result.build(null,ResultCodeEnum.LOGIN_NOLL);
-            throw new HttpException();
-        }
-        User userInfo = JSON.parseObject(userInfoJson, User.class);
+    public Result getUserInfo() {
+        User userInfo = AuthContextUtil.get();
         userInfo.setPassword("你难道没有自己的密码吗？");
         return Result.build(userInfo,ResultCodeEnum.SUCCESS);
     }

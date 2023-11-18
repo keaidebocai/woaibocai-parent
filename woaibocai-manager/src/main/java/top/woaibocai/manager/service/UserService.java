@@ -8,7 +8,7 @@ public interface UserService{
 
     Result<String> login(UserLoginDto userLoginDTO);
 
-    Result getUserInfo(String token);
+    Result getUserInfo();
     //用refresh_token更新失效的token
     Result<String> authorizations(String refresh_token);
 

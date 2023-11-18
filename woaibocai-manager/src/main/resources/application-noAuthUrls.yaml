@@ -1,0 +1,14 @@
+# 自定义配置
+bcblog:
+  auth:
+    noAuthUrls:
+      - /swagger-resources/**
+      - /swagger-ui/**
+      - /swagger-ui.html
+      - /v2/api-docs/**
+      - /webjars/**
+      - /v3/api-docs/**
+      - /doc.html/**
+      - /admin/api/manager/login
+      - /admin/api/manager/authorizations
+      - /admin/api/manager/logout
