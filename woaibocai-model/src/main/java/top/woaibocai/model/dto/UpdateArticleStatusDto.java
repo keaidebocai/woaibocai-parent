@@ -22,7 +22,7 @@ public class UpdateArticleStatusDto {
      */
     @Schema(description = "主键")
     @TableId
-    private Long id;
+    private String id;
     /**
      * 标题
      */

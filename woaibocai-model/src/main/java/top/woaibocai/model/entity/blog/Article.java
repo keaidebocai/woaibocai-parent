@@ -20,13 +20,13 @@ public class Article implements Serializable {
      */
     @Schema(description = "主键")
     @TableId
-    private Long id;
+    private String id;
 
     /**
      * user表的id
      */
     @Schema(description = "用户表id")
-    private Long userId;
+    private String userId;
 
     /**
      * 标题

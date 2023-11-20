@@ -19,7 +19,7 @@ public class Category implements Serializable {
      */
     @Schema(description = "主键")
     @TableId
-    private Long id;
+    private String id;
 
     /**
      * 分类名
@@ -31,7 +31,7 @@ public class Category implements Serializable {
      * 分类父id(0为根)
      */
     @Schema(description = "分类父id(0为根)")
-    private Long parentId;
+    private String parentId;
 
     /**
      * 描述

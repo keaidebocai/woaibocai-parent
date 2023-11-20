@@ -19,7 +19,7 @@ public class Comment implements Serializable {
      */
     @Schema(description = "主键")
     @TableId
-    private Long id;
+    private String id;
 
     /**
      * 0:文章,1有链
@@ -31,13 +31,13 @@ public class Comment implements Serializable {
      * blog_article表id
      */
     @Schema(description = "blog_article表id")
-    private Long blogArticleId;
+    private String blogArticleId;
 
     /**
      * 父评论(0为根评论)
      */
     @Schema(description = "父评论(0为根评论)")
-    private Long parentId;
+    private String parentId;
 
     /**
      * 评论内容
@@ -49,7 +49,7 @@ public class Comment implements Serializable {
      * 这是谁发出的评论
      */
     @Schema(description = "这是谁发出的评论")
-    private Long toCommentUserId;
+    private String toCommentUserId;
 
     /**
      * 点赞
@@ -61,7 +61,7 @@ public class Comment implements Serializable {
      * 给谁回复的
      */
     @Schema(description = "给谁回复的")
-    private Long toCommentId;
+    private String toCommentId;
 
     /**
      * 逻辑删除

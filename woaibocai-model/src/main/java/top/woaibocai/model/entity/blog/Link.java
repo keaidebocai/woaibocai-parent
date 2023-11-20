@@ -19,7 +19,7 @@ public class Link implements Serializable {
      */
     @Schema(description = "主键")
     @TableId
-    private Long id;
+    private String id;
 
     /**
      * 友链名称

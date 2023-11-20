@@ -20,19 +20,19 @@ public class ArticleTag implements Serializable {
      */
     @Schema(description = "主键")
     @TableId
-    private Long id;
+    private String id;
 
     /**
      * 文章id
      */
     @Schema(description = "文章id")
-    private Long articleId;
+    private String articleId;
 
     /**
      * 标签id
      */
     @Schema(description = "标签id")
-    private Long tagId;
+    private String tagId;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

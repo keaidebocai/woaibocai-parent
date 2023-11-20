@@ -21,7 +21,7 @@ public class Tag implements Serializable {
      */
     @Schema(description = "主键")
     @TableId
-    private Long id;
+    private String id;
 
     /**
      * 标签名
