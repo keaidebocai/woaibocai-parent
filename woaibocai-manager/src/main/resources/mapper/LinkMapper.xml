@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.woaibocai.manager.mapper.LinkMapper">
+    <insert id="insertLink">
+        INSERT INTO
+            blog_link
+            (id,link_name,logo,description,address,create_time,update_time)
+        value
+            (#{id},#{linkName},#{logo},#{description},#{address},now(),now())
+    </insert>
+    <update id="putStatus">
+        UPDATE blog_link SET status=#{status} WHERE id=#{id}
+    </update>
+    <update id="deleteById">
+        UPDATE  blog_link SET is_deleted=1 WHERE id=#{id}
+    </update>
+
+    <select id="findAllList" resultType="top.woaibocai.model.entity.blog.Link">
+        SELECT
+            *
+        FROM
+            blog_link
+        <where>
+            is_deleted=0
+            <if test="queryLinkDto.linkName != null and queryLinkDto.linkName != ''">
+                and link_name like concat('%',#{queryLinkDto.linkName},'%')
+            </if>
+        </where>
+        ORDER BY update_time DESC
+    </select>
+</mapper>
