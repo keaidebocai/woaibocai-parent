@@ -6,9 +6,9 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import top.woaibocai.manager.service.LinkService;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.dto.InsertLinkDto;
-import top.woaibocai.model.dto.LinkPutStatusDto;
-import top.woaibocai.model.dto.QueryLinkDto;
+import top.woaibocai.model.dto.manager.link.InsertLinkDto;
+import top.woaibocai.model.dto.manager.link.LinkPutStatusDto;
+import top.woaibocai.model.dto.manager.link.QueryLinkDto;
 
 @Tag(name = "友链管理")
 @RestController

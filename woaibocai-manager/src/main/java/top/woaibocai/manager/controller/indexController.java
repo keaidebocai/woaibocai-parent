@@ -6,7 +6,7 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import top.woaibocai.manager.service.UserService;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.dto.UserLoginDto;
+import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.vo.LoginVo;
 
 /**

@@ -6,7 +6,7 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import top.woaibocai.manager.service.TagService;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.dto.QueryTagDto;
+import top.woaibocai.model.dto.manager.tag.QueryTagDto;
 
 
 @Tag(name = "标签管理接口")

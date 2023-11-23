@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.woaibocai.manager.mapper.CategoryMapper">
+    <insert id="insertCategory">
+        INSERT INTO
+            blog_category
+        (id,category_name,description,create_time,update_time)
+        VALUE
+        (#{id},#{categoryName},#{description},now(),now())
+    </insert>
+    <update id="deletedById">
+        UPDATE blog_category SET is_deleted=1 WHERE id=#{id}
+    </update>
+    <update id="putOfCategory">
+        UPDATE
+            blog_category
+        SET
+            category_name=#{categoryName},description=#{description},update_time=now()
+        WHERE
+            id=#{id}
+    </update>
+    <select id="queryList" resultType="top.woaibocai.model.entity.blog.Category">
+        SELECT
+            id,category_name,description
+        FROM
+            blog_category
+        <where>
+            is_deleted=0
+            <if test="queryCategoryDto.categoryName != null and queryCategoryDto.categoryName != ''">
+                AND category_name LIKE concat('%',#{queryCategoryDto.categoryName},'%')
+            </if>
+        </where>
+        ORDER BY update_time DESC
+    </select>
+</mapper>

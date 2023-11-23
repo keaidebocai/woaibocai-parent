@@ -1,7 +1,7 @@
 package top.woaibocai.manager.service;
 
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.dto.UserLoginDto;
+import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.vo.LoginVo;
 
 public interface UserService{

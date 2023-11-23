@@ -1,4 +1,4 @@
-package top.woaibocai.model.dto;
+package top.woaibocai.model.dto.manager.link;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,4 +1,4 @@
-package top.woaibocai.model.dto;
+package top.woaibocai.model.dto.manager.article;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;

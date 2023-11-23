@@ -1,4 +1,4 @@
-package top.woaibocai.model.dto;
+package top.woaibocai.model.dto.manager.tag;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

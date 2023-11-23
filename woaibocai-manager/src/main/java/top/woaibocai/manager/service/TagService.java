@@ -2,7 +2,7 @@ package top.woaibocai.manager.service;
 
 
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.dto.QueryTagDto;
+import top.woaibocai.model.dto.manager.tag.QueryTagDto;
 
 
 public interface TagService {

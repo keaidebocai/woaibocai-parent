@@ -3,7 +3,7 @@ package top.woaibocai.manager.mapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import top.woaibocai.model.dto.QueryTagDto;
+import top.woaibocai.model.dto.manager.tag.QueryTagDto;
 import top.woaibocai.model.entity.blog.Tag;
 
 

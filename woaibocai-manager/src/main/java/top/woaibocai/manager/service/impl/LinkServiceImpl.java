@@ -8,12 +8,11 @@ import top.woaibocai.manager.mapper.LinkMapper;
 import top.woaibocai.manager.service.LinkService;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
-import top.woaibocai.model.dto.InsertLinkDto;
-import top.woaibocai.model.dto.LinkPutStatusDto;
-import top.woaibocai.model.dto.QueryLinkDto;
+import top.woaibocai.model.dto.manager.link.InsertLinkDto;
+import top.woaibocai.model.dto.manager.link.LinkPutStatusDto;
+import top.woaibocai.model.dto.manager.link.QueryLinkDto;
 import top.woaibocai.model.entity.blog.Link;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
