@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.woaibocai.manager.mapper.CommentMapper">
+
+    <select id="list" resultType="top.woaibocai.model.vo.manager.CommentVo">
+        SELECT
+            bc.id AS id,
+            bc.content AS content,
+            bc.blog_article_id AS blog_article_id,
+            ba.title AS article_title,
+            bc.to_comment_user_id AS to_comment_user_id,
+            u2.nick_name AS to_comment_user_nick_name,
+            u1.nick_name AS to_comment_nick_name,
+            bc.to_comment_id AS to_comment_id,
+            bc.comment_like_count AS comment_like_count,
+            bc.create_time AS create_time
+        FROM
+            blog_comment bc
+            LEFT JOIN user u1 ON bc.to_comment_id = u1.id
+            LEFT JOIN user u2 ON bc.to_comment_user_id = u2.id
+            LEFT JOIN blog_article ba ON bc.blog_article_id = ba.id
+        <where>
+            <if test="queryCommentDto.content != null and queryCommentDto.content != ''">
+                and bc.content like concat('%',#{queryCommentDto.content},'%')
+            </if>
+            <if test="queryCommentDto.articleTitle != null and queryCommentDto.articleTitle != ''">
+                and ba.title like concat('%',#{queryCommentDto.articleTitle},'%')
+            </if>
+            <if test="queryCommentDto.toCommentUserNickName != null and queryCommentDto.toCommentUserNickName != ''">
+                and u2.nick_name like concat('%',#{queryCommentDto.toCommentUserNickName},'%')
+            </if>
+            <if test="queryCommentDto.toCommentUserNickName != null and queryCommentDto.toCommentUserNickName != ''">
+                and u1.nick_name like concat('%',#{queryCommentDto.toCommentNickName},'%')
+            </if>
+        </where>
+    </select>
+</mapper>
