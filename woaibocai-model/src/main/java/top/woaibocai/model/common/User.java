@@ -20,7 +20,7 @@ public class User implements Serializable {
      */
     @Schema(description = "主键")
     @TableId
-    private Long id;
+    private String id;
 
     /**
      * 用户名

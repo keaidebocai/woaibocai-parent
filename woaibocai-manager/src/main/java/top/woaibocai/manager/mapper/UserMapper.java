@@ -9,5 +9,5 @@ public interface UserMapper extends BaseMapper<User> {
     //根据userName查询数据库
     User selectByUserName(String userName);
 
-    void updateOfRefreshToken(String refreshToken,Long id);
+    void updateOfRefreshToken(String refreshToken,String id);
 }
