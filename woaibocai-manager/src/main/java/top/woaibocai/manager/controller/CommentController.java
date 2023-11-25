@@ -21,4 +21,9 @@ public class CommentController {
                        @RequestBody QueryCommentDto queryCommentDto){
         return commentService.list(current,size,queryCommentDto);
     }
+    @Operation(summary = "删除评论")
+    @DeleteMapping("delete/{id}")
+    public Result deleteById(@PathVariable String id){
+        return commentService.deleteById(id);
+    }
 }

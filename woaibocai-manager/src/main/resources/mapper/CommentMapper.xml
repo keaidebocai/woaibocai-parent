@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.woaibocai.manager.mapper.CommentMapper">
+    <update id="deleteById">
+        UPDATE blog_comment SET is_deleted=1 WHERE id=#{id}
+    </update>
 
     <select id="list" resultType="top.woaibocai.model.vo.manager.CommentVo">
         SELECT
@@ -20,6 +23,7 @@
             LEFT JOIN user u2 ON bc.to_comment_user_id = u2.id
             LEFT JOIN blog_article ba ON bc.blog_article_id = ba.id
         <where>
+            bc.is_deleted=0
             <if test="queryCommentDto.content != null and queryCommentDto.content != ''">
                 and bc.content like concat('%',#{queryCommentDto.content},'%')
             </if>

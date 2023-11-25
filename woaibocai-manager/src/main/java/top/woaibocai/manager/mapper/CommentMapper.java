@@ -10,4 +10,6 @@ import top.woaibocai.model.vo.manager.CommentVo;
 @Mapper
 public interface CommentMapper {
     IPage<CommentVo> list(@Param("commentVoIPage") IPage<CommentVo> commentVoIPage, @Param("queryCommentDto") QueryCommentDto queryCommentDto);
+
+    void deleteById(String id);
 }

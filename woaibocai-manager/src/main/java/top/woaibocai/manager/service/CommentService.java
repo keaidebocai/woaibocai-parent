@@ -5,4 +5,6 @@ import top.woaibocai.model.dto.manager.comment.QueryCommentDto;
 
 public interface CommentService {
     Result list(Integer current, Integer size, QueryCommentDto queryCommentDto);
+
+    Result deleteById(String id);
 }

@@ -31,4 +31,10 @@ public class CommentServiceImpl implements CommentService {
         return Result.build(iPage,ResultCodeEnum.SUCCESS);
     }
 
+    @Override
+    public Result deleteById(String id) {
+        commentMapper.deleteById(id);
+        return Result.build(null,ResultCodeEnum.SUCCESS);
+    }
+
 }
