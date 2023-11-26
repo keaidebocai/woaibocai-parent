@@ -12,7 +12,9 @@ import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.category.QueryCategoryDto;
 import top.woaibocai.model.dto.manager.category.UpdateCategoryDto;
 import top.woaibocai.model.entity.blog.Category;
+import top.woaibocai.model.others.manager.CategoryBySelector;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -42,5 +44,12 @@ public class CategoryServiceImpl implements CategoryService {
         }
         categoryMapper.putOfCategory(updateCategoryDto);
         return Result.build(null,200,"更新成功!");
+    }
+
+    @Override
+    public Result categorySelector() {
+        //先查询所有category和对应的id
+        List<CategoryBySelector> categoryBySelectors = categoryMapper.categorySelector();
+        return Result.build(categoryBySelectors,ResultCodeEnum.SUCCESS);
     }
 }

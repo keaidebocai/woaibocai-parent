@@ -32,4 +32,11 @@
         </where>
         ORDER BY update_time DESC
     </select>
+    <select id="categorySelector" resultType="top.woaibocai.model.others.manager.CategoryBySelector">
+        SELECT
+            id AS value,
+            category_name AS label
+        FROM
+            blog_category
+    </select>
 </mapper>

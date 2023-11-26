@@ -32,4 +32,9 @@ public class CategoryController {
     public Result putOfCategory(@RequestBody UpdateCategoryDto updateCategoryDto){
         return categoryService.putOfCategory(updateCategoryDto);
     }
+    @Operation(summary = "分类选择器上的所有分类数据，返回CategoryBySelector")
+    @GetMapping("categorySelector")
+    public Result categorySelector(){
+        return categoryService.categorySelector();
+    }
 }

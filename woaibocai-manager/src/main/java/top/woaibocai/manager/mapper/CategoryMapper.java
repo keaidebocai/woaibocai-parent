@@ -6,6 +6,9 @@ import org.apache.ibatis.annotations.Param;
 import top.woaibocai.model.dto.manager.category.QueryCategoryDto;
 import top.woaibocai.model.dto.manager.category.UpdateCategoryDto;
 import top.woaibocai.model.entity.blog.Category;
+import top.woaibocai.model.others.manager.CategoryBySelector;
+
+import java.util.List;
 
 @Mapper
 public interface CategoryMapper {
@@ -16,4 +19,6 @@ public interface CategoryMapper {
     void putOfCategory(UpdateCategoryDto updateCategoryDto);
 
     void insertCategory(UpdateCategoryDto updateCategoryDto);
+
+    List<CategoryBySelector> categorySelector();
 }

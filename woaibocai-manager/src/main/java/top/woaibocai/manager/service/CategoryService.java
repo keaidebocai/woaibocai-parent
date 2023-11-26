@@ -10,4 +10,6 @@ public interface CategoryService {
     Result deletedById(String id);
 
     Result putOfCategory(UpdateCategoryDto updateCategoryDto);
+
+    Result categorySelector();
 }
