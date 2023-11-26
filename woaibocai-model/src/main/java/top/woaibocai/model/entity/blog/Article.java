@@ -50,7 +50,7 @@ public class Article implements Serializable {
      * blog_category分类表id
      */
     @Schema(description = "log_category分类表id")
-    private Long blogCategoryId;
+    private String blogCategoryId;
 
     /**
      * 缩略图

@@ -10,6 +10,7 @@ import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.article.QueryArticleCriteria;
 import top.woaibocai.model.dto.manager.article.UpdateArticleStatusDto;
+import top.woaibocai.model.dto.manager.article.WriteArticleDto;
 import top.woaibocai.model.vo.manager.ArticlePageVo;
 
 /**
@@ -43,5 +44,22 @@ public class ArticleController {
     public Result DeletedArticleById(@PathVariable Integer id){
         articleService.deletedArticleById(id);
         return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
+    @PostMapping("writeArticle")
+    public Result test(@RequestBody WriteArticleDto writeArticleDto){
+        System.out.println(writeArticleDto);
+        return articleService.writeArticle(writeArticleDto);
+    }
+    @Operation(summary = "修改文章数据回显")
+    @GetMapping("updateArticleData/{id}")
+    public Result updateArticleData(@PathVariable String id){
+
+        return articleService.updateArticleData(id);
+    }
+    @Operation(summary = "更新草稿")
+    @PutMapping("updateArticle")
+    public Result updateArticle(@RequestBody WriteArticleDto writeArticleDto){
+        //给前端协商axios
+        return articleService.updateArticle(writeArticleDto);
     }
 }

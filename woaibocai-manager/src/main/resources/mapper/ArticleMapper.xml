@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.woaibocai.manager.mapper.ArticleMapper">
+    <insert id="writeArticle">
+        INSERT INTO
+            blog_article
+            (id,user_id,title,summary,content,blog_category_id,thumbnail,is_top,is_commont,status,create_time,update_time)
+        VALUE
+            (#{id},20010628,#{title},#{summary},#{content},#{blogCategoryId},#{thumbnail},#{isTop},#{isCommont},#{status},now(),now())
+    </insert>
     <update id="updateArticleStatus">
         update
             blog_article
@@ -11,6 +18,17 @@
     </update>
     <update id="deletedArticleById">
         update blog_article set is_deleted=1 where id=#{id}
+    </update>
+    <update id="updateArticle">
+        UPDATE
+            blog_article
+        SET
+            user_id=20010628,title=#{title},summary=#{summary},
+            content=#{content},blog_category_id=#{blogCategoryId},thumbnail=#{thumbnail},
+            is_top=#{isTop},is_commont=#{isCommont},
+            status=#{status},update_time=now()
+        WHERE
+            id=#{id}
     </update>
     <!--IPage<ArticlePageVo> findPage(@Param("page") IPage<ArticlePageVo> page);-->
     <select id="findPage" resultType="top.woaibocai.model.vo.manager.ArticlePageVo">
@@ -35,13 +53,21 @@
         </where>
         <choose>
             <when test="queryArticleCriteria.orderBy = '0'">
-                order by view_count
+                ORDER BY view_count DESC
             </when>
             <otherwise>
-                order by create_time
+                ORDER BY create_time DESC
             </otherwise>
         </choose>
 
 
+    </select>
+    <select id="mySelectById" resultType="top.woaibocai.model.entity.blog.Article">
+        SELECT
+            id,blog_category_id,title,summary,thumbnail,content,status,is_commont,is_top
+        FROM
+            blog_article
+        WHERE
+            id=#{id}
     </select>
 </mapper>

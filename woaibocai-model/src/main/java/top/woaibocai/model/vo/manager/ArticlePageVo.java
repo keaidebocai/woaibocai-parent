@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Schema(description = "文章状态管理返回类")
 public class ArticlePageVo {
     @Schema(description = "主键")
-    private Long id;
+    private String id;
     /**
      * 标题
      */

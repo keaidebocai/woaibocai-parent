@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.woaibocai.manager.mapper.ArticleTagMapper">
+
+    <insert id="insertArticleTag">
+        INSERT INTO
+            blog_article_tag
+        (id,article_id,tag_id)
+        VALUES
+        <foreach collection="tags" item="item" separator=",">
+            (#{item.articleTagId},#{id},#{item.id})
+        </foreach>
+    </insert>
+    <delete id="deleteByArticleId">
+        DELETE FROM blog_article_tag WHERE article_id=#{id}
+    </delete>
+    <select id="selectByArticleId" resultType="top.woaibocai.model.vo.manager.TagVo">
+        SELECT
+            bt.id AS id,
+            bt.tag_name AS name
+        FROM
+            blog_article_tag bat
+            LEFT JOIN blog_tag bt ON bat.tag_id = bt.id
+        WHERE
+            bat.article_id=#{id}
+    </select>
+</mapper>

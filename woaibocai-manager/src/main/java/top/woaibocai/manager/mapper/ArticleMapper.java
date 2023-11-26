@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import top.woaibocai.model.dto.manager.article.QueryArticleCriteria;
 import top.woaibocai.model.dto.manager.article.UpdateArticleStatusDto;
+import top.woaibocai.model.dto.manager.article.WriteArticleDto;
 import top.woaibocai.model.entity.blog.Article;
 import top.woaibocai.model.vo.manager.ArticlePageVo;
 
@@ -16,4 +17,10 @@ public interface ArticleMapper extends BaseMapper<Article> {
     void updateArticleStatus(UpdateArticleStatusDto updateArticleStatusDto);
 
     void deletedArticleById(Integer id);
+
+    void writeArticle(WriteArticleDto writeArticleDto);
+
+    Article mySelectById(String id);
+
+    void updateArticle(WriteArticleDto writeArticleDto);
 }
