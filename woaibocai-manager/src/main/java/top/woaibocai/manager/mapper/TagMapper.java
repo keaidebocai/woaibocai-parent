@@ -5,7 +5,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import top.woaibocai.model.dto.manager.tag.QueryTagDto;
 import top.woaibocai.model.entity.blog.Tag;
+import top.woaibocai.model.vo.manager.TagVo;
 
+import java.util.List;
 
 
 @Mapper
@@ -17,4 +19,6 @@ public interface TagMapper {
     void deleted(String id);
 
     void updateTag(QueryTagDto queryTagDto);
+
+    List<TagVo> getAllTagAndId();
 }

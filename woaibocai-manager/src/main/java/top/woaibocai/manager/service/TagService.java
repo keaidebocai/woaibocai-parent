@@ -11,4 +11,6 @@ public interface TagService {
     Result insertTag(QueryTagDto queryTagDto);
 
     Result deleted(String id);
+
+    Result getAllTagAndId();
 }

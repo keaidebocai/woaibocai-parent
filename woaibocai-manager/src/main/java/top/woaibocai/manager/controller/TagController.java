@@ -32,4 +32,9 @@ public class TagController {
     public Result deleted(@PathVariable String id){
         return tagService.deleted(id);
     }
+    @Operation(summary = "返回所有标签名和标签id")
+    @GetMapping("getAllTagAndId")
+    public Result getAllTagAndId(){
+        return tagService.getAllTagAndId();
+    }
 }

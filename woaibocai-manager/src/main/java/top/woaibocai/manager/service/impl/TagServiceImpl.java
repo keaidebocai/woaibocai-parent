@@ -11,8 +11,10 @@ import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.tag.QueryTagDto;
 import top.woaibocai.model.entity.blog.Tag;
+import top.woaibocai.model.vo.manager.TagVo;
 
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -47,5 +49,11 @@ public class TagServiceImpl implements TagService {
     public Result deleted(String id) {
         tagMapper.deleted(id);
         return Result.build(null,ResultCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public Result getAllTagAndId() {
+        List<TagVo> tagVoList = tagMapper.getAllTagAndId();
+        return Result.build(tagVoList,ResultCodeEnum.SUCCESS);
     }
 }

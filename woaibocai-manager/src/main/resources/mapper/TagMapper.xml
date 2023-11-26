@@ -28,4 +28,13 @@
         ORDER BY update_time DESC
 
     </select>
+    <select id="getAllTagAndId" resultType="top.woaibocai.model.vo.manager.TagVo">
+        SELECT
+            id AS id,
+            tag_name AS name
+        FROM
+            blog_tag
+        WHERE
+            is_deleted=0
+    </select>
 </mapper>
