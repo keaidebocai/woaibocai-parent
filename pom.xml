@@ -13,6 +13,7 @@
         <module>woaibocai-manager</module>
         <module>woaibocai-common</module>
         <module>woaibocai-service</module>
+        <module>woaibocai-gateway-16280</module>
     </modules>
 
     <!-- 指定父工程 -->
