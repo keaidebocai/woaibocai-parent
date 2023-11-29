@@ -1,0 +1,20 @@
+server:
+  port: 16287
+spring:
+  application:
+    name: woaibocai-service-blog-16287
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        group: DEFAULT_GROUP
+        username: nacos
+        password: nacos
+      config:
+        server-addr: 127.0.0.1:8848
+        group: DEFAULT_GROUP
+        username: nacos
+        password: nacos
+#        shared-dataids: woaibocai-service-blog.yaml
+        file-extension: yaml
+        shared-configs: woaibocai-service-blog-16287.yaml
