@@ -1,8 +1,8 @@
 server:
-  port: 16280
+  port: 16288
 spring:
   application:
-    name: woaibocai-gateway-16280
+    name: woaibocai-service-qcloud-16288
   cloud:
     nacos:
       discovery:
@@ -12,12 +12,11 @@ spring:
         password: nacos
       config:
         server-addr: 127.0.0.1:8848
-        group: WOAIBOCAI_GATEWAY_16280_GROUP
+        group: WOAIBOCAI_SERVICE_QCLOUD_GROUP
         username: nacos
         password: nacos
-#        shared-dataids: woaibocai-service-blog.yaml
         file-extension: yaml
         shared-configs[0]:
-          data-id: woaibocai-gateway-16280.yaml
-          group: WOAIBOCAI_GATEWAY_16280_GROUP
-          refresh: true
+          data-id: woaibocai-service-qcloud-16288.yaml
+          group: WOAIBOCAI_SERVICE_QCLOUD_GROUP
+          refresh: false

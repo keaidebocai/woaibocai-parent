@@ -12,7 +12,7 @@
     <artifactId>woaibocai-service</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>service-qcloud</module>
+        <module>service-qcloud-16288</module>
         <module>service-blog-16287</module>
     </modules>
 
