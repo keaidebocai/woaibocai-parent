@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author: woaibocai
  * @create: 2023-12-09 14:59
  **/
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"top.woaibocai.user","top.woaibocai.common"})
 public class ServiceUserApplication16281 {
     public static void main(String[] args) {
         SpringApplication.run(ServiceUserApplication16281.class,args);
