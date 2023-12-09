@@ -1,0 +1,26 @@
+server:
+  port: 16281
+spring:
+  application:
+    name: woaibocai-service-user-16281
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.31.9:8848
+        group: WOAIBOCAI_GROUP
+        username: nacos
+        password: nacos
+      config:
+        server-addr: 192.168.31.9:8848
+#        group: WOAIBOCAI_SERVICE_BLOG_GROUP
+        username: nacos
+        password: nacos
+        file-extension: yaml
+        shared-configs[0]:
+          data-id: woaibocai-service-user-16281.yaml
+          group: WOAIBOCAI_SERVICE_USER_GROUP
+          refresh: false
+        shared-configs[1]:
+          data-id: woaibocai-service-user-16281-druid.yaml
+          group: WOAIBOCAI_SERVICE_USER_GROUP
+          refresh: false
