@@ -42,7 +42,7 @@ public class LoginAuthInterceptor implements HandlerInterceptor {
         User user = JSON.parseObject(userInfo, User.class);
         AuthContextUtil.set(user);
         //7.把redis用户信息数据更新过期时间
-        redisTemplate.expire("user::token:" + token,30, TimeUnit.MINUTES);
+        redisTemplate.expire("user::token:" + token,30, TimeUnit.SECONDS);
         //放行
         return true;
     }

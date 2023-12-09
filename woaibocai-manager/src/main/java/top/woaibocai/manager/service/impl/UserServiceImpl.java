@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         String refresh_token = UUID.randomUUID().toString().replace("-", "");
         redisTemplate
                 .opsForValue()
-                .set("user::token:" + token, JSON.toJSONString(user),5, TimeUnit.MINUTES);
+                .set("user::token:" + token, JSON.toJSONString(user),30, TimeUnit.SECONDS);
         redisTemplate
                 .opsForValue()
                         .set("user::refresh_token:" + refresh_token ,user.getUserName(),7,TimeUnit.DAYS);
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
         String token = UUID.randomUUID().toString().replace("-", "");
         redisTemplate
                 .opsForValue()
-                .set("user::token:" + token, JSON.toJSONString(user),5, TimeUnit.MINUTES);
+                .set("user::token:" + token, JSON.toJSONString(user),30, TimeUnit.SECONDS);
         LoginVo loginVo = new LoginVo();
         loginVo.setToken(token);
         loginVo.setRefresh_token(refresh_token);
