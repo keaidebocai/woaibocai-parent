@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.woaibocai.user.mapper.UserMapper">
+    <insert id="register">
+        INSERT INTO
+            user
+            (id, user_name, password, email, create_time, update_time)
+            VALUE
+            (#{id},#{userRegisterDto.userName},#{userRegisterDto.password},#{userRegisterDto.email},now(),now())
+    </insert>
+    <update id="updateRefreshTokenById">
+        UPDATE user SET refresh_token=#{refreshToken},update_time=now() WHERE id=#{id}
+    </update>
+
+    <select id="selectByUserName" resultType="top.woaibocai.model.DO.user.UserLoginDo">
+        SELECT
+            id, password, refresh_token, status
+        FROM
+            user
+        WHERE
+            user_name=#{userName}
+    </select>
+    <select id="userNameValidate" resultType="java.lang.Integer">
+        SELECT count(*) FROM user WHERE user_name=#{userName}
+    </select>
+    <select id="emailValidate" resultType="java.lang.Integer">
+        SELECT count(*) FROM user WHERE email=#{email}
+    </select>
+</mapper>

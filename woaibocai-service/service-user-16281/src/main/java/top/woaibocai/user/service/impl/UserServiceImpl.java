@@ -1,11 +1,22 @@
 package top.woaibocai.user.service.impl;
 
+import com.alibaba.druid.util.StringUtils;
+import com.alibaba.fastjson.JSON;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import top.woaibocai.common.utils.MD5util;
+import top.woaibocai.model.DO.user.UserLoginDo;
 import top.woaibocai.model.common.Result;
+import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.UserLoginDto;
+import top.woaibocai.model.dto.manager.UserRegisterDto;
+import top.woaibocai.model.vo.LoginVo;
+import top.woaibocai.user.mapper.UserMapper;
 import top.woaibocai.user.service.UserService;
+
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @program: woaibocai-parent
@@ -17,9 +28,71 @@ import top.woaibocai.user.service.UserService;
 public class UserServiceImpl implements UserService {
     @Resource
     private RedisTemplate<String,String> redisTemplate;
+    @Resource
+    private UserMapper userMapper;
     @Override
     public Result<String> login(UserLoginDto userLoginDto) {
-        redisTemplate.opsForValue().set("test","test123");
-        return null;
+        // 1.查user表
+        UserLoginDo userData = userMapper.selectByUserName(userLoginDto.getUserName());
+        // 没有用户 返回
+        if (userData == null) {
+            return Result.build(null, ResultCodeEnum.LOGIN_ERROR);
+        }
+
+        // 2.将dto密码用 MD5Util 解析后与数据库中的对比
+        //不正确就返回
+        if (!userData.getPassword().equals(MD5util.onlySaltPass(userLoginDto.getPassword()))) {
+            return Result.build(null, ResultCodeEnum.LOGIN_ERROR);
+        }
+        // 检查 status 如果值为 1 则为 封禁状态
+        if (userData.getStatus().equals("1")) {
+            return Result.build(null,ResultCodeEnum.ACCOUNT_STOP);
+        }
+
+        // 3.查询redis 中 refresh_token 是否 过期  没过期删除
+        String refreshToken = redisTemplate.opsForValue().get("user:refresh_token:" + userData.getRefreshToken());
+        if (!StringUtils.isEmpty(refreshToken)) {
+            redisTemplate.delete("user:refresh_token:" + userData.getRefreshToken());
+        }
+
+        // 4.创建 token 和 refresh_token 放进redis中
+        String token = UUID.randomUUID().toString().replace("-", "");
+        String refresh_token = UUID.randomUUID().toString().replace("-", "");
+        redisTemplate.opsForValue().set("user:token:" + token,JSON.toJSONString(userData),10, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set("user:refresh_token:" + refresh_token,JSON.toJSONString(userData),15, TimeUnit.DAYS);
+
+        // 5. 把新 refresh_token 放进数据库 里
+        userMapper.updateRefreshTokenById(userData.getId(),refresh_token);
+
+        // 6. 把两个token 放进 loginVo 并 转成JSON字符串 返回
+        LoginVo loginVo = new LoginVo();
+        loginVo.setToken(token);
+        loginVo.setRefresh_token(refresh_token);
+        String loginVoJson = JSON.toJSONString(loginVo);
+
+        return Result.build(loginVoJson,ResultCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public Result register(UserRegisterDto userRegisterDto) {
+        // 1.先查数据库中 userName 是否相等
+        Integer userNameNum = userMapper.userNameValidate(userRegisterDto.getUserName());
+        if (userNameNum != 0) {
+            return Result.build(null,ResultCodeEnum.USER_NAME_IS_EXISTS);
+        }
+        // 2.再查数据库中邮箱是否重复
+        Integer emailNum = userMapper.emailValidate(userRegisterDto.getEmail());
+        if (emailNum != 0) {
+            return Result.build(null,ResultCodeEnum.EMAIL_IS_EXISTS);
+        }
+        // 3.把密码加密 整合插入
+        String md5Pwd = MD5util.onlySaltPass(userRegisterDto.getPassword());
+        userRegisterDto.setPassword(md5Pwd);
+        String id = UUID.randomUUID().toString().replace("-", "");
+        Boolean flag = userMapper.register(userRegisterDto,id);
+        if (flag.equals(false)) {
+            return Result.build(null,ResultCodeEnum.DATA_ERROR);
+        }
+        return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 }

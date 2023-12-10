@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.woaibocai.common.utils.MD5util;
 import top.woaibocai.model.common.Result;
+import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.UserLoginDto;
+import top.woaibocai.model.dto.manager.UserRegisterDto;
 import top.woaibocai.user.service.UserService;
 
 /**
@@ -28,5 +31,10 @@ public class UserController {
     @PostMapping("login")
     public Result<String> login(@RequestBody UserLoginDto userLoginDto) {
         return userService.login(userLoginDto);
+    }
+    @Operation(summary = "注册demo")
+    @PostMapping("register")
+    public Result register(@RequestBody UserRegisterDto userRegisterDto) {
+        return userService.register(userRegisterDto);
     }
 }
