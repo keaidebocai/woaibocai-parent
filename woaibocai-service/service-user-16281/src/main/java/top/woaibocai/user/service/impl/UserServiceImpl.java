@@ -5,12 +5,14 @@ import com.alibaba.fastjson.JSON;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import top.woaibocai.common.exception.HttpException;
 import top.woaibocai.common.utils.MD5util;
 import top.woaibocai.model.DO.user.UserLoginDo;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.dto.manager.UserRegisterDto;
+import top.woaibocai.model.dto.user.AuthorizationsDto;
 import top.woaibocai.model.vo.LoginVo;
 import top.woaibocai.user.mapper.UserMapper;
 import top.woaibocai.user.service.UserService;
@@ -94,5 +96,34 @@ public class UserServiceImpl implements UserService {
             return Result.build(null,ResultCodeEnum.DATA_ERROR);
         }
         return Result.build(null,ResultCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public Result<String> authorizations(AuthorizationsDto authorizationsDto) {
+        // 去 redis 里查询 refresh_token 是否过期
+        String refreshTokenUserInfo = redisTemplate.opsForValue().get("user:refresh_token:" + authorizationsDto.getRefresh_token());
+        if (StringUtils.isEmpty(refreshTokenUserInfo)) {
+            return Result.build(null,ResultCodeEnum.LOGIN_AUTH);
+        }
+        // 创建 token
+        String token = UUID.randomUUID().toString().replace("-", "");
+        // 放入redis
+        redisTemplate.opsForValue().set("user:token:" + token,refreshTokenUserInfo,10,TimeUnit.MINUTES);
+        // 转化json字符串
+        LoginVo loginVo = new LoginVo();
+        loginVo.setToken(token);
+        loginVo.setRefresh_token(authorizationsDto.getRefresh_token());
+        String loginVoToString = JSON.toJSONString(loginVo);
+        return Result.build(loginVoToString,ResultCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public Result getUserInfo(String newToken) {
+        String userInfo = redisTemplate.opsForValue().get("user:token:" + newToken);
+        if (StringUtils.isEmpty(userInfo)) {
+            throw new HttpException();
+        }
+        UserLoginDo userLoginDo = JSON.parseObject(userInfo, UserLoginDo.class);
+        return Result.build(userLoginDo,ResultCodeEnum.SUCCESS);
     }
 }

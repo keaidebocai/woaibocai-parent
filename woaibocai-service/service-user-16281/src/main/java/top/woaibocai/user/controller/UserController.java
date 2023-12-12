@@ -3,15 +3,12 @@ package top.woaibocai.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import top.woaibocai.common.utils.MD5util;
+import org.springframework.web.bind.annotation.*;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.dto.manager.UserRegisterDto;
+import top.woaibocai.model.dto.user.AuthorizationsDto;
 import top.woaibocai.user.service.UserService;
 
 /**
@@ -36,5 +33,16 @@ public class UserController {
     @PostMapping("register")
     public Result register(@RequestBody UserRegisterDto userRegisterDto) {
         return userService.register(userRegisterDto);
+    }
+    @Operation(summary = "刷新token")
+    @PostMapping("authorizations")
+    public Result<String> authorizations(@RequestBody AuthorizationsDto authorizationsDto){
+        return userService.authorizations(authorizationsDto);
+    }
+    @Operation(summary = "获取用户信息")
+    @GetMapping("auth/getUserInfo")
+    public Result getUserInfo(@RequestHeader("Authorization") String token){
+        String newToken = token.replace("Bearer ", "");
+        return userService.getUserInfo(newToken);
     }
 }

@@ -17,6 +17,4 @@ public interface UserMapper {
 
     Boolean register(@Param("userRegisterDto") UserRegisterDto userRegisterDto, @Param("id") String id);
 
-
-//    void register(@Param("userRegisterDto") UserRegisterDto userRegisterDto, @Param("id") String id);
 }
