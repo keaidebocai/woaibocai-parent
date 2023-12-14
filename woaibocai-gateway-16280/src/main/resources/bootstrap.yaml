@@ -20,3 +20,7 @@ spring:
           data-id: woaibocai-gateway-16280.yaml
           group: WOAIBOCAI_GATEWAY_16280_GROUP
           refresh: true
+        shared-configs[1]:
+          data-id: woaibocai-gateway-16280-redis.yaml
+          group: WOAIBOCAI_GATEWAY_16280_GROUP
+          refresh: true
