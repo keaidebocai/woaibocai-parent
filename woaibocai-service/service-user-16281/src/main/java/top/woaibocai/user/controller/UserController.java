@@ -9,6 +9,7 @@ import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.dto.manager.UserRegisterDto;
 import top.woaibocai.model.dto.user.AuthorizationsDto;
+import top.woaibocai.model.vo.LoginVo;
 import top.woaibocai.user.service.UserService;
 
 /**
@@ -44,5 +45,10 @@ public class UserController {
     public Result getUserInfo(@RequestHeader("Authorization") String token){
         String newToken = token.replace("Bearer ", "");
         return userService.getUserInfo(newToken);
+    }
+    @Operation(summary = "退出账号")
+    @PostMapping("logout")
+    public Result logout(@RequestBody LoginVo loginVo){
+        return userService.logout(loginVo);
     }
 }

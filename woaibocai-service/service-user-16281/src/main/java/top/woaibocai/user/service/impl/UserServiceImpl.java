@@ -125,7 +125,20 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isEmpty(userInfo)) {
             return Result.build(null,ResultCodeEnum.LOGIN_NOLL);
         }
-        UserInfoVo userInfoVo = JSON.parseObject(userInfo, UserInfoVo.class);
-        return Result.build(userInfoVo,ResultCodeEnum.SUCCESS);
+//        UserInfoVo userInfoVo = JSON.parseObject(userInfo, UserInfoVo.class);
+        return Result.build(userInfo,ResultCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public Result logout(LoginVo loginVo) {
+        //先删除 refresh_token
+        String refresh_token = redisTemplate.opsForValue().get("user:refresh_token:" + loginVo.getRefresh_token());
+        if (!StringUtils.isEmpty(refresh_token)) {
+            redisTemplate.delete("user:refresh_token:" + loginVo.getRefresh_token());
+        }
+        //删除 token
+//        String token = redisTemplate.opsForValue().get("user:token:" + loginVo.getToken());
+        redisTemplate.delete("user:token:" + loginVo.getToken());
+        return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 }
