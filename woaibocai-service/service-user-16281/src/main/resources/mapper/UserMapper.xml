@@ -26,4 +26,12 @@
     <select id="emailValidate" resultType="java.lang.Integer">
         SELECT count(*) FROM user WHERE email=#{email}
     </select>
+    <select id="userInfo" resultType="top.woaibocai.model.vo.user.UserInfoVo">
+        SELECT
+            nick_name,avatar,sex
+        FROM
+            user
+        WHERE
+            id=#{id}
+    </select>
 </mapper>
