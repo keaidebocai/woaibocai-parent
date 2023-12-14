@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import top.woaibocai.model.DO.user.UserLoginDo;
 import top.woaibocai.model.dto.manager.UserRegisterDto;
+import top.woaibocai.model.vo.user.UserInfoVo;
 
 @Mapper
 public interface UserMapper {
@@ -17,4 +18,5 @@ public interface UserMapper {
 
     Boolean register(@Param("userRegisterDto") UserRegisterDto userRegisterDto, @Param("id") String id);
 
+    UserInfoVo userInfo(String id);
 }
