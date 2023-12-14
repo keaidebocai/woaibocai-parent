@@ -14,6 +14,7 @@ import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.dto.manager.UserRegisterDto;
 import top.woaibocai.model.dto.user.AuthorizationsDto;
 import top.woaibocai.model.vo.LoginVo;
+import top.woaibocai.model.vo.user.UserInfoVo;
 import top.woaibocai.user.mapper.UserMapper;
 import top.woaibocai.user.service.UserService;
 
@@ -56,12 +57,13 @@ public class UserServiceImpl implements UserService {
         if (!StringUtils.isEmpty(refreshToken)) {
             redisTemplate.delete("user:refresh_token:" + userData.getRefreshToken());
         }
-
+        // 把userinfo 放进redis里
+        UserInfoVo userInfoVo = userMapper.userInfo(userData.getId());
         // 4.创建 token 和 refresh_token 放进redis中
         String token = UUID.randomUUID().toString().replace("-", "");
         String refresh_token = UUID.randomUUID().toString().replace("-", "");
-        redisTemplate.opsForValue().set("user:token:" + token,JSON.toJSONString(userData),10, TimeUnit.MINUTES);
-        redisTemplate.opsForValue().set("user:refresh_token:" + refresh_token,JSON.toJSONString(userData),15, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set("user:token:" + token,JSON.toJSONString(userInfoVo),10, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set("user:refresh_token:" + refresh_token,JSON.toJSONString(userInfoVo),15, TimeUnit.DAYS);
 
         // 5. 把新 refresh_token 放进数据库 里
         userMapper.updateRefreshTokenById(userData.getId(),refresh_token);
@@ -121,9 +123,9 @@ public class UserServiceImpl implements UserService {
     public Result getUserInfo(String newToken) {
         String userInfo = redisTemplate.opsForValue().get("user:token:" + newToken);
         if (StringUtils.isEmpty(userInfo)) {
-            throw new HttpException();
+            return Result.build(null,ResultCodeEnum.LOGIN_NOLL);
         }
-        UserLoginDo userLoginDo = JSON.parseObject(userInfo, UserLoginDo.class);
-        return Result.build(userLoginDo,ResultCodeEnum.SUCCESS);
+        UserInfoVo userInfoVo = JSON.parseObject(userInfo, UserInfoVo.class);
+        return Result.build(userInfoVo,ResultCodeEnum.SUCCESS);
     }
 }
