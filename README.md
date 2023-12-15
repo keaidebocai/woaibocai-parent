@@ -3,7 +3,7 @@
 #### *后端：*
 SpringBoot3.0、SpringCloud Alibaba 2022.0.0.0-RC2</br>
 Feign、nacos、gateway</br>
-Mysql8.0.33、Druid、Mybatis-Plus、Lombok、JWT、Spring Security......</br>
+Mysql8.0.33、Druid、Mybatis-Plus、Lombok、~~JWT~~、~~Spring Security~~......</br>
 #### *前端：*
 Vue3、Element-plus、Nuxt3、ES6
 
