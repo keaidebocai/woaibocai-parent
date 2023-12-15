@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.woaibocai.blog.mapper.MenuMapper">
+
+    <select id="getAllMenu" resultType="top.woaibocai.model.entity.blog.Menu">
+        SELECT
+            id, menu_name,url
+        FROM
+            blog_menu
+        WHERE
+            status=1
+        ORDER BY id DESC
+    </select>
+</mapper>
