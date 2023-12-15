@@ -20,7 +20,7 @@ import top.woaibocai.user.service.UserService;
  **/
 @Tag(name = "用户信息验证")
 //未来如果某接口需要进行token的验证，那就这样写 /blog/user/auth/xxxx
-@RequestMapping("/api/blog/user")
+@RequestMapping("/api/user")
 @RestController
 public class UserController {
     @Resource
