@@ -1,4 +1,4 @@
-package top.woaibocai.model.DO.user;
+package top.woaibocai.model.Do.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

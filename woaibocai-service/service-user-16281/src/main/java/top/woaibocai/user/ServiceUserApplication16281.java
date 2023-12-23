@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @author: woaibocai
  * @create: 2023-12-09 14:59
  **/
-@SpringBootApplication(scanBasePackages = {"top.woaibocai.user","top.woaibocai.common"})
+@SpringBootApplication(scanBasePackages = {"top.woaibocai.user","top.woaibocai.common","top.woaibocai.model"})
 @ComponentScan(basePackages = {"top.woaibocai"})
 public class ServiceUserApplication16281 {
     public static void main(String[] args) {
