@@ -19,7 +19,7 @@ public class Knife4jConfig {
     public GroupedOpenApi adminApi() {      // 创建了一个api接口的分组
         return GroupedOpenApi.builder()
                 .group("user模块")         // 分组名称
-                .pathsToMatch("/api/**")  // 接口请求路径规则
+                .pathsToMatch("/**")  // 接口请求路径规则
                 .build();
     }
     /***
