@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.woaibocai.blog.mapper.ArticleTagMapper">
+    <select id="tagByArticleCount" resultType="top.woaibocai.model.Do.blog.TagHasArticleCountDo">
+        SELECT
+            tag_id,
+            COUNT(DISTINCT article_id) AS article_count
+        FROM
+            blog_article_tag
+        GROUP BY
+            tag_id
+    </select>
+    <select id="articleHasTags" resultType="top.woaibocai.model.Do.blog.ArticleHasTagsDo">
+        SELECT
+            article_id,
+            GROUP_CONCAT(tag_id) AS tagIdListString
+        FROM
+            blog_article_tag
+        GROUP BY
+            article_id;
+
+    </select>
+</mapper>

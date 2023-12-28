@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.woaibocai.blog.mapper.ArticleMapper">
+    <select id="selectAllArticle" resultType="top.woaibocai.model.vo.blog.article.BlogArticlePageVo">
+        SELECT
+            ba.id AS id,
+            u.user_name AS userName,
+            ba.title AS title,
+            ba.summary AS summary,
+            ba.content AS content,
+            bc.category_name AS blogCategoryName,
+            ba.thumbnail AS thumbnail,
+            ba.is_top AS isTop,
+            ba.view_count AS viewCount,
+            ba.update_time AS updateTime
+        FROM
+            blog_article ba
+            INNER JOIN user u ON ba.user_id = u.id
+            INNER JOIN blog_category bc ON ba.blog_category_id = bc.id
+        WHERE
+            ba.is_deleted=0
+    </select>
+</mapper>
