@@ -12,7 +12,7 @@ import top.woaibocai.model.Do.blog.TagHasArticleCountDo;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.entity.blog.Tag;
-import top.woaibocai.model.vo.blog.article.BlogArticlePageVo;
+import top.woaibocai.model.vo.blog.article.BlogArticleVo;
 import top.woaibocai.model.vo.blog.tag.TagInfo;
 
 import java.util.*;
@@ -26,9 +26,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource
     private TagMapper tagMapper;
     @Resource
-    private RedisTemplate<String, BlogArticlePageVo >redisTemplate;
+    private RedisTemplate<String, BlogArticleVo>redisTemplate;
     @Override
-    public Result<List<BlogArticlePageVo>> indexArticlePage(Integer current, Integer size) {
+    public Result<List<BlogArticleVo>> indexArticlePage(Integer current, Integer size) {
         // 查询redis里有没有
         // 查询list.size大小
         long total = redisTemplate.opsForList().size("blog:AllBlogArticlePageVo");
@@ -38,7 +38,7 @@ public class ArticleServiceImpl implements ArticleService {
             if (end > total) {
                 end = total;
             }
-            List<BlogArticlePageVo> articleData = redisTemplate.opsForList().range("blog:AllBlogArticlePageVo", start, end);
+            List<BlogArticleVo> articleData = redisTemplate.opsForList().range("blog:AllBlogArticlePageVo", start, end);
             System.out.println(articleData.size());
             Map<String,Object> data = new HashMap<>();
             data.put("data",articleData);
@@ -49,18 +49,18 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         // 获取数据
-        List<BlogArticlePageVo> blogArticlePageVoList = this.fetchBlogArticlePageVoData();
+        List<BlogArticleVo> blogArticlePageVoList = this.fetchBlogArticlePageVoData();
         if (blogArticlePageVoList == null ) {
             return Result.build(null,ResultCodeEnum.DATA_ERROR);
         }
         // 分页
-        List<BlogArticlePageVo> pageVoList = new ArrayList<>();
+        List<BlogArticleVo> pageVoList = new ArrayList<>();
         int listSize = blogArticlePageVoList.size();
             // current 当前页数  size 记录行数
             for (int i =0;i < size;i++){
                 int getIndex = (size * (current - 1)) + i;
                 if (getIndex > listSize - 1) break;
-                BlogArticlePageVo blogArticlePageVo = blogArticlePageVoList.get(getIndex);
+                BlogArticleVo blogArticlePageVo = blogArticlePageVoList.get(getIndex);
                 pageVoList.add(blogArticlePageVo);
             }
             Map<String,Object> data = new HashMap();
@@ -72,9 +72,9 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<BlogArticlePageVo> fetchBlogArticlePageVoData() {
+    public List<BlogArticleVo> fetchBlogArticlePageVoData() {
         // 联表查询所有没有删除的文章 把用户id转成用户名 userName   把文章分类转成文章分类名 blogCategoryName
-        List<BlogArticlePageVo> blogArticlePageVoList = articleMapper.selectAllArticle();
+        List<BlogArticleVo> blogArticlePageVoList = articleMapper.selectAllArticle();
         if (blogArticlePageVoList.isEmpty()) {
             return null;
         }
@@ -117,7 +117,7 @@ public class ArticleServiceImpl implements ArticleService {
         }
         // 封装所有数据
         // 1.遍历所有文章的集合 blogArticlePageVoList
-        for(BlogArticlePageVo blogArticlePageVo : blogArticlePageVoList) {
+        for(BlogArticleVo blogArticlePageVo : blogArticlePageVoList) {
             // 文章字数 blogArticlePageVoList.content.length = articleLength
             blogArticlePageVo.setArticleLength(blogArticlePageVo.getContent().length());
             // 计算阅读时间 articleLength/300

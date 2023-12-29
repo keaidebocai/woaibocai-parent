@@ -1,12 +1,12 @@
 package top.woaibocai.blog.service;
 
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.vo.blog.article.BlogArticlePageVo;
+import top.woaibocai.model.vo.blog.article.BlogArticleVo;
 
 import java.util.List;
 
 public interface ArticleService {
-    Result<List<BlogArticlePageVo>> indexArticlePage(Integer current, Integer size);
+    Result<List<BlogArticleVo>> indexArticlePage(Integer current, Integer size);
     //初始化数据
-    List<BlogArticlePageVo> fetchBlogArticlePageVoData();
+    List<BlogArticleVo> fetchBlogArticlePageVoData();
 }

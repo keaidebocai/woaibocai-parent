@@ -20,7 +20,7 @@ import java.util.List;
  **/
 @Schema(description = "首页文章分页")
 @Data
-public class BlogArticlePageVo {
+public class BlogArticleVo {
     /**
      * 主键
      */
