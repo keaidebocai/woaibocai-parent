@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ArticleService {
     Result<List<BlogArticlePageVo>> indexArticlePage(Integer current, Integer size);
+    //初始化数据
+    List<BlogArticlePageVo> fetchBlogArticlePageVoData();
 }

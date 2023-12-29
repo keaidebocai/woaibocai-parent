@@ -9,6 +9,7 @@
             ba.summary AS summary,
             ba.content AS content,
             bc.category_name AS blogCategoryName,
+            ba.blog_category_id AS categoryId,
             ba.thumbnail AS thumbnail,
             ba.is_top AS isTop,
             ba.view_count AS viewCount,
@@ -19,5 +20,6 @@
             INNER JOIN blog_category bc ON ba.blog_category_id = bc.id
         WHERE
             ba.is_deleted=0
+            ORDER BY ba.is_top,ba.update_time DESC
     </select>
 </mapper>

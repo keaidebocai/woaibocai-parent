@@ -1,6 +1,7 @@
 package top.woaibocai.blog.service.impl;
 
 import jakarta.annotation.Resource;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.blog.mapper.ArticleMapper;
 import top.woaibocai.blog.mapper.ArticleTagMapper;
@@ -14,10 +15,7 @@ import top.woaibocai.model.entity.blog.Tag;
 import top.woaibocai.model.vo.blog.article.BlogArticlePageVo;
 import top.woaibocai.model.vo.blog.tag.TagInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -27,17 +25,63 @@ public class ArticleServiceImpl implements ArticleService {
     private ArticleTagMapper articleTagMapper;
     @Resource
     private TagMapper tagMapper;
+    @Resource
+    private RedisTemplate<String, BlogArticlePageVo >redisTemplate;
     @Override
     public Result<List<BlogArticlePageVo>> indexArticlePage(Integer current, Integer size) {
+        // 查询redis里有没有
+        // 查询list.size大小
+        long total = redisTemplate.opsForList().size("blog:AllBlogArticlePageVo");
+        if (total != 0) {
+            long start = (long) size * (current -1);
+            long end = (size * current) - 1;
+            if (end > total) {
+                end = total;
+            }
+            List<BlogArticlePageVo> articleData = redisTemplate.opsForList().range("blog:AllBlogArticlePageVo", start, end);
+            System.out.println(articleData.size());
+            Map<String,Object> data = new HashMap<>();
+            data.put("data",articleData);
+            data.put("total",total);
+            data.put("current",current);
+            data.put("size",size);
+            return Result.build(data,ResultCodeEnum.SUCCESS);
+        }
+
+        // 获取数据
+        List<BlogArticlePageVo> blogArticlePageVoList = this.fetchBlogArticlePageVoData();
+        if (blogArticlePageVoList == null ) {
+            return Result.build(null,ResultCodeEnum.DATA_ERROR);
+        }
+        // 分页
+        List<BlogArticlePageVo> pageVoList = new ArrayList<>();
+        int listSize = blogArticlePageVoList.size();
+            // current 当前页数  size 记录行数
+            for (int i =0;i < size;i++){
+                int getIndex = (size * (current - 1)) + i;
+                if (getIndex > listSize - 1) break;
+                BlogArticlePageVo blogArticlePageVo = blogArticlePageVoList.get(getIndex);
+                pageVoList.add(blogArticlePageVo);
+            }
+            Map<String,Object> data = new HashMap();
+            data.put("data",pageVoList);
+            data.put("total",listSize);
+            data.put("current",current);
+            data.put("size",size);
+        return Result.build(data,ResultCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public List<BlogArticlePageVo> fetchBlogArticlePageVoData() {
         // 联表查询所有没有删除的文章 把用户id转成用户名 userName   把文章分类转成文章分类名 blogCategoryName
         List<BlogArticlePageVo> blogArticlePageVoList = articleMapper.selectAllArticle();
         if (blogArticlePageVoList.isEmpty()) {
-            return Result.build(null,ResultCodeEnum.DATA_ERROR);
+            return null;
         }
         // 查询每个标签中有多少文章使用 查出list  转成 map Map<tagId,Count>
         List<TagHasArticleCountDo> tagHasArticleCountDoList = articleTagMapper.tagByArticleCount();
         if (tagHasArticleCountDoList.isEmpty()) {
-            return Result.build(null,ResultCodeEnum.DATA_ERROR);
+            return null;
         }
         Map<String,Integer> tagHasArtilceCountMap = new HashMap<>();
         for (TagHasArticleCountDo tagHasArticleCountDo : tagHasArticleCountDoList) {
@@ -46,7 +90,7 @@ public class ArticleServiceImpl implements ArticleService {
         // 查询所有标签的id和tagName 封装成map Map<String,String> tagNameMap
         List<Tag> tagNameList = tagMapper.tagName();
         if (tagNameList.isEmpty()) {
-            return Result.build(null,ResultCodeEnum.DATA_ERROR);
+            return null;
         }
         Map<String,String> tagNameMap = new HashMap<>();
         for (Tag tag : tagNameList) {
@@ -55,7 +99,7 @@ public class ArticleServiceImpl implements ArticleService {
         // 查询每个文章的所有 标签 List<{articleId,List<String> tagIdList}> articleHasTags
         List<ArticleHasTagsDo> articleHasTags = articleTagMapper.articleHasTags();
         if (articleHasTags.isEmpty()) {
-            return Result.build(null,ResultCodeEnum.DATA_ERROR);
+            return null;
         }
         // 把 articleHasTags 成 articleHasTagsMap Map<articleId,List<String>>
         Map<String,List<String>> articleHasTagsMap = new HashMap<>();
@@ -87,7 +131,7 @@ public class ArticleServiceImpl implements ArticleService {
             for (String tagId : tagIdList) {
                 // 判断 是否有值
                 if (tagNameMap.get(tagId).isEmpty()) {
-                    return Result.build(null, ResultCodeEnum.DATA_ERROR);
+                    return null;
                 }
                 // 每个元素的tagName从 tagNameMap 获取 thisTagHasArticleCount 从  tagHasArtilceCountMap 获取
                 TagInfo tagInfo = new TagInfo();
@@ -98,23 +142,11 @@ public class ArticleServiceImpl implements ArticleService {
             }
             // 给 blogArticlePageVo 赋值
             blogArticlePageVo.setTags(tags);
+            // 节省性能给 content 为 null
+            blogArticlePageVo.setContent(null);
         }
-        // 分页
-        List<BlogArticlePageVo> pageVoList = new ArrayList<>();
-        int listSize = blogArticlePageVoList.size();
-            // current 当前页数  size 记录行数
-            for (int i =0;i < size;i++){
-                int getIndex = (size * (current - 1)) + i;
-                if (getIndex > listSize - 1) break;
-                BlogArticlePageVo blogArticlePageVo = blogArticlePageVoList.get(getIndex);
-                pageVoList.add(blogArticlePageVo);
-            }
-            Map<String,Object> data = new HashMap();
-            data.put("data",pageVoList);
-            data.put("total",listSize);
-            data.put("current",current);
-            data.put("size",size);
-        return Result.build(data,ResultCodeEnum.SUCCESS);
+        redisTemplate.opsForList().leftPushAll("blog:AllBlogArticlePageVo",blogArticlePageVoList);
+        return blogArticlePageVoList;
     }
-// 回来把所有数据删了，然后用回台添加
+
 }
