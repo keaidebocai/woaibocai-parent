@@ -1,6 +1,10 @@
 package top.woaibocai.model.vo.blog.article;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.woaibocai.model.vo.blog.tag.TagInfo;
@@ -53,6 +57,11 @@ public class BlogArticlePageVo {
      */
     @Schema(description = "文章的分类名")
     private String blogCategoryName;
+    /**
+     * blog_category分类表id
+     */
+    @Schema(description = "blog_category分类表id")
+    private String categoryId;
 
     /**
      * 缩略图
@@ -76,6 +85,8 @@ public class BlogArticlePageVo {
      * 修改时间
      */
     @Schema(description = "修改时间")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime updateTime;
     @Schema(description = "文章字数")
     private Integer articleLength;
