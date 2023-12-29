@@ -15,7 +15,7 @@ import top.woaibocai.model.dto.manager.article.QueryArticleCriteria;
 import top.woaibocai.model.dto.manager.article.UpdateArticleStatusDto;
 import top.woaibocai.model.dto.manager.article.WriteArticleDto;
 import top.woaibocai.model.entity.blog.Article;
-import top.woaibocai.model.vo.manager.ArticlePageVo;
+import top.woaibocai.model.vo.manager.ArticleStatusPageVo;
 import top.woaibocai.model.vo.manager.TagVo;
 
 
@@ -37,9 +37,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource
     private RedisTemplate<String,String> redisTemplate;
     @Override
-    public Result<IPage<ArticlePageVo>> findPage(Integer current, Integer size, QueryArticleCriteria queryArticleCriteria) {
-        IPage<ArticlePageVo> page = new Page<>(current,size);
-        IPage<ArticlePageVo> iPage = articleMapper.findPage(page,queryArticleCriteria);
+    public Result<IPage<ArticleStatusPageVo>> findPage(Integer current, Integer size, QueryArticleCriteria queryArticleCriteria) {
+        IPage<ArticleStatusPageVo> page = new Page<>(current,size);
+        IPage<ArticleStatusPageVo> iPage = articleMapper.findPage(page,queryArticleCriteria);
         return Result.build(iPage, ResultCodeEnum.SUCCESS);
     }
 

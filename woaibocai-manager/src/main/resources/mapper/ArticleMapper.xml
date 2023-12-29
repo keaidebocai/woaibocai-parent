@@ -31,7 +31,7 @@
             id=#{id}
     </update>
     <!--IPage<ArticlePageVo> findPage(@Param("page") IPage<ArticlePageVo> page);-->
-    <select id="findPage" resultType="top.woaibocai.model.vo.manager.ArticlePageVo">
+    <select id="findPage" resultType="top.woaibocai.model.vo.manager.ArticleStatusPageVo">
         select
             id,title,is_top,view_count,is_commont,status,is_deleted,create_time,update_time
         from

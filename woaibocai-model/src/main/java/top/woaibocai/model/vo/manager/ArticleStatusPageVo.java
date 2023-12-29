@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  **/
 @Data
 @Schema(description = "文章状态管理返回类")
-public class ArticlePageVo {
+public class ArticleStatusPageVo {
     @Schema(description = "主键")
     private String id;
     /**

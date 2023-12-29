@@ -11,7 +11,7 @@ import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.article.QueryArticleCriteria;
 import top.woaibocai.model.dto.manager.article.UpdateArticleStatusDto;
 import top.woaibocai.model.dto.manager.article.WriteArticleDto;
-import top.woaibocai.model.vo.manager.ArticlePageVo;
+import top.woaibocai.model.vo.manager.ArticleStatusPageVo;
 
 /**
  * @program: woaibocai-parent
@@ -28,9 +28,9 @@ public class ArticleController {
 
     @Operation(summary = "获取文章列表")
     @PostMapping("findAllPage/{current}/{size}")
-    public Result<IPage<ArticlePageVo>> findAllPage(@PathVariable Integer current,
-                                                    @PathVariable Integer size,
-                                                    @RequestBody QueryArticleCriteria queryArticleCriteria){
+    public Result<IPage<ArticleStatusPageVo>> findAllPage(@PathVariable Integer current,
+                                                          @PathVariable Integer size,
+                                                          @RequestBody QueryArticleCriteria queryArticleCriteria){
         return articleService.findPage(current,size,queryArticleCriteria);
     }
     @Operation(summary = "更新文章各个的状态")

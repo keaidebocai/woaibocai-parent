@@ -8,11 +8,11 @@ import top.woaibocai.model.dto.manager.article.QueryArticleCriteria;
 import top.woaibocai.model.dto.manager.article.UpdateArticleStatusDto;
 import top.woaibocai.model.dto.manager.article.WriteArticleDto;
 import top.woaibocai.model.entity.blog.Article;
-import top.woaibocai.model.vo.manager.ArticlePageVo;
+import top.woaibocai.model.vo.manager.ArticleStatusPageVo;
 
 @Mapper
 public interface ArticleMapper extends BaseMapper<Article> {
-    IPage<ArticlePageVo> findPage(@Param("page") IPage<ArticlePageVo> page, @Param("queryArticleCriteria") QueryArticleCriteria queryArticleCriteria);
+    IPage<ArticleStatusPageVo> findPage(@Param("page") IPage<ArticleStatusPageVo> page, @Param("queryArticleCriteria") QueryArticleCriteria queryArticleCriteria);
 
     void updateArticleStatus(UpdateArticleStatusDto updateArticleStatusDto);
 

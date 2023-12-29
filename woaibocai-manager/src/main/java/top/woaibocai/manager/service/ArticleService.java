@@ -5,10 +5,10 @@ import top.woaibocai.model.common.Result;
 import top.woaibocai.model.dto.manager.article.QueryArticleCriteria;
 import top.woaibocai.model.dto.manager.article.UpdateArticleStatusDto;
 import top.woaibocai.model.dto.manager.article.WriteArticleDto;
-import top.woaibocai.model.vo.manager.ArticlePageVo;
+import top.woaibocai.model.vo.manager.ArticleStatusPageVo;
 
 public interface ArticleService {
-    Result<IPage<ArticlePageVo>> findPage(Integer current, Integer size, QueryArticleCriteria queryArticleCriteria);
+    Result<IPage<ArticleStatusPageVo>> findPage(Integer current, Integer size, QueryArticleCriteria queryArticleCriteria);
 
     void updateArticleStatus(UpdateArticleStatusDto updateArticleStatusDto);
 
