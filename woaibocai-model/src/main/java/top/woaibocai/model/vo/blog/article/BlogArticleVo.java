@@ -41,6 +41,12 @@ public class BlogArticleVo {
     private String title;
 
     /**
+     * url
+     */
+    @Schema(description = "文章url")
+    private String url;
+
+    /**
      * 文章摘要
      */
     @Schema(description = "文章摘要")
