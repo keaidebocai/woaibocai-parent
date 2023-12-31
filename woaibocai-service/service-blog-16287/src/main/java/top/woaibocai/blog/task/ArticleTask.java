@@ -60,12 +60,12 @@ public class ArticleTask {
                     article.setId(key);
                     article.setViewCount(articleVoById.getViewCount());
                     list.add(article);
-                    return;
+                } else {
+                    Article article = new Article();
+                    article.setId(key);
+                    article.setViewCount(Long.valueOf(viewCount.toString()));
+                    list.add(article);
                 }
-                Article article = new Article();
-                article.setId(key);
-                article.setViewCount(Long.valueOf(viewCount.toString()));
-                list.add(article);
             });
             return null;
         });
