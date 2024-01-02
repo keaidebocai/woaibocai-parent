@@ -6,24 +6,27 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.woaibocai.blog.service.MenuService;
+import top.woaibocai.blog.service.BlogInfoService;
 import top.woaibocai.model.common.Result;
+import top.woaibocai.model.vo.blog.BlogInfoVo;
 
 /**
  * @program: woaibocai-parent
- * @description: 菜单
+ * @description: 博客基本信息
  * @author: woaibocai
- * @create: 2023-12-15 12:56
+ * @create: 2023-12-26 17:51
  **/
-@Tag(name = "菜单")
+@Tag(name = "博客基本信息")
 @RestController
-@RequestMapping("/api/blog/menu")
-public class MenuController {
+@RequestMapping("/api/blog/info")
+public class BlogInfoController {
     @Resource
-    private MenuService menuService;
-    @Operation(summary = "获取所有发布的菜单")
-    @GetMapping
-    public Result getAllMenu(){
-        return menuService.getAllMenu();
+    private BlogInfoService blogInfoService;
+
+    @Operation(summary = "站点概要文章数之类的")
+    @GetMapping("blogInfo")
+    public Result<BlogInfoVo> blogInfo() {
+        return blogInfoService.blogInfo();
     }
+
 }

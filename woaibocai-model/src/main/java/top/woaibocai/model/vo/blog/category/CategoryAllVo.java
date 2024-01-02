@@ -1,7 +1,9 @@
 package top.woaibocai.model.vo.blog.category;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @program: woaibocai-parent
@@ -11,6 +13,8 @@ import lombok.Data;
  **/
 @Schema(description = "所有分类")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CategoryAllVo {
     @Schema(description = "id")
     private String id;

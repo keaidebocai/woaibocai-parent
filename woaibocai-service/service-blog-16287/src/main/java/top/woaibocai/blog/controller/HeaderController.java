@@ -6,27 +6,24 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.woaibocai.blog.service.CategoryService;
+import top.woaibocai.blog.service.HeaderService;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.vo.blog.category.CategoryAllVo;
-
-import java.util.List;
 
 /**
  * @program: woaibocai-parent
- * @description: 分类
+ * @description: 关于导航栏的一切
  * @author: woaibocai
- * @create: 2023-12-15 10:45
+ * @create: 2024-01-02 16:21
  **/
-@Tag(name = "分类")
+@Tag(name = "导航栏")
+@RequestMapping("/api/blog/header")
 @RestController
-@RequestMapping("/api/blog/category")
-public class CategoryController {
+public class HeaderController {
     @Resource
-    private CategoryService categoryService;
-    @Operation(summary = "所有分类接口")
-    @GetMapping
-    public Result<List<CategoryAllVo>> getAllCategory() {
-        return categoryService.getAllCategory();
+    private HeaderService headerService;
+    @Operation(summary = "导航数据")
+    @GetMapping("getCategoryAndMenu")
+    public Result getCategoryAndMenu(){
+        return headerService.getCategoryAndMenu();
     }
 }
