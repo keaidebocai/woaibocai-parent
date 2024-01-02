@@ -33,6 +33,11 @@ public class Article implements Serializable {
      */
     @Schema(description = "文章表标题")
     private String title;
+    /**
+     * url
+     */
+    @Schema(description = "文章url")
+    private String url;
 
     /**
      * 文章摘要
