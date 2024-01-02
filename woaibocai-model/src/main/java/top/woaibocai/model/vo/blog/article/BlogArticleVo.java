@@ -94,6 +94,7 @@ public class BlogArticleVo {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime updateTime;
+
     @Schema(description = "文章字数")
     private Integer articleLength;
 

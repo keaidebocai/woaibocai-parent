@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.woaibocai.blog.mapper.ArticleMapper">
+    <update id="updateView" parameterType="java.util.List">
+        <foreach collection="list" item="article" index="index" separator=";">
+            UPDATE
+                blog_article
+            SET
+                 view_count=#{article.viewCount}
+            WHERE
+                id=#{article.id}
+        </foreach>
+    </update>
     <select id="selectAllArticle" resultType="top.woaibocai.model.vo.blog.article.BlogArticleVo">
         SELECT
             ba.id AS id,
@@ -21,5 +31,51 @@
         WHERE
             ba.is_deleted=0
             ORDER BY ba.is_top,ba.update_time DESC
+    </select>
+    <select id="seleAllViewCount" resultType="top.woaibocai.model.entity.blog.Article">
+        SELECT
+            id,view_count
+        FROM
+            blog_article
+        WHERE
+            is_deleted=0
+    </select>
+    <select id="getArticleIdAndUrlMap" resultType="top.woaibocai.model.entity.blog.Article">
+        SELECT
+            id,url
+        FROM
+            blog_article
+        WHERE
+            is_deleted=0
+    </select>
+    <select id="selectArticleById" resultType="top.woaibocai.model.vo.blog.article.BlogArticleVo">
+        SELECT
+            ba.id AS id,
+            u.user_name AS userName,
+            ba.title AS title,
+            ba.summary AS summary,
+            ba.url AS url,
+            ba.content AS content,
+            bc.category_name AS blogCategoryName,
+            ba.blog_category_id AS categoryId,
+            ba.thumbnail AS thumbnail,
+            ba.is_top AS isTop,
+            ba.view_count AS viewCount,
+            ba.update_time AS updateTime
+        FROM
+            blog_article ba
+                INNER JOIN user u ON ba.user_id = u.id
+                INNER JOIN blog_category bc ON ba.blog_category_id = bc.id
+        WHERE
+            ba.is_deleted=0 AND ba.id=#{id}
+    </select>
+    <select id="selectAllArticleId" resultType="java.lang.String">
+        SELECT
+            id
+        FROM
+            blog_article
+        WHERE
+            is_deleted=0
+        ORDER BY is_top,update_time DESC
     </select>
 </mapper>
