@@ -8,5 +8,5 @@ import java.util.Map;
 public interface ArticleService {
     Result<Map<String,Object>> indexArticlePage(Integer current, Integer size);
 
-    Result<BlogArticleVo> getArticleById(String id);
+    Result<BlogArticleVo> getArticleByUrl(String url);
 }

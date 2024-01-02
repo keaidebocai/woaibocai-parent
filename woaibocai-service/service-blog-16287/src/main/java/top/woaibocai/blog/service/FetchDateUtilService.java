@@ -10,7 +10,7 @@ public interface FetchDateUtilService {
     Map<String,String> getArticleIdAndUrlMap();
 
     // 初始化文章 并获取文章
-    BlogArticleVo getArticleVoById(String id);
+    BlogArticleVo getArticleVoByUrl(String url);
     Map<String, Integer> tagHasArtilceCountMap();
 
     BlogInfoVo getBlogInfo();

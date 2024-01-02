@@ -16,7 +16,7 @@ public interface ArticleMapper {
 
     List<Article> getArticleIdAndUrlMap();
 
-    BlogArticleVo selectArticleById(String id);
+    BlogArticleVo selectArticleByUrl(String url);
 
-    List<String> selectAllArticleId();
+    List<String> selectAllArticleUrl();
 }

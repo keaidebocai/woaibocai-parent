@@ -31,8 +31,8 @@ public class ArticleController {
         return articleService.indexArticlePage(current,size);
     }
     @Operation(summary = "根据文章id获取文章")
-    @GetMapping("getArticleById/{id}")
-    public Result<BlogArticleVo> getArticleById(@PathVariable String id) {
-        return articleService.getArticleById(id);
+    @GetMapping("getArticleByUrl/{url}")
+    public Result<BlogArticleVo> getArticleByUrl(@PathVariable String url) {
+        return articleService.getArticleByUrl(url);
     }
 }

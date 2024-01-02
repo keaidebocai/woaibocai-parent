@@ -43,27 +43,27 @@ public class ArticleTask {
         // 获取所有 文章id
         Set<String> keys = hashOperationSSO.keys(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
         // 为什么要大费周章的 把Set 转为 List ？ 是因为 Set 老在 for (String key : keys) init bean 失败
-        List<String> articleIds = new ArrayList<>();
+        List<String> articleUrls = new ArrayList<>();
         if (keys.isEmpty()) {
             Map<String, String> map = fetchDateUtilService.getArticleIdAndUrlMap();
-            map.forEach((key,value) -> articleIds.add(key));
+            map.forEach((key,value) -> articleUrls.add(value));
         }
-        articleIds.addAll(keys);
+        articleUrls.addAll(keys);
         // 查询 redis 所有文章的 浏览量
         List<Article> list = new ArrayList<>();
         redisTemplate.executePipelined((RedisCallback<Void>) connection -> {
-            articleIds.forEach(key -> {
-                Object viewCount = hashOperationSSO.get(RedisKeyEnum.BLOG_ARTICLE.articleId(key), "viewCount");
+            articleUrls.forEach(url -> {
+                Object viewCount = hashOperationSSO.get(RedisKeyEnum.BLOG_ARTICLE.articleUrl(url), "viewCount");
                 // 如果文章不润在那就初始化他！
                 if (viewCount == null ) {
-                    BlogArticleVo articleVoById = fetchDateUtilService.getArticleVoById(key);
+                    BlogArticleVo articleVoByUrl = fetchDateUtilService.getArticleVoByUrl(url);
                     Article article = new Article();
-                    article.setId(key);
-                    article.setViewCount(articleVoById.getViewCount());
+                    article.setUrl(url);
+                    article.setViewCount(articleVoByUrl.getViewCount());
                     list.add(article);
                 } else {
                     Article article = new Article();
-                    article.setId(key);
+                    article.setUrl(url);
                     article.setViewCount(Long.valueOf(viewCount.toString()));
                     list.add(article);
                 }

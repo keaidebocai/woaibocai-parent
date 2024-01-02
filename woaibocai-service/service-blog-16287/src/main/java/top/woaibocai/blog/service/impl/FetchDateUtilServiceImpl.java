@@ -62,15 +62,15 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
     // 目前调用函数 1 个 且调用者已经判断 文章 id 真实存在
     // 所以不用判断 文章 id 是否存在
     @Override
-    public BlogArticleVo getArticleVoById(String id) {
+    public BlogArticleVo getArticleVoByUrl(String url) {
         // 拿着 id 查询数据库拼接数据 然后推上 redis 并返回数据
         // 1.联表查询所有 没有删除的文章 把用户id userId 转成用户名 userName 把文章分类转成文章分类名 blogCategoryName
-        BlogArticleVo blogArticleVo = articleMapper.selectArticleById(id);
+        BlogArticleVo blogArticleVo = articleMapper.selectArticleByUrl(url);
         // 2.操作 赋值 setTags()
         // 用 tagHasArtilceCountMap 每个标签有多少文章 和 tagIdNameMap 所有标签和标签id 该文章的所有标签 List<String> articleHasTags
         // 获取 tagHasArtilceCountMap
         Map<String,Integer> tagHasArtilceCountMap = getTagHasArtilceCountMap();
-        List<TagInfo> tags = articleTagMapper.TagIdTagNameByArticleId(id);
+        List<TagInfo> tags = articleTagMapper.TagIdTagNameByArticleId(blogArticleVo.getId());
         for (TagInfo tagInfo : tags ) {
             tagInfo.setThisTagHasArticleCount(tagHasArtilceCountMap.get(tagInfo.getId()));
         }
@@ -85,7 +85,8 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         // 把 blogArticleVo 转成 map
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String,Object>  blogArticleVoMap = objectMapper.convertValue(blogArticleVo, Map.class);
-        hashOperationSSO.putAll(RedisKeyEnum.BLOG_ARTICLE.articleId(id),blogArticleVoMap);
+        blogArticleVoMap.remove("id");
+        hashOperationSSO.putAll(RedisKeyEnum.BLOG_ARTICLE.articleUrl(url),blogArticleVoMap);
 
         // 5.返回 blogArticleVo
         return blogArticleVo;

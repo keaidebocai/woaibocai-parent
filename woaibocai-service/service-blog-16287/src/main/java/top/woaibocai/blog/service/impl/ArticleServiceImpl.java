@@ -41,16 +41,16 @@ public class ArticleServiceImpl implements ArticleService {
         Long total = listOperations.size(RedisKeyEnum.BLOG_AERICLE_INDEX);
         // 说明他是空的，不存在 ！需要初始化！
         if (total == 0L) {
-            List<String> articleIdList = articleMapper.selectAllArticleId();
-            total = listOperations.leftPushAll(RedisKeyEnum.BLOG_AERICLE_INDEX, articleIdList);
+            List<String> articleUrlList = articleMapper.selectAllArticleUrl();
+            total = listOperations.leftPushAll(RedisKeyEnum.BLOG_AERICLE_INDEX, articleUrlList);
             // 由于 subList 是 左闭右开 [....) 所以 不能 -1
             if (size * current > total.intValue()) {
-                List<String> articleIds = articleIdList.subList((size * (current - 1)), (total.intValue() + 1));
-                Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(articleIds, current, size, Math.toIntExact(total));
+                List<String> articleUrls = articleUrlList.subList((size * (current - 1)), (total.intValue() + 1));
+                Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(articleUrls, current, size, Math.toIntExact(total));
                 return blogArticleVoList;
             }
-            List<String> articleIds = articleIdList.subList(size * (current - 1), current * size);
-            Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(articleIds, current, size, Math.toIntExact(total));
+            List<String> articleUrls = articleUrlList.subList(size * (current - 1), current * size);
+            Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(articleUrls, current, size, Math.toIntExact(total));
             return blogArticleVoList;
         }
 
@@ -64,17 +64,19 @@ public class ArticleServiceImpl implements ArticleService {
         return blogArticleVoList;
     }
 
-    private Result<Map<String,Object>> getBlogArticleVoList(List<String> articleIds,Integer current,Integer size,Integer total) {
+    private Result<Map<String,Object>> getBlogArticleVoList(List<String> articleUrls,Integer current,Integer size,Integer total) {
         List<BlogArticleVo> blogArticleVoList = new ArrayList<>();
         objectRedisTemplate.executePipelined((RedisCallback<Void>) connection -> {
-            articleIds.forEach(articleId -> {
-                Map<String, Object> entries = hashOperationSSO.entries(RedisKeyEnum.BLOG_ARTICLE.articleId(articleId));
+            articleUrls.forEach(articleUrl -> {
+                Map<String, Object> entries = hashOperationSSO.entries(RedisKeyEnum.BLOG_ARTICLE.articleUrl(articleUrl));
                 if (entries.isEmpty()) {
                     entries.remove("content");
-                    BlogArticleVo articleVoById = fetchDateUtilService.getArticleVoById(articleId);
-                    blogArticleVoList.add(articleVoById);
+                    entries.remove("id");
+                    BlogArticleVo articleVoByUrl = fetchDateUtilService.getArticleVoByUrl(articleUrl);
+                    blogArticleVoList.add(articleVoByUrl);
                 } else {
                     entries.remove("content");
+                    entries.remove("id");
                     BlogArticleVo blogArticleVo = objectMapper.convertValue(entries, BlogArticleVo.class);
                     blogArticleVoList.add(blogArticleVo);
                 }
@@ -93,7 +95,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Result<BlogArticleVo> getArticleById(String id) {
+    public Result<BlogArticleVo> getArticleByUrl(String url) {
         // 查看 id是否存在
         // "blog:fetchDate:articleAndUrl" 如果不存在也会返回 false，所以直接获取他的所有，然后再判断是否存在haskey
         // 获取所有 文章id
@@ -103,33 +105,33 @@ public class ArticleServiceImpl implements ArticleService {
         if (articleAndUrlMap.isEmpty()) {
             Map map = fetchDateUtilService.getArticleIdAndUrlMap();
             // 判断 文章是否真是存在 存在就返回数据，不存在就 报数据异常
-            return hasArticle(map, id);
+            return hasArticle(map, url);
         }
         // 存在 就再判断 文章是否真实存在
-        return hasArticle(articleAndUrlMap,id);
+        return hasArticle(articleAndUrlMap,url);
     }
 
     // 判断 文章是否真是存在 存在就返回数据，不存在就 报数据异常
-    private Result<BlogArticleVo> hasArticle(Map articleAndUrlMap, String id) {
-        if (!articleAndUrlMap.containsKey(id)) {
+    private Result<BlogArticleVo> hasArticle(Map articleAndUrlMap, String url) {
+        if (!articleAndUrlMap.containsValue(url)) {
             return Result.build(null,ResultCodeEnum.DATA_ERROR);
         }
         // 存在就查询 redis 获取文章
-        Map<String, Object> articleMap = hashOperationSSO.entries(RedisKeyEnum.BLOG_ARTICLE.articleId(id));
+        Map<String, Object> articleMap = hashOperationSSO.entries(RedisKeyEnum.BLOG_ARTICLE.articleUrl(url));
         // 如果文章是空的 那就初始化 redis一下
         if (articleMap.isEmpty()) {
             // 初始化文章 并获取文章
-            BlogArticleVo blogArticleVo = fetchDateUtilService.getArticleVoById(id);
+            BlogArticleVo blogArticleVo = fetchDateUtilService.getArticleVoByUrl(url);
             // 刷新 文章的 viewCount
             // +2 的原因是当这一次调用接口也是一次浏览，但是浏览的数据并没有上去
-            hashOperationSSO.increment(RedisKeyEnum.BLOG_ARTICLE.articleId(id),"viewCount",2L);
+            hashOperationSSO.increment(RedisKeyEnum.BLOG_ARTICLE.articleUrl(url),"viewCount",2L);
             // 小细节 显示问题
             blogArticleVo.setViewCount(blogArticleVo.getViewCount()+1L);
             return Result.build(blogArticleVo,ResultCodeEnum.SUCCESS);
         }
         // 不是空的就转化为对象返回
         BlogArticleVo blogArticleVo = objectMapper.convertValue(articleMap, BlogArticleVo.class);
-        hashOperationSSO.increment(RedisKeyEnum.BLOG_ARTICLE.articleId(id),"viewCount",1L);
+        hashOperationSSO.increment(RedisKeyEnum.BLOG_ARTICLE.articleUrl(url),"viewCount",1L);
         return Result.build(blogArticleVo,ResultCodeEnum.SUCCESS);
 
     }

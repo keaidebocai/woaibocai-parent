@@ -23,7 +23,7 @@ public enum RedisKeyEnum {
         this.prefix = prefix ;
     }
     // 拼接完整的redis key
-    public String articleId(String... values) {
+    public String articleUrl(String... values) {
         StringBuffer sb = new StringBuffer(45);
         sb.append(this.prefix);
         for (String value : values) {

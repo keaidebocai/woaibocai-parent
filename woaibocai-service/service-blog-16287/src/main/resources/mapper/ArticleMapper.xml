@@ -8,7 +8,7 @@
             SET
                  view_count=#{article.viewCount}
             WHERE
-                id=#{article.id}
+                id=#{article.url}
         </foreach>
     </update>
     <select id="selectAllArticle" resultType="top.woaibocai.model.vo.blog.article.BlogArticleVo">
@@ -48,7 +48,7 @@
         WHERE
             is_deleted=0
     </select>
-    <select id="selectArticleById" resultType="top.woaibocai.model.vo.blog.article.BlogArticleVo">
+    <select id="selectArticleByUrl" resultType="top.woaibocai.model.vo.blog.article.BlogArticleVo">
         SELECT
             ba.id AS id,
             u.user_name AS userName,
@@ -67,11 +67,11 @@
                 INNER JOIN user u ON ba.user_id = u.id
                 INNER JOIN blog_category bc ON ba.blog_category_id = bc.id
         WHERE
-            ba.is_deleted=0 AND ba.id=#{id}
+            ba.is_deleted=0 AND ba.url=#{url}
     </select>
-    <select id="selectAllArticleId" resultType="java.lang.String">
+    <select id="selectAllArticleUrl" resultType="java.lang.String">
         SELECT
-            id
+            url
         FROM
             blog_article
         WHERE
