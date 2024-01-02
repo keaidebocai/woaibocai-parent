@@ -82,7 +82,6 @@ public class ArticleTask {
         if (!hasKey) {
             BlogInfoVo blogInfo = fetchDateUtilService.getBlogInfo();
             hashOperationSSO.put("blog:fetchDate:blogInfo","articleViewCount",viewTotal);
-            return;
         }
 
         // 更新 "blog:fetchDate:blogInfo" 的 articleViewCount
