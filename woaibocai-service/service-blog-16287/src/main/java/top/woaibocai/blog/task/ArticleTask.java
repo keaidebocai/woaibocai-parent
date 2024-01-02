@@ -41,14 +41,14 @@ public class ArticleTask {
     @PostConstruct
     public void synchronizedViews(){
         // 获取所有 文章id
-        Set<String> keys = hashOperationSSO.keys(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
+        List<Object> values = hashOperationSSO.values(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
         // 为什么要大费周章的 把Set 转为 List ？ 是因为 Set 老在 for (String key : keys) init bean 失败
         List<String> articleUrls = new ArrayList<>();
-        if (keys.isEmpty()) {
+        if (values.isEmpty()) {
             Map<String, String> map = fetchDateUtilService.getArticleIdAndUrlMap();
             map.forEach((key,value) -> articleUrls.add(value));
         }
-        articleUrls.addAll(keys);
+        values.forEach(value -> articleUrls.add((String) value));
         // 查询 redis 所有文章的 浏览量
         List<Article> list = new ArrayList<>();
         redisTemplate.executePipelined((RedisCallback<Void>) connection -> {

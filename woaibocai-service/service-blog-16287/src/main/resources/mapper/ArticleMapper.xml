@@ -51,6 +51,7 @@
     <select id="selectArticleByUrl" resultType="top.woaibocai.model.vo.blog.article.BlogArticleVo">
         SELECT
             ba.id AS id,
+            ba.url AS url,
             u.user_name AS userName,
             ba.title AS title,
             ba.summary AS summary,
@@ -76,6 +77,6 @@
             blog_article
         WHERE
             is_deleted=0
-        ORDER BY is_top,update_time DESC
+        ORDER BY is_top ASC,update_time ASC
     </select>
 </mapper>
