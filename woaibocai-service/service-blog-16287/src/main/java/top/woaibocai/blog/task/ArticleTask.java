@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 import top.woaibocai.blog.mapper.ArticleMapper;
 import top.woaibocai.blog.service.FetchDateUtilService;
+import top.woaibocai.model.common.RedisKeyEnum;
 import top.woaibocai.model.entity.blog.Article;
 import top.woaibocai.model.vo.blog.BlogInfoVo;
 import top.woaibocai.model.vo.blog.article.BlogArticleVo;
@@ -40,7 +41,7 @@ public class ArticleTask {
     @PostConstruct
     public void synchronizedViews(){
         // 获取所有 文章id
-        Set<String> keys = hashOperationSSO.keys("blog:fetchDate:articleAndUrl");
+        Set<String> keys = hashOperationSSO.keys(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
         // 为什么要大费周章的 把Set 转为 List ？ 是因为 Set 老在 for (String key : keys) init bean 失败
         List<String> articleIds = new ArrayList<>();
         if (keys.isEmpty()) {
@@ -52,7 +53,7 @@ public class ArticleTask {
         List<Article> list = new ArrayList<>();
         redisTemplate.executePipelined((RedisCallback<Void>) connection -> {
             articleIds.forEach(key -> {
-                Object viewCount = hashOperationSSO.get("blog:article:" + key, "viewCount");
+                Object viewCount = hashOperationSSO.get(RedisKeyEnum.BLOG_ARTICLE.articleId(key), "viewCount");
                 // 如果文章不润在那就初始化他！
                 if (viewCount == null ) {
                     BlogArticleVo articleVoById = fetchDateUtilService.getArticleVoById(key);
@@ -78,14 +79,14 @@ public class ArticleTask {
         }
 
         // 判空
-        Boolean hasKey = hashOperationSSO.hasKey("blog:fetchDate:blogInfo", "articleViewCount");
+        Boolean hasKey = hashOperationSSO.hasKey(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO, "articleViewCount");
         if (!hasKey) {
             BlogInfoVo blogInfo = fetchDateUtilService.getBlogInfo();
-            hashOperationSSO.put("blog:fetchDate:blogInfo","articleViewCount",viewTotal);
+            hashOperationSSO.put(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO,"articleViewCount",viewTotal);
         }
 
         // 更新 "blog:fetchDate:blogInfo" 的 articleViewCount
-        hashOperationSSO.put("blog:fetchDate:blogInfo","articleViewCount",viewTotal);
+        hashOperationSSO.put(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO,"articleViewCount",viewTotal);
         System.out.println("================同步成功================");
     }
 }

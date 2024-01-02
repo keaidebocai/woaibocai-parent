@@ -9,6 +9,7 @@ import top.woaibocai.blog.mapper.ArticleTagMapper;
 import top.woaibocai.blog.mapper.BlogInfoMapper;
 import top.woaibocai.blog.service.FetchDateUtilService;
 import top.woaibocai.model.Do.blog.TagHasArticleCountDo;
+import top.woaibocai.model.common.RedisKeyEnum;
 import top.woaibocai.model.entity.blog.Article;
 import top.woaibocai.model.vo.blog.BlogInfoVo;
 import top.woaibocai.model.vo.blog.article.BlogArticleVo;
@@ -41,7 +42,7 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
     @Override
     public Map<String, String> getArticleIdAndUrlMap() {
         // 查询 redis
-        Map<String, String> entries = hashOperationSSS.entries("blog:fetchDate:articleAndUrl");
+        Map<String, String> entries = hashOperationSSS.entries(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
         // 没有
         if (entries.isEmpty()) {
             List<Article> articleIdAndUrlList = articleMapper.getArticleIdAndUrlMap();
@@ -49,7 +50,7 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
             for (Article article : articleIdAndUrlList) {
                 map.put(article.getId(),article.getUrl());
             }
-            hashOperationSSS.putAll("blog:fetchDate:articleAndUrl",map);
+            hashOperationSSS.putAll(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL,map);
             return map;
         }
         // 有
@@ -84,7 +85,7 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         // 把 blogArticleVo 转成 map
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String,Object>  blogArticleVoMap = objectMapper.convertValue(blogArticleVo, Map.class);
-        hashOperationSSO.putAll("blog:article:" + id,blogArticleVoMap);
+        hashOperationSSO.putAll(RedisKeyEnum.BLOG_ARTICLE.articleId(id),blogArticleVoMap);
 
         // 5.返回 blogArticleVo
         return blogArticleVo;
@@ -98,13 +99,13 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
     @Override
     public BlogInfoVo getBlogInfo() {
         // 文章数
-        Long articleSize = hashOperationSSS.size("blog:fetchDate:articleAndUrl");
+        Long articleSize = hashOperationSSS.size(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
         if (articleSize == 0) {
             Map<String, String> articleIdAndUrlMap = this.getArticleIdAndUrlMap();
             articleSize = (long) articleIdAndUrlMap.size();
         }
         // 标签数
-        Long tagSize = hashOperationSSS.size("blog:fetchDate:tagHasArtilceCountMap");
+        Long tagSize = hashOperationSSS.size(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
         if (tagSize == 0) {
             tagSize = (long) this.tagHasArtilceCountMap().size();
         }
@@ -124,13 +125,13 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         ObjectMapper objectMapper = new ObjectMapper();
         Map map = objectMapper.convertValue(blogInfoVo, Map.class);
         // 推上redis
-        hashOperationSSO.putAll("blog:fetchDate:blogInfo",map);
+        hashOperationSSO.putAll(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO,map);
         return blogInfoVo;
     }
 
     private Map<String, Integer> getTagHasArtilceCountMap() {
         // 从 redis 上 key "blog:fetchDate:tagHasArtilceCountMap" 获取 tagHasArtilceCountMap
-        Map<String, Integer> tagHasArtilceCountMap = hashOperationsSSI.entries("blog:fetchDate:tagHasArtilceCountMap");
+        Map<String, Integer> tagHasArtilceCountMap = hashOperationsSSI.entries(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
         // 判空
         if (!tagHasArtilceCountMap.isEmpty()) {
             return tagHasArtilceCountMap;
@@ -142,7 +143,7 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         for (TagHasArticleCountDo item : tagHasArticleCountDoList) {
             map.put(item.getTagId(), item.getArticleCount());
         }
-        hashOperationsSSI.putAll("blog:fetchDate:tagHasArtilceCountMap",map);
+        hashOperationsSSI.putAll(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP,map);
         return map;
     }
 }
