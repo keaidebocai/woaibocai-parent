@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.woaibocai.blog.mapper.BlogInfoMapper">
+    <select id="selectArticleView" resultType="java.lang.Long">
+        SELECT view_count FROM blog_article WHERE is_deleted=0
+    </select>
+    <select id="selectTagsCount" resultType="java.lang.Long">
+        SELECT count(*) FROM blog_tag
+    </select>
+    <select id="categoryCount" resultType="java.lang.Long">
+        SELECT count(*) FROM blog_category
+    </select>
+</mapper>
