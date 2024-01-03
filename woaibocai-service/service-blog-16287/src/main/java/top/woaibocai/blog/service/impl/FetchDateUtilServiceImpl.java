@@ -71,11 +71,13 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         // 获取 tagHasArtilceCountMap
         Map<String,Integer> tagHasArtilceCountMap = getTagHasArtilceCountMap();
         List<TagInfo> tags = articleTagMapper.TagIdTagNameByArticleId(blogArticleVo.getId());
+        StringBuffer keywords = new StringBuffer("菠菜的小窝");
         for (TagInfo tagInfo : tags ) {
             tagInfo.setThisTagHasArticleCount(tagHasArtilceCountMap.get(tagInfo.getId()));
+            keywords.append("," + tagInfo.getTagName());
         }
         blogArticleVo.setTags(tags);
-
+        blogArticleVo.setKeywords(keywords.toString());
         // 3.赋值 articleLength readingDuration
         int articleLength = blogArticleVo.getContent().length();
         blogArticleVo.setArticleLength(articleLength);

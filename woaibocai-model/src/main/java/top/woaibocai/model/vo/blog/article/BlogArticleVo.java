@@ -102,4 +102,6 @@ public class BlogArticleVo {
     private Integer readingDuration;
     @Schema(description = "标签集合")
     private List<TagInfo> tags;
+    @Schema(description = "keywords 把所有标签写上去就好了")
+    private String keywords;
 }
