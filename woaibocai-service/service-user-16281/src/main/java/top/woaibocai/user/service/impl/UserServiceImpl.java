@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserServiceImpl implements UserService {
     @Resource
-    private RedisTemplate<String,String> redisTemplate;
+    private RedisTemplate<String,String> redisTemplateString;
     @Resource
     private UserMapper userMapper;
     @Override
@@ -52,17 +52,17 @@ public class UserServiceImpl implements UserService {
         }
 
         // 3.查询redis 中 refresh_token 是否 过期  没过期删除
-        String refreshToken = redisTemplate.opsForValue().get("user:refresh_token:" + userData.getRefreshToken());
+        String refreshToken = redisTemplateString.opsForValue().get("user:refresh_token:" + userData.getRefreshToken());
         if (!StringUtils.isEmpty(refreshToken)) {
-            redisTemplate.delete("user:refresh_token:" + userData.getRefreshToken());
+            redisTemplateString.delete("user:refresh_token:" + userData.getRefreshToken());
         }
         // 把userinfo 放进redis里
         UserInfoVo userInfoVo = userMapper.userInfo(userData.getId());
         // 4.创建 token 和 refresh_token 放进redis中
         String token = UUID.randomUUID().toString().replace("-", "");
         String refresh_token = UUID.randomUUID().toString().replace("-", "");
-        redisTemplate.opsForValue().set("user:token:" + token,JSON.toJSONString(userInfoVo),10, TimeUnit.MINUTES);
-        redisTemplate.opsForValue().set("user:refresh_token:" + refresh_token,JSON.toJSONString(userInfoVo),15, TimeUnit.DAYS);
+        redisTemplateString.opsForValue().set("user:token:" + token,JSON.toJSONString(userInfoVo),10, TimeUnit.MINUTES);
+        redisTemplateString.opsForValue().set("user:refresh_token:" + refresh_token,JSON.toJSONString(userInfoVo),15, TimeUnit.DAYS);
 
         // 5. 把新 refresh_token 放进数据库 里
         userMapper.updateRefreshTokenById(userData.getId(),refresh_token);
@@ -102,14 +102,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<String> authorizations(AuthorizationsDto authorizationsDto) {
         // 去 redis 里查询 refresh_token 是否过期
-        String refreshTokenUserInfo = redisTemplate.opsForValue().get("user:refresh_token:" + authorizationsDto.getRefresh_token());
+        String refreshTokenUserInfo = redisTemplateString.opsForValue().get("user:refresh_token:" + authorizationsDto.getRefresh_token());
         if (StringUtils.isEmpty(refreshTokenUserInfo)) {
             return Result.build(null,ResultCodeEnum.LOGIN_AUTH);
         }
         // 创建 token
         String token = UUID.randomUUID().toString().replace("-", "");
         // 放入redis
-        redisTemplate.opsForValue().set("user:token:" + token,refreshTokenUserInfo,10,TimeUnit.MINUTES);
+        redisTemplateString.opsForValue().set("user:token:" + token,refreshTokenUserInfo,10,TimeUnit.MINUTES);
         // 转化json字符串
         LoginVo loginVo = new LoginVo();
         loginVo.setToken(token);
@@ -120,24 +120,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result getUserInfo(String newToken) {
-        String userInfo = redisTemplate.opsForValue().get("user:token:" + newToken);
+        String userInfo = redisTemplateString.opsForValue().get("user:token:" + newToken);
         if (StringUtils.isEmpty(userInfo)) {
             return Result.build(null,ResultCodeEnum.LOGIN_NOLL);
         }
 //        UserInfoVo userInfoVo = JSON.parseObject(userInfo, UserInfoVo.class);
+        System.out.println(userInfo);
         return Result.build(userInfo,ResultCodeEnum.SUCCESS);
     }
 
     @Override
     public Result logout(LoginVo loginVo) {
         //先删除 refresh_token
-        String refresh_token = redisTemplate.opsForValue().get("user:refresh_token:" + loginVo.getRefresh_token());
+        String refresh_token = redisTemplateString.opsForValue().get("user:refresh_token:" + loginVo.getRefresh_token());
         if (!StringUtils.isEmpty(refresh_token)) {
-            redisTemplate.delete("user:refresh_token:" + loginVo.getRefresh_token());
+            redisTemplateString.delete("user:refresh_token:" + loginVo.getRefresh_token());
         }
         //删除 token
 //        String token = redisTemplate.opsForValue().get("user:token:" + loginVo.getToken());
-        redisTemplate.delete("user:token:" + loginVo.getToken());
+        redisTemplateString.delete("user:token:" + loginVo.getToken());
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 }

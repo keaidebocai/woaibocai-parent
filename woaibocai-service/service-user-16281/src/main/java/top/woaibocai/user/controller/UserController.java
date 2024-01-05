@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.dto.manager.UserRegisterDto;
 import top.woaibocai.model.dto.user.AuthorizationsDto;
@@ -44,6 +43,7 @@ public class UserController {
     @GetMapping("auth/getUserInfo")
     public Result getUserInfo(@RequestHeader("Authorization") String token){
         String newToken = token.replace("Bearer ", "");
+        System.out.println(newToken);
         return userService.getUserInfo(newToken);
     }
     @Operation(summary = "退出账号")
