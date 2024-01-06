@@ -88,6 +88,16 @@
             INNER JOIN blog_tag bt ON bat.tag_id = bt.id
         WHERE
             ba.is_deleted=0 AND bt.tag_url = #{tagUrl}
-        ORDER BY ba.update_time DESC
+        ORDER BY ba.is_top ASC, ba.update_time ASC
+    </select>
+    <select id="selectArticleUrlByCategoryUrl" resultType="java.lang.String">
+        SELECT
+            ba.url
+        FROM
+            blog_article ba
+            INNER JOIN blog_category bc on ba.blog_category_id = bc.id
+        WHERE
+            ba.is_deleted=0 AND bc.category_url=#{categoryUrl}
+        ORDER BY ba.is_top ASC , ba.update_time ASC
     </select>
 </mapper>

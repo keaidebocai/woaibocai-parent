@@ -8,11 +8,15 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.blog.mapper.ArticleMapper;
+import top.woaibocai.blog.mapper.CategoryMapper;
+import top.woaibocai.blog.mapper.TagMapper;
 import top.woaibocai.blog.service.ArticleService;
 import top.woaibocai.blog.service.FetchDateUtilService;
 import top.woaibocai.model.common.RedisKeyEnum;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.entity.blog.Category;
+import top.woaibocai.model.entity.blog.Tag;
 import top.woaibocai.model.vo.blog.article.BlogArticleVo;
 
 import java.util.*;
@@ -21,6 +25,10 @@ import java.util.*;
 public class ArticleServiceImpl implements ArticleService {
     @Resource
     private ArticleMapper articleMapper;
+    @Resource
+    private TagMapper tagMapper;
+    @Resource
+    private CategoryMapper categoryMapper;
     @Resource
     private ObjectMapper objectMapper;
     @Resource
@@ -45,11 +53,11 @@ public class ArticleServiceImpl implements ArticleService {
             // 由于 subList 是 左闭右开 [....) 所以 不能 -1
             if (size * current > total.intValue()) {
                 List<String> articleUrls = articleUrlList.subList((size * (current - 1)), total.intValue());
-                Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(articleUrls, current, size, Math.toIntExact(total));
+                Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(null,null,articleUrls, current, size, Math.toIntExact(total));
                 return blogArticleVoList;
             }
             List<String> articleUrls = articleUrlList.subList(size * (current - 1), current * size);
-            Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(articleUrls, current, size, Math.toIntExact(total));
+            Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(null,null,articleUrls, current, size, Math.toIntExact(total));
             return blogArticleVoList;
         }
 
@@ -59,11 +67,11 @@ public class ArticleServiceImpl implements ArticleService {
             end = total - 1;
         }
         List<String> range = listOperations.range(RedisKeyEnum.BLOG_AERICLE_INDEX, start, end);
-        Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(range, current, size, Math.toIntExact(total));
+        Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(null,null,range, current, size, Math.toIntExact(total));
         return blogArticleVoList;
     }
 
-    private Result<Map<String,Object>> getBlogArticleVoList(List<String> articleUrls,Integer current,Integer size,Integer total) {
+    private Result<Map<String,Object>> getBlogArticleVoList(String categoryUrl,String tagUrl,List<String> articleUrls,Integer current,Integer size,Integer total) {
         List<BlogArticleVo> blogArticleVoList = new ArrayList<>();
         objectRedisTemplate.executePipelined((RedisCallback<Void>) connection -> {
             articleUrls.forEach(articleUrl -> {
@@ -87,7 +95,23 @@ public class ArticleServiceImpl implements ArticleService {
         data.put("current",current);
         data.put("size",size);
         data.put("data",blogArticleVoList);
-
+        // 如果tagUrl 不为 null 那就把 tagName 和 reamrk 添加
+        if (tagUrl != null) {
+            // TODO: 这里如果要优化可以加上 redis 今天就算了
+            Tag tagNameAndRemark =  tagMapper.tagNameAndRemark(tagUrl);
+            if (tagNameAndRemark == null) {
+                return Result.build(null,ResultCodeEnum.DATA_ERROR);
+            }
+            data.put("tag",tagNameAndRemark);
+        }
+        if (categoryUrl != null) {
+            // TODO: 这里如果要优化可以加上 redis 今天就算了
+            Category category = categoryMapper.categoryNameAnddeScription(categoryUrl);
+            if (category == null) {
+                return Result.build(null,ResultCodeEnum.DATA_ERROR);
+            }
+            data.put("category",category);
+        }
         // 增加总浏览量 +1
         hashOperationSSO.increment(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO,"articleViewCount",1L);
         return Result.build(data,ResultCodeEnum.SUCCESS);
@@ -125,11 +149,11 @@ public class ArticleServiceImpl implements ArticleService {
             // 由于 subList 是 左闭右开 [....) 所以 不能 -1
             if (size * current > total.intValue()) {
                 List<String> articleUrls = articlesByTagUrl.subList((size * (current - 1)), total.intValue());
-                Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(articleUrls, current, size, Math.toIntExact(total));
+                Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(null,tagUrl,articleUrls, current, size, Math.toIntExact(total));
                 return blogArticleVoList;
             }
             List<String> articleUrls = articlesByTagUrl.subList(size * (current - 1), current * size);
-            Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(articleUrls, current, size, Math.toIntExact(total));
+            Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(null,tagUrl,articleUrls, current, size, Math.toIntExact(total));
             return blogArticleVoList;
 
         }
@@ -139,7 +163,38 @@ public class ArticleServiceImpl implements ArticleService {
             end = total - 1;
         }
         List<String> range = listOperations.range(RedisKeyEnum.BLOG_TAG_INDEX.tagUrl(tagUrl), start, end);
-        Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(range, current, size, Math.toIntExact(total));
+        Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(null,tagUrl,range, current, size, Math.toIntExact(total));
+        return blogArticleVoList;
+    }
+
+    @Override
+    public Result<Map<String, Object>> articlePageByCategoryUrl(String categoryUrl, Integer current, Integer size) {
+        Long total = listOperations.size(RedisKeyEnum.BLOG_CATEGORY_INDEX.categoryUrl(categoryUrl));
+        // 判断 total 是否为空 空则查数据库 并 初始化 redis
+        if (total == 0L) {
+            List<String> articlesByCategoryUrl =  articleMapper.selectArticleUrlByCategoryUrl(categoryUrl);
+            if(articlesByCategoryUrl.isEmpty()) {
+                return Result.build(null,ResultCodeEnum.DATA_ERROR);
+            }
+            total = listOperations.leftPushAll(RedisKeyEnum.BLOG_CATEGORY_INDEX.categoryUrl(categoryUrl), articlesByCategoryUrl);
+            Collections.reverse(articlesByCategoryUrl);
+            // 由于 subList 是 左闭右开 [....) 所以 不能 -1
+            if (size * current > total.intValue()) {
+                List<String> articleUrls = articlesByCategoryUrl.subList((size * (current - 1)), total.intValue());
+                Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(categoryUrl,null,articleUrls, current, size, Math.toIntExact(total));
+                return blogArticleVoList;
+            }
+            List<String> articleUrls = articlesByCategoryUrl.subList(size * (current - 1), current * size);
+            Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(categoryUrl,null,articleUrls, current, size, Math.toIntExact(total));
+            return blogArticleVoList;
+        }
+        long start = (long) size * (current -1);
+        long end = (size * current) - 1;
+        if (end > total - 1) {
+            end = total - 1;
+        }
+        List<String> range = listOperations.range(RedisKeyEnum.BLOG_CATEGORY_INDEX.categoryUrl(categoryUrl), start, end);
+        Result<Map<String, Object>> blogArticleVoList = getBlogArticleVoList(categoryUrl,null,range, current, size, Math.toIntExact(total));
         return blogArticleVoList;
     }
 

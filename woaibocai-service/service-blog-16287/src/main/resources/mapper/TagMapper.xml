@@ -4,4 +4,13 @@
     <select id="tagName" resultType="top.woaibocai.model.entity.blog.Tag">
         SELECT id,tag_name FROM blog_tag WHERE is_deleted=0
     </select>
+    <select id="tagNameAndRemark" resultType="top.woaibocai.model.entity.blog.Tag">
+        SELECT
+            tag_name AS tagName,
+            remark AS remark
+        FROM
+            blog_tag
+        WHERE
+            is_deleted=0 AND tag_url=#{tagUrl}
+    </select>
 </mapper>

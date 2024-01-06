@@ -21,4 +21,6 @@ public interface ArticleMapper {
     List<String> selectAllArticleUrl();
 
     List<String> selectArticleUrlByTagUrl(String tagUrl);
+
+    List<String> selectArticleUrlByCategoryUrl(String categoryUrl);
 }

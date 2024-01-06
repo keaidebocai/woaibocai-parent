@@ -11,4 +11,6 @@ public interface ArticleService {
     Result<BlogArticleVo> getArticleByUrl(String url);
 
     Result<Map<String, Object>> articlePageBytagUrl(String tagUrl, Integer current, Integer size);
+
+    Result<Map<String, Object>> articlePageByCategoryUrl(String categoryUrl, Integer current, Integer size);
 }

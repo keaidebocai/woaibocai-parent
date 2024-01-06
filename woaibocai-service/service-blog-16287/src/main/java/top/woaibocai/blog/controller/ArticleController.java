@@ -42,4 +42,11 @@ public class ArticleController {
                                                           @PathVariable Integer size) {
         return articleService.articlePageBytagUrl(tagUrl,current,size);
     }
+    @Operation(summary = "根据categoryUrl分页")
+    @GetMapping("articlePageByCategoryUrl/{categoryUrl}/{current}/{size}")
+    public Result<Map<String,Object>> articlePageByCategoryUrl(@PathVariable String categoryUrl,
+                                                          @PathVariable Integer current,
+                                                          @PathVariable Integer size) {
+        return articleService.articlePageByCategoryUrl(categoryUrl,current,size);
+    }
 }

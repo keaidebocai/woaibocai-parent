@@ -10,4 +10,11 @@
          WHERE
              is_deleted=0
     </select>
+    <select id="categoryNameAnddeScription" resultType="top.woaibocai.model.entity.blog.Category">
+        SELECT
+            category_name,description
+        FROM
+            blog_category
+        WHERE is_deleted=0 AND category_url=#{categoryUrl}
+    </select>
 </mapper>
