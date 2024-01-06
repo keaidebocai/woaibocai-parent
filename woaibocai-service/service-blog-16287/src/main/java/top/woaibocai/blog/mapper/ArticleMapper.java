@@ -19,4 +19,6 @@ public interface ArticleMapper {
     BlogArticleVo selectArticleByUrl(String url);
 
     List<String> selectAllArticleUrl();
+
+    List<String> selectArticleUrlByTagUrl(String tagUrl);
 }

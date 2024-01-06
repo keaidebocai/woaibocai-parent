@@ -4,7 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum RedisKeyEnum {
-    BLOG_ARTICLE("blog:article");
+    BLOG_ARTICLE("blog:article"),
+    // tag下 文章的索引 list: String String
+    BLOG_TAG_INDEX("blog:tag:index");
     //文章的索引 redis数据类型: list: String String
     public static final String BLOG_AERICLE_INDEX = "blog:article:index";
     // 博客初始化数据 存储类型 hash: String String String
@@ -24,6 +26,14 @@ public enum RedisKeyEnum {
     }
     // 拼接完整的redis key
     public String articleUrl(String... values) {
+        StringBuffer sb = new StringBuffer(45);
+        sb.append(this.prefix);
+        for (String value : values) {
+            sb.append(":").append(value);
+        }
+        return sb.toString();
+    }
+    public String tagUrl(String... values) {
         StringBuffer sb = new StringBuffer(45);
         sb.append(this.prefix);
         for (String value : values) {

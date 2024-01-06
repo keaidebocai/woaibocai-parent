@@ -35,4 +35,11 @@ public class ArticleController {
     public Result<BlogArticleVo> getArticleByUrl(@PathVariable String url) {
         return articleService.getArticleByUrl(url);
     }
+    @Operation(summary = "根据tagUrl分页")
+    @GetMapping("articlePageBytagUrl/{tagUrl}/{current}/{size}")
+    public Result<Map<String,Object>> articlePageBytagUrl(@PathVariable String tagUrl,
+                                                          @PathVariable Integer current,
+                                                          @PathVariable Integer size) {
+        return articleService.articlePageBytagUrl(tagUrl,current,size);
+    }
 }

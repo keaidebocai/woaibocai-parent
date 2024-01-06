@@ -79,4 +79,15 @@
             is_deleted=0
         ORDER BY is_top ASC,update_time ASC
     </select>
+    <select id="selectArticleUrlByTagUrl" resultType="java.lang.String">
+        SELECT
+            ba.url
+        FROM
+            blog_article ba
+            INNER JOIN blog_article_tag bat ON ba.id = bat.article_id
+            INNER JOIN blog_tag bt ON bat.tag_id = bt.id
+        WHERE
+            ba.is_deleted=0 AND bt.tag_url = #{tagUrl}
+        ORDER BY ba.update_time DESC
+    </select>
 </mapper>
