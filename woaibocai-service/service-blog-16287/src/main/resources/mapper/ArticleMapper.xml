@@ -58,7 +58,7 @@
             ba.url AS url,
             ba.content AS content,
             bc.category_name AS blogCategoryName,
-            ba.blog_category_id AS categoryId,
+            bc.category_url AS categoryUrl,
             ba.thumbnail AS thumbnail,
             ba.is_top AS isTop,
             ba.view_count AS viewCount,

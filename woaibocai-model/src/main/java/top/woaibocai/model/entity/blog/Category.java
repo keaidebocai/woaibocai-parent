@@ -30,8 +30,8 @@ public class Category implements Serializable {
     /**
      * 分类父id(0为根)
      */
-    @Schema(description = "分类父id(0为根)")
-    private String parentId;
+    @Schema(description = "分类url")
+    private String categoryUrl;
 
     /**
      * 描述

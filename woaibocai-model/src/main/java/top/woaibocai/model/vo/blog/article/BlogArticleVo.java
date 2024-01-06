@@ -66,8 +66,8 @@ public class BlogArticleVo {
     /**
      * blog_category分类表id
      */
-    @Schema(description = "blog_category分类表id")
-    private String categoryId;
+    @Schema(description = "blog_category分类表url")
+    private String categoryUrl;
 
     /**
      * 缩略图
