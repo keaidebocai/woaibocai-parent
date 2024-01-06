@@ -74,6 +74,7 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         StringBuffer keywords = new StringBuffer("菠菜的小窝");
         for (TagInfo tagInfo : tags ) {
             tagInfo.setThisTagHasArticleCount(tagHasArtilceCountMap.get(tagInfo.getId()));
+            tagInfo.setId("114514");
             keywords.append("," + tagInfo.getTagName());
         }
         blogArticleVo.setTags(tags);

@@ -30,6 +30,11 @@ public class Tag implements Serializable {
     private String tagName;
 
     /**
+     * 标签url
+     */
+    @Schema(description = "标签url")
+    private String tagUrl;
+    /**
      * 备注
      */
     @Schema(description = "备注")

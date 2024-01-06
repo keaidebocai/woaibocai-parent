@@ -16,6 +16,8 @@ public class TagInfo {
     private String id;
     @Schema(description = "标签名")
     private String tagName;
+    @Schema(description = "标签url")
+    private String tagUrl;
     @Schema(description = "拥有此标签的文章数")
     private Integer thisTagHasArticleCount;
 }

@@ -31,7 +31,8 @@
     <select id="TagIdTagNameByArticleId" resultType="top.woaibocai.model.vo.blog.tag.TagInfo">
         SELECT
             bat.tag_id AS id,
-            bt.tag_name AS tagName
+            bt.tag_name AS tagName,
+            bt.tag_url AS tagUrl
         FROM
             blog_article_tag bat
             INNER JOIN blog_article ba ON bat.article_id = ba.id
