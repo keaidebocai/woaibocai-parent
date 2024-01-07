@@ -19,6 +19,8 @@ public enum RedisKeyEnum {
     public static final String BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP = "blog:fetchDate:tagHasArtilceCountMap";
     // list String Object 所有 category的 url name icon
     public static final String BLOG_CATEGORY_INFO = "blog:category:info";
+    // list String Object
+    public static final String BLOG_TAG_ALL_INFO = "blog:tag:all:info";
     private String prefix ;      // 业务状态码
 
     RedisKeyEnum(String prefix) {

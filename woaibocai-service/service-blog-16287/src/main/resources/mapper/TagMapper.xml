@@ -13,4 +13,13 @@
         WHERE
             is_deleted=0 AND tag_url=#{tagUrl}
     </select>
+    <select id="TagNameURlColor" resultType="top.woaibocai.model.vo.blog.tag.TagCloudVo">
+        SELECT
+            tag_name,tag_url,color
+        FROM
+            blog_tag
+        WHERE
+            is_deleted=0
+        ORDER BY update_time ASC
+    </select>
 </mapper>
