@@ -41,6 +41,11 @@ public class Tag implements Serializable {
     private String remark;
 
     /**
+     * 标签颜色#000000
+     */
+    @Schema(description = "标签颜色#000000")
+    private String color;
+    /**
      * 逻辑删除
      */
     @Schema(description = "逻辑删除")
