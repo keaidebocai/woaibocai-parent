@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import top.woaibocai.blog.service.BlogInfoService;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.vo.blog.BlogInfoVo;
+import top.woaibocai.model.vo.blog.tag.TagCloudVo;
+
+import java.util.List;
 
 /**
  * @program: woaibocai-parent
@@ -27,6 +30,11 @@ public class BlogInfoController {
     @GetMapping("blogInfo")
     public Result<BlogInfoVo> blogInfo() {
         return blogInfoService.blogInfo();
+    }
+    @Operation(summary = "标签云数据")
+    @GetMapping("tagCloud")
+    public Result<List<TagCloudVo>> tagCloud(){
+        return blogInfoService.tagCloud();
     }
 
 }
