@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.woaibocai.blog.service.HeaderService;
 import top.woaibocai.model.common.Result;
+import top.woaibocai.model.vo.blog.category.CategoryUrlNameIconVo;
+
+import java.util.List;
 
 /**
  * @program: woaibocai-parent
@@ -22,8 +25,8 @@ public class HeaderController {
     @Resource
     private HeaderService headerService;
     @Operation(summary = "导航数据")
-    @GetMapping("getCategoryAndMenu")
-    public Result getCategoryAndMenu(){
-        return headerService.getCategoryAndMenu();
+    @GetMapping("getAllCategoryNameAndUrl")
+    public Result<List<CategoryUrlNameIconVo>> getCategoryAndMenu(){
+        return headerService.getAllCategoryNameAndUrl();
     }
 }

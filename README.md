@@ -8,7 +8,7 @@ Mysql8.0.33、Druid、Mybatis-Plus、Lombok、~~JWT~~、~~Spring Security~~.....
 Vue3、Element-plus、Nuxt3、ES6
 
 ### *重新开发一个属于自己博客*
-* > * 文章
+* > * 文章 √
 * > * 友链
 * > * BC~GPT
 * > * 留言板
@@ -34,3 +34,5 @@ Vue3、Element-plus、Nuxt3、ES6
 > * 2.有点小bug
 > *2023-1-2 17:23*
 > * 整合组件header category和menu接口，减少I/O次数
+> *2023-1-6*
+> * 今天啊，不得了啊！写了一点大堆浓shit！ 我称为屎上雕花！ 有两个 TODO优化的时候记得写
