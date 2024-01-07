@@ -11,7 +11,7 @@ import lombok.Data;
  **/
 @Data
 @Schema(description = "标签云")
-public class tagCloudVo {
+public class TagCloudVo {
     @Schema(description = "标签名")
     private String tagName;
 
