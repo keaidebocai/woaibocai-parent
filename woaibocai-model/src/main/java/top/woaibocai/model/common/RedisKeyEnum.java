@@ -17,10 +17,8 @@ public enum RedisKeyEnum {
     public static final String BLOG_FETCHDATE_BLOG_INFO = "blog:fetchDate:blogInfo";
     // 一个标签有多少文章 存储类型 hash: String String Intager
     public static final String BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP = "blog:fetchDate:tagHasArtilceCountMap";
-    // 一个标签有多少文章 存储类型 hash: String String String
-    public static final String BLOG_HEADER_GET_ALL_CATEGORY = "blog:header:getAllCategory";
-    //文章的索引 redis数据类型: list: String Menu
-    public static final String BLOG_HEADER_GET_ALL_MENU = "blog:header:getAllMenu";
+    // list String Object 所有 category的 url name icon
+    public static final String BLOG_CATEGORY_INFO = "blog:category:info";
     private String prefix ;      // 业务状态码
 
     RedisKeyEnum(String prefix) {

@@ -15,9 +15,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryAllVo {
-    @Schema(description = "id")
-    private String id;
+public class CategoryUrlNameIconVo {
+    @Schema(description = "icon-url")
+    private String categoryIconUrl;
     @Schema(description = "分类名")
     private String categoryName;
+    @Schema(description = "url")
+    private String categoryUrl;
 }
