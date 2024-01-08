@@ -36,3 +36,8 @@ Vue3、Element-plus、Nuxt3、ES6
 > * 整合组件header category和menu接口，减少I/O次数
 > *2023-1-6*
 > * 今天啊，不得了啊！写了一点大堆浓shit！ 我称为屎上雕花！ 有两个 TODO优化的时候记得写
+> *2023-1-8*
+> * Expression #5 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'db_bcblog.bc.update_time' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+> * 这个报错是在 categoryMapper 的 categoryOfUrlNameIcon 中 报错原因是使用子查询时没有将 update_time 使用 GROUP BY 进行聚合 因为mysql8 默认限制了 sql_mode=only_full_group_by 也就也就是说你必须要用 GROUP BY 聚合。
+> * 解决: 
+> * 把 update_time 用 MAX(update_time) 区分一下
