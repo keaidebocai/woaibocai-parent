@@ -10,10 +10,24 @@
     </select>
     <select id="categoryOfUrlNameIcon" resultType="top.woaibocai.model.vo.blog.category.CategoryUrlNameIconVo">
         SELECT
-            category_url,category_name,category_icon_url
-        FROM
-            blog_category
-        WHERE is_deleted=0
+            category_url,category_name,category_icon_url,count
+        FROM (
+                 SELECT
+                     bc.category_url AS category_url,
+                     bc.category_name AS category_name,
+                     bc.category_icon_url AS category_icon_url,
+                     COUNT(ba.id) AS count,
+                     MAX(bc.update_time) AS update_time
+                 FROM
+                     blog_category bc
+                         LEFT JOIN
+                     blog_article ba ON bc.id = ba.blog_category_id AND ba.status = '1'
+                 WHERE
+                     bc.is_deleted = 0
+                 GROUP BY
+                     bc.category_url, bc.category_name, bc.category_icon_url
+             ) AS sub
         ORDER BY update_time ASC
+
     </select>
 </mapper>

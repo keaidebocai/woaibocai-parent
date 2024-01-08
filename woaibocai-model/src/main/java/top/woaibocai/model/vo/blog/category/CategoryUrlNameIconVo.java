@@ -22,4 +22,6 @@ public class CategoryUrlNameIconVo {
     private String categoryName;
     @Schema(description = "url")
     private String categoryUrl;
+    @Schema(description = "文章数量")
+    private Integer count;
 }
