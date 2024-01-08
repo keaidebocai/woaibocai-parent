@@ -88,7 +88,8 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         // 把 blogArticleVo 转成 map
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String,Object>  blogArticleVoMap = objectMapper.convertValue(blogArticleVo, Map.class);
-        blogArticleVoMap.remove("id");
+        // 要根据 文章 id 查询评论 暂时暴露id
+//        blogArticleVoMap.remove("id");
         hashOperationSSO.putAll(RedisKeyEnum.BLOG_ARTICLE.articleUrl(url),blogArticleVoMap);
 
         // 5.返回 blogArticleVo
