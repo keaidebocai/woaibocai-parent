@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import top.woaibocai.model.entity.blog.Menu;
+import top.woaibocai.model.vo.blog.comment.CommentDataVo;
 
 /**
  * @program: woaibocai-parent
@@ -111,4 +112,30 @@ public class RedisConfig {
         return redisTemplateInteger.opsForHash();
     }
 
+    @Bean
+    public RedisTemplate<String, CommentDataVo> redisTemplateCommentDataVo(LettuceConnectionFactory lettuceConnectionFactory) {
+        RedisTemplate<String, CommentDataVo> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(lettuceConnectionFactory);
+
+        //设置key序列化方式String
+        // RedisSerializer.string() 等价于 new StringRedisSerializer()
+        redisTemplate.setKeySerializer(RedisSerializer.string());
+
+        // 设置value的序列化方式json，使用GenericJackson2JsonRedisSerializer替换默认序列化
+        // RedisSerializer.json() 等价于 new GenericJackson2JsonRedisSerializer()
+        redisTemplate.setValueSerializer(new GenericToStringSerializer<>(CommentDataVo.class));
+
+        // 设置hash的key的序列化方式
+        redisTemplate.setHashKeySerializer(RedisSerializer.string());
+
+        // 设置hash的value的序列化方式
+        redisTemplate.setHashValueSerializer(RedisSerializer.json());
+        // 使配置生效
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
+    @Bean
+    public HashOperations<String,String,CommentDataVo> hashOperationSSCommentDataVo(RedisTemplate<String,CommentDataVo> redisTemplateCommentDataVo) {
+        return redisTemplateCommentDataVo.opsForHash();
+    }
 }

@@ -7,7 +7,10 @@ public enum RedisKeyEnum {
     BLOG_ARTICLE("blog:article"),
     // tag下 文章的索引 list: String String
     BLOG_TAG_INDEX("blog:tag:index"),
-    BLOG_CATEGORY_INDEX("blog:category:index");
+    BLOG_CATEGORY_INDEX("blog:category:index"),
+    BLOG_COMMENT_ALL("blog:comment:all"),
+    // blog:comment:articleId?:pComment
+    BLOG_COMMENT("blog:comment");
 
     //文章的索引 redis数据类型: list: String String
     public static final String BLOG_AERICLE_INDEX = "blog:article:index";
@@ -44,6 +47,14 @@ public enum RedisKeyEnum {
         return sb.toString();
     }
     public String categoryUrl(String... values) {
+        StringBuffer sb = new StringBuffer(45);
+        sb.append(this.prefix);
+        for (String value : values) {
+            sb.append(":").append(value);
+        }
+        return sb.toString();
+    }
+    public String comment(String... values) {
         StringBuffer sb = new StringBuffer(45);
         sb.append(this.prefix);
         for (String value : values) {

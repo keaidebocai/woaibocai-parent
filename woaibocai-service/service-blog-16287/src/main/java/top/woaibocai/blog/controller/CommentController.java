@@ -24,7 +24,9 @@ public class CommentController {
     private CommentService commentService;
     @Operation(summary = "根据文章id获取评论")
     @GetMapping("/{articleId}")
-    public Result getCommentByArticleId(@PathVariable String articleId) {
-        return commentService.getCommentByArticleId(articleId);
+    public Result getCommentByArticleId(@PathVariable String articleId,
+                                        @PathVariable Long current,
+                                        @PathVariable Long size) {
+        return commentService.getCommentByArticleId(articleId,current,size);
     }
 }
