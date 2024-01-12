@@ -28,7 +28,7 @@
     </select>
     <select id="userInfo" resultType="top.woaibocai.model.vo.user.UserInfoVo">
         SELECT
-            nick_name,avatar,sex
+            nick_name,avatar,sex,id AS userId
         FROM
             user
         WHERE

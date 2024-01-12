@@ -18,4 +18,6 @@ public class UserInfoVo {
     private String avatar;
     @Schema(description = "性别 0:男，1:女，2:沃尔玛购物袋，3:阿帕奇武装直升机")
     private String sex;
+    @Schema(description = "用户id")
+    private String userId;
 }
