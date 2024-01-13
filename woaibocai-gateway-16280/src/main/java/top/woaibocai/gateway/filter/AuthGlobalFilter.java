@@ -1,5 +1,6 @@
 package top.woaibocai.gateway.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nacos.api.utils.StringUtils;
 import jakarta.annotation.Resource;
@@ -7,6 +8,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -16,9 +18,11 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.vo.user.UserInfoVo;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: woaibocai-parent
@@ -48,7 +52,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
     }
 
     private Mono<Void> out(ServerHttpResponse response, ResultCodeEnum resultCodeEnum) {
-        Result result = Result.build(null,resultCodeEnum);
+        Result result = Result.build("请勿假冒身份/请登录",resultCodeEnum);
         byte[] bits = JSONObject.toJSONString(result).getBytes(StandardCharsets.UTF_8);
         DataBuffer buffer = response.bufferFactory().wrap(bits);
         //指定编码，否则会在浏览器中中文乱码
@@ -71,10 +75,20 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
         if (!StringUtils.isEmpty(token)) {
             //没序列化？
 //            redisTemplate.opsForValue().set("nmsl","where is my token?");
-            String useInfo = redisTemplate.opsForValue().get("user:token:" + token);
-            if (StringUtils.isEmpty(useInfo)) {
+            Map<Object, Object> useInfo = redisTemplate.opsForHash().entries("user:token:" + token);
+            if (useInfo.isEmpty()) {
                 return false;
             }else {
+                String path = request.getURI().getPath();
+                if (!antPathMatcher.match("/api/user/auth/getUserInfo",path)) {
+                    String userId = (String) useInfo.get("userId");
+                    String headerOfId = request.getHeaders().get("114514").get(0);
+                    System.out.println(userId);
+                    if (userId == null | userId.equals(headerOfId)) {
+                        System.out.println("woburhni jn ");
+                        return false;
+                    }
+                }
                 return true;
             }
         }
