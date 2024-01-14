@@ -25,7 +25,7 @@ public class CommentDataVo {
     @Schema(description = "发送评论的头像")
     private String sendUserAvater;
     @Schema(description = "发送评论的昵称")
-    private String sandUserNickName;
+    private String sendUserNickName;
 
     @Schema(description = "被回复者的id")
     private String replyId;
@@ -51,5 +51,7 @@ public class CommentDataVo {
 
     @Schema(description = "地点")
     private String address;
+    @Schema(description = "被回复的评论id")
+    private String replyCommentId;
 
 }

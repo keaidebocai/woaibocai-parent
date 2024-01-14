@@ -40,5 +40,5 @@ public class OneCommentVo {
     @Schema(description = "地点")
     private String address;
     @Schema(description = "子评论集合")
-    private List<OneCommentVo> oneCommentVoList;
+    private List<CommentDataVo> oneCommentVoList;
 }

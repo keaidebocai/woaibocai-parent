@@ -49,14 +49,52 @@
         FROM
             blog_comment
         WHERE
-            blog_article_id=#{articleId} AND is_deleted=0
+           is_deleted=0 AND parent_id='0' AND blog_article_id=#{articleId}
     </select>
     <select id="selectOneCommentById" resultType="top.woaibocai.model.vo.blog.comment.OneCommentVo">
         SELECT
-            id,create_time,content,comment_like_count AS likeCount,address,to_comment_user_id AS sendId
+            id,
+            create_time,
+            content,
+            comment_like_count AS likeCount,
+            address,
+            to_comment_user_id AS sendId
         FROM
             blog_comment
-        WHERE is_deleted=0 AND id=#{replyCommentId}
+        WHERE is_deleted=0 AND type=0 AND id=#{replyCommentId}
+    </select>
+    <select id="getAllArticleCommentTotal" resultType="top.woaibocai.model.Do.KeyAndValue">
+        SELECT
+            blog_article_id AS myKey,
+            COUNT(*) AS myValue
+        FROM
+            blog_comment
+        WHERE
+            is_deleted = 0
+        GROUP BY
+            blog_article_id;
+    </select>
+    <select id="selectTwoCommentIdByOneId" resultType="java.lang.String">
+        SELECT
+            id
+        FROM
+            blog_comment
+        WHERE is_deleted=0 AND parent_id=#{oneCommentId}
+    </select>
+    <select id="selectCommentDataVo" resultType="top.woaibocai.model.vo.blog.comment.CommentDataVo">
+        SELECT
+            id,
+            parent_id,
+            content,
+            to_comment_user_id AS sendId,
+            comment_like_count AS likeCount,
+            to_comment_id AS replyId,
+            create_time,
+            address,
+            reply_comment_id AS replyCommentId
+        FROM
+            blog_comment
+        WHERE is_deleted=0 AND type=0 AND id=#{id}
     </select>
 
 

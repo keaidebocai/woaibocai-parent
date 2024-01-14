@@ -10,16 +10,21 @@ import top.woaibocai.blog.mapper.ArticleTagMapper;
 import top.woaibocai.blog.mapper.BlogInfoMapper;
 import top.woaibocai.blog.mapper.MyCommentMapper;
 import top.woaibocai.blog.service.FetchDateUtilService;
+import top.woaibocai.model.Do.KeyAndValue;
 import top.woaibocai.model.Do.blog.TagHasArticleCountDo;
 import top.woaibocai.model.common.RedisKeyEnum;
 import top.woaibocai.model.entity.blog.Article;
 import top.woaibocai.model.vo.blog.BlogInfoVo;
 import top.woaibocai.model.vo.blog.article.BlogArticleVo;
+import top.woaibocai.model.vo.blog.comment.CommentDataVo;
+import top.woaibocai.model.vo.blog.comment.OneCommentVo;
 import top.woaibocai.model.vo.blog.tag.TagInfo;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @program: woaibocai-parent
@@ -45,6 +50,8 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
     private HashOperations<String,String,Object> hashOperationSSO;
     @Resource
     private ListOperations<String,String> listOperationSS;
+    @Resource
+    private ObjectMapper objectMapper;
     @Override
     public Map<String, String> getArticleIdAndUrlMap() {
         // 查询 redis
@@ -92,7 +99,6 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
 
         // 4. 把 文章推上 redis 初始化数据
         // 把 blogArticleVo 转成 map
-        ObjectMapper objectMapper = new ObjectMapper();
         Map<String,Object>  blogArticleVoMap = objectMapper.convertValue(blogArticleVo, Map.class);
         // 要根据 文章 id 查询评论 暂时暴露id
 //        blogArticleVoMap.remove("id");
@@ -133,7 +139,6 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         blogInfoVo.setArticleViewCount(viewCount);
         blogInfoVo.setTagCount(tagSize);
         blogInfoVo.setCategoryCount(categoryCount);
-        ObjectMapper objectMapper = new ObjectMapper();
         Map map = objectMapper.convertValue(blogInfoVo, Map.class);
         // 推上redis
         hashOperationSSO.putAll(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO,map);
@@ -141,11 +146,70 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
     }
     // 初始化 该文章的 一级评论列表
     @Override
-    public void initOneCommentList(String articleId) {
+    public List<String> initOneCommentList(String articleId) {
         // 根据 文章id 查询此文章的所有一级评论
         List<String> oneCommentList = myCommentMapper.selectOneCommentListByArticleId(articleId);
         // 不管有没有 都 给他设置 oneCommentList,如果是空那就相当于设置key，如果不为空那就正常初始化值
         listOperationSS.rightPushAll(RedisKeyEnum.BLOG_COMMENT_ARTICLE.articleUrl(articleId),oneCommentList);
+        return oneCommentList;
+    }
+
+    @Override
+    public Long getThisArticleCommentTotal(String articleId) {
+        // 获取该文章的所有评论总数
+        Integer total = hashOperationsSSI.get(RedisKeyEnum.BLOG_COMMENT_COUNT, articleId);
+        System.out.println(total);
+         // 是null 证明key不存在要初始化整个hash
+        if (total == null) {
+            // 查询数据库 更新所有文章的总评论数
+            List<KeyAndValue> allCommentTotal = myCommentMapper.getAllArticleCommentTotal();
+            Map<String,Integer> map = new HashMap<>();
+            allCommentTotal.forEach(kv -> map.put(kv.getMyKey(), Integer.valueOf(kv.getMyValue())));
+            hashOperationsSSI.putAll(RedisKeyEnum.BLOG_COMMENT_COUNT,map);
+            if (!map.containsKey(articleId)) {
+                return 0L;
+            }
+            System.out.println(map.get(articleId));
+            return map.get(articleId).longValue();
+        }
+        return total.longValue();
+    }
+
+    @Override
+    public OneCommentVo initOneComment(String oneCommentId) {
+        OneCommentVo oneCommentVo = myCommentMapper.selectOneCommentById(oneCommentId);
+        // 不用判空，因为在列表的评论都真实存在
+        KeyAndValue keyAndValue = myCommentMapper.selectUserNameAndAvaterByUserId(oneCommentVo.getSendId());
+        oneCommentVo.setSendUserAvater(keyAndValue.getMyKey());
+        oneCommentVo.setSandUserNickName(keyAndValue.getMyValue());
+        Map<String,Object> map = objectMapper.convertValue(oneCommentVo, Map.class);
+        // 初始化redis
+        hashOperationSSO.putAll(RedisKeyEnum.BLOG_COMMENT_ALL.comment(oneCommentId),map);
+        return oneCommentVo;
+    }
+
+    @Override
+    public List<String> initTwoCommentListByOneId(String oneCommentId) {
+        List<String> list = myCommentMapper.selectTwoCommentIdByOneId(oneCommentId);
+        if (list.isEmpty()) {
+            return list;
+        }
+        listOperationSS.rightPushAll(RedisKeyEnum.BLOG_COMMENT_ONECOMMENT.comment(oneCommentId),list);
+        return list;
+    }
+
+    @Override
+    public CommentDataVo initTwoCommentById(String id) {
+        CommentDataVo commentDataVo = myCommentMapper.selectCommentDataVo(id);
+        KeyAndValue send = myCommentMapper.selectUserNameAndAvaterByUserId(commentDataVo.getSendId());
+        KeyAndValue reply = myCommentMapper.selectUserNameAndAvaterByUserId(commentDataVo.getReplyId());
+        commentDataVo.setSendUserAvater(send.getMyKey());
+        commentDataVo.setSendUserNickName(send.getMyValue());
+        commentDataVo.setReplyUserAvater(reply.getMyKey());
+        commentDataVo.setSendUserNickName(reply.getMyValue());
+        Map<String,Object> map = objectMapper.convertValue(commentDataVo, Map.class);
+        hashOperationSSO.putAll(RedisKeyEnum.BLOG_COMMENT_ALL.comment(id),map);
+        return commentDataVo;
     }
 
     private Map<String, Integer> getTagHasArtilceCountMap() {

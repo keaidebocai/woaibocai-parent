@@ -2,7 +2,10 @@ package top.woaibocai.blog.service;
 
 import top.woaibocai.model.vo.blog.BlogInfoVo;
 import top.woaibocai.model.vo.blog.article.BlogArticleVo;
+import top.woaibocai.model.vo.blog.comment.CommentDataVo;
+import top.woaibocai.model.vo.blog.comment.OneCommentVo;
 
+import java.util.List;
 import java.util.Map;
 
 public interface FetchDateUtilService {
@@ -15,5 +18,13 @@ public interface FetchDateUtilService {
 
     BlogInfoVo getBlogInfo();
 
-    void initOneCommentList(String articleId);
+    List<String> initOneCommentList(String articleId);
+
+    Long getThisArticleCommentTotal(String articleId);
+
+    OneCommentVo initOneComment(String oneCommentId);
+
+    List<String> initTwoCommentListByOneId(String oneCommentId);
+
+    CommentDataVo initTwoCommentById(String id);
 }

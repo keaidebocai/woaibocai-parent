@@ -25,7 +25,7 @@ public class CommentController {
     @Resource
     private CommentService commentService;
     @Operation(summary = "根据文章id获取评论")
-    @GetMapping("/{articleId}")
+    @GetMapping("/{articleId}/{current}/{size}")
     public Result getCommentByArticleId(@PathVariable String articleId,
                                         @PathVariable Long current,
                                         @PathVariable Long size) {
