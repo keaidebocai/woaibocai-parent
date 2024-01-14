@@ -10,7 +10,8 @@ public enum RedisKeyEnum {
     BLOG_CATEGORY_INDEX("blog:category:index"),
     BLOG_COMMENT_ALL("blog:comment:all"),
     // blog:comment:articleId?:pComment
-    BLOG_COMMENT("blog:comment");
+    BLOG_COMMENT_ARTICLE("blog:comment:article"),
+    BLOG_COMMENT_ONECOMMENT("blog:comment:onecomment");
 
     //文章的索引 redis数据类型: list: String String
     public static final String BLOG_AERICLE_INDEX = "blog:article:index";
