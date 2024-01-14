@@ -2,7 +2,9 @@ package top.woaibocai.user.service.impl;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.common.utils.MD5util;
@@ -17,6 +19,7 @@ import top.woaibocai.model.vo.user.UserInfoVo;
 import top.woaibocai.user.mapper.UserMapper;
 import top.woaibocai.user.service.UserService;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -29,9 +32,13 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserServiceImpl implements UserService {
     @Resource
+    private HashOperations<String,String,String> hashOperationSSS;
+    @Resource
     private RedisTemplate<String,String> redisTemplateString;
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private ObjectMapper objectMapper;
     @Override
     public Result<String> login(UserLoginDto userLoginDto) {
         // 1.查user表
@@ -52,18 +59,21 @@ public class UserServiceImpl implements UserService {
         }
 
         // 3.查询redis 中 refresh_token 是否 过期  没过期删除
-        String refreshToken = redisTemplateString.opsForValue().get("user:refresh_token:" + userData.getRefreshToken());
-        if (!StringUtils.isEmpty(refreshToken)) {
+        Map<String, String> refreshToken = hashOperationSSS.entries("user:refresh_token:" + userData.getRefreshToken());
+        if (!refreshToken.isEmpty()) {
             redisTemplateString.delete("user:refresh_token:" + userData.getRefreshToken());
         }
         // 把userinfo 放进redis里
         UserInfoVo userInfoVo = userMapper.userInfo(userData.getId());
+        Map map = objectMapper.convertValue(userInfoVo, Map.class);
+        System.out.println(userInfoVo);
         // 4.创建 token 和 refresh_token 放进redis中
         String token = UUID.randomUUID().toString().replace("-", "");
         String refresh_token = UUID.randomUUID().toString().replace("-", "");
-        redisTemplateString.opsForValue().set("user:token:" + token,JSON.toJSONString(userInfoVo),10, TimeUnit.MINUTES);
-        redisTemplateString.opsForValue().set("user:refresh_token:" + refresh_token,JSON.toJSONString(userInfoVo),15, TimeUnit.DAYS);
-
+        hashOperationSSS.putAll("user:token:" + token,map);
+        redisTemplateString.expire("user:token:" + token,10,TimeUnit.MINUTES);
+        hashOperationSSS.putAll("user:refresh_token:" + refresh_token,map);
+        redisTemplateString.expire("user:refresh_token:" + refresh_token,15, TimeUnit.DAYS);
         // 5. 把新 refresh_token 放进数据库 里
         userMapper.updateRefreshTokenById(userData.getId(),refresh_token);
 
@@ -102,14 +112,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<String> authorizations(AuthorizationsDto authorizationsDto) {
         // 去 redis 里查询 refresh_token 是否过期
-        String refreshTokenUserInfo = redisTemplateString.opsForValue().get("user:refresh_token:" + authorizationsDto.getRefresh_token());
-        if (StringUtils.isEmpty(refreshTokenUserInfo)) {
+        Map<String, String> refreshTokenUserInfo = hashOperationSSS.entries("user:refresh_token:" + authorizationsDto.getRefresh_token());
+        if (refreshTokenUserInfo.isEmpty()) {
             return Result.build(null,ResultCodeEnum.LOGIN_AUTH);
         }
         // 创建 token
         String token = UUID.randomUUID().toString().replace("-", "");
         // 放入redis
-        redisTemplateString.opsForValue().set("user:token:" + token,refreshTokenUserInfo,10,TimeUnit.MINUTES);
+        hashOperationSSS.putAll("user:token:" + token,refreshTokenUserInfo);
+        redisTemplateString.expire("user:token:" + token,10,TimeUnit.MINUTES);
         // 转化json字符串
         LoginVo loginVo = new LoginVo();
         loginVo.setToken(token);
@@ -120,20 +131,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result getUserInfo(String newToken) {
-        String userInfo = redisTemplateString.opsForValue().get("user:token:" + newToken);
-        if (StringUtils.isEmpty(userInfo)) {
+        Map<String, String> userInfo = hashOperationSSS.entries("user:token:" + newToken);
+        if (userInfo.isEmpty()) {
             return Result.build(null,ResultCodeEnum.LOGIN_NOLL);
         }
+        UserInfoVo userInfoVo = objectMapper.convertValue(userInfo, UserInfoVo.class);
 //        UserInfoVo userInfoVo = JSON.parseObject(userInfo, UserInfoVo.class);
-        System.out.println(userInfo);
-        return Result.build(userInfo,ResultCodeEnum.SUCCESS);
+        return Result.build(JSON.toJSONString(userInfoVo),ResultCodeEnum.SUCCESS);
     }
 
     @Override
     public Result logout(LoginVo loginVo) {
         //先删除 refresh_token
-        String refresh_token = redisTemplateString.opsForValue().get("user:refresh_token:" + loginVo.getRefresh_token());
-        if (!StringUtils.isEmpty(refresh_token)) {
+        Long size = hashOperationSSS.size("user:refresh_token:" + loginVo.getRefresh_token());
+        if (size != 0L) {
+//            redisTemplateString.delete("user:refresh_token:" + loginVo.getRefresh_token());
             redisTemplateString.delete("user:refresh_token:" + loginVo.getRefresh_token());
         }
         //删除 token
