@@ -24,8 +24,8 @@ public class CommentDataVo {
     private String sendId;
     @Schema(description = "发送评论的头像")
     private String sendUserAvater;
-    @Schema(description = "发送评论的用户名")
-    private String sandUserName;
+    @Schema(description = "发送评论的昵称")
+    private String sandUserNickName;
 
     @Schema(description = "被回复者的id")
     private String replyId;
@@ -33,7 +33,7 @@ public class CommentDataVo {
     private String replyUserAvater;
 
     @Schema(description = "被回复者的用户名")
-    private String replyUserName;
+    private String replyUserNickName;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)

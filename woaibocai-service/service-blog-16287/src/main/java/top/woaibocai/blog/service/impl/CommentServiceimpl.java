@@ -69,7 +69,7 @@ public class CommentServiceimpl implements CommentService {
         oneCommentVo.setAddress(oneCommentDto.getAddress());
         oneCommentVo.setCreateTime(LocalDateTime.now());
         oneCommentVo.setSendUserAvater(avaterAndUserName.getMyKey());
-        oneCommentVo.setSandUserName(avaterAndUserName.getMyValue());
+        oneCommentVo.setSandUserNickName(avaterAndUserName.getMyValue());
 
         // 2. 存 redis
         Map<String,String> map = objectMapper.convertValue(oneCommentVo,Map.class);
@@ -96,7 +96,7 @@ public class CommentServiceimpl implements CommentService {
             }
             KeyAndValue keyAndValue = myCommentMapper.selectUserNameAndAvaterByUserId(replyOneCommentVo.getReplyCommentUserId());
             oneCommentVo.setSendUserAvater(keyAndValue.getMyKey());
-            oneCommentVo.setSandUserName(keyAndValue.getMyValue());
+            oneCommentVo.setSandUserNickName(keyAndValue.getMyValue());
             Map map = objectMapper.convertValue(oneCommentVo, Map.class);
             // 初始化 redis
             hashOperationSSO.putAll(RedisKeyEnum.BLOG_COMMENT_ALL.comment(replyOneCommentVo.getReplyCommentId()),map);
@@ -111,10 +111,10 @@ public class CommentServiceimpl implements CommentService {
         commentDataVo.setId(id);
         commentDataVo.setSendId(replyOneCommentVo.getSendCommentUserId());
         commentDataVo.setSendUserAvater(sendAvaterAndName.getMyKey());
-        commentDataVo.setSandUserName(sendAvaterAndName.getMyValue());
+        commentDataVo.setSandUserNickName(sendAvaterAndName.getMyValue());
         commentDataVo.setReplyId(replyOneCommentVo.getReplyCommentUserId());
         commentDataVo.setReplyUserAvater(replyAvaterAndName.getMyKey());
-        commentDataVo.setReplyUserName(replyAvaterAndName.getMyValue());
+        commentDataVo.setReplyUserNickName(replyAvaterAndName.getMyValue());
         commentDataVo.setCreateTime(LocalDateTime.now());
         commentDataVo.setContent(replyOneCommentVo.getContent());
         commentDataVo.setParentId(replyOneCommentVo.getParentId());
