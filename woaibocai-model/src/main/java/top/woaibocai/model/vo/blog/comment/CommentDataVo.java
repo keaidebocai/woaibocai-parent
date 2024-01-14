@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 /**
  * @program: woaibocai-parent
@@ -38,7 +38,7 @@ public class CommentDataVo {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @Schema(description = "time")
-    private String createTime;
+    private LocalDateTime createTime;
 
     @Schema(description = "内容")
     private String content;
@@ -48,12 +48,6 @@ public class CommentDataVo {
 
     @Schema(description = "点赞量")
     private Long likeCount ;
-
-//    @Schema(description = "子评论集合")
-//    private List<CommentVo> subList;
-
-    @Schema(description = "子评论id集合")
-    private List<String> sunIdList;
 
     @Schema(description = "地点")
     private String address;
