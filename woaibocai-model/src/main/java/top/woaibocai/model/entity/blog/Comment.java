@@ -76,6 +76,8 @@ public class Comment implements Serializable {
     @TableField(fill = FieldFill.INSERT)
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
+    @Schema(description = "ip/归属地")
+    private String address;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
