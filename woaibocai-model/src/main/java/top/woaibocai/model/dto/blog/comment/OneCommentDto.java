@@ -17,5 +17,9 @@ public class OneCommentDto {
     private String articleId;
     @Schema(description = "内容")
     private String content;
+    @Schema(description = "评论者id")
+    private String userId;
+    @Schema(description = "ip")
+    private String address;
 
 }
