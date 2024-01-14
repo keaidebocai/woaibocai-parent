@@ -14,4 +14,6 @@ public interface FetchDateUtilService {
     Map<String, Integer> tagHasArtilceCountMap();
 
     BlogInfoVo getBlogInfo();
+
+    void initOneCommentList(String articleId);
 }

@@ -3,10 +3,12 @@ package top.woaibocai.blog.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.stereotype.Service;
 import top.woaibocai.blog.mapper.ArticleMapper;
 import top.woaibocai.blog.mapper.ArticleTagMapper;
 import top.woaibocai.blog.mapper.BlogInfoMapper;
+import top.woaibocai.blog.mapper.MyCommentMapper;
 import top.woaibocai.blog.service.FetchDateUtilService;
 import top.woaibocai.model.Do.blog.TagHasArticleCountDo;
 import top.woaibocai.model.common.RedisKeyEnum;
@@ -34,11 +36,15 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
     @Resource
     private BlogInfoMapper blogInfoMapper;
     @Resource
+    private MyCommentMapper myCommentMapper;
+    @Resource
     private HashOperations<String,String,String> hashOperationSSS ;
     @Resource
     private HashOperations<String,String,Integer> hashOperationsSSI ;
     @Resource
     private HashOperations<String,String,Object> hashOperationSSO;
+    @Resource
+    private ListOperations<String,String> listOperationSS;
     @Override
     public Map<String, String> getArticleIdAndUrlMap() {
         // 查询 redis
@@ -132,6 +138,14 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         // 推上redis
         hashOperationSSO.putAll(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO,map);
         return blogInfoVo;
+    }
+    // 初始化 该文章的 一级评论列表
+    @Override
+    public void initOneCommentList(String articleId) {
+        // 根据 文章id 查询此文章的所有一级评论
+        List<String> oneCommentList = myCommentMapper.selectOneCommentListByArticleId(articleId);
+        // 不管有没有 都 给他设置 oneCommentList,如果是空那就相当于设置key，如果不为空那就正常初始化值
+        listOperationSS.rightPushAll(RedisKeyEnum.BLOG_COMMENT_ARTICLE.articleUrl(articleId),oneCommentList);
     }
 
     private Map<String, Integer> getTagHasArtilceCountMap() {
