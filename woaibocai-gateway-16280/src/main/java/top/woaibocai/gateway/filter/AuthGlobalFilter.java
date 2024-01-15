@@ -83,9 +83,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
                 if (!antPathMatcher.match("/api/user/auth/getUserInfo",path)) {
                     String userId = (String) useInfo.get("userId");
                     String headerOfId = request.getHeaders().get("114514").get(0);
-                    System.out.println(userId);
-                    if (userId == null | userId.equals(headerOfId)) {
-                        System.out.println("woburhni jn ");
+                    if (!(userId == null | userId.equals(headerOfId) | !headerOfId.equals("undefined"))) {
                         return false;
                     }
                 }
