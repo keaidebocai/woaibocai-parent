@@ -190,6 +190,8 @@ public class CommentServiceimpl implements CommentService {
             fetchDateUtilService.initOneCommentList(oneCommentDto.getArticleId());
         }
         listOperationSS.rightPush(RedisKeyEnum.BLOG_COMMENT_ARTICLE.articleUrl(oneCommentDto.getArticleId()),id);
+        // 总评论数 +1
+        hashOperationSSO.increment(RedisKeyEnum.BLOG_COMMENT_COUNT,oneCommentDto.getArticleId(),1L);
         return Result.build(oneCommentVo,ResultCodeEnum.SUCCESS);
     }
 
@@ -234,6 +236,8 @@ public class CommentServiceimpl implements CommentService {
         Map map = objectMapper.convertValue(commentDataVo, Map.class);
         hashOperationSSO.putAll(RedisKeyEnum.BLOG_COMMENT_ALL.comment(id),map);
         listOperationSS.rightPush(RedisKeyEnum.BLOG_COMMENT_ONECOMMENT.comment(replyOneCommentVo.getParentId()),id);
+        // 更新 总评论条数
+        hashOperationSSO.increment(RedisKeyEnum.BLOG_COMMENT_COUNT,replyOneCommentVo.getArticleId(),1L);
         // 给前端返回 数据 用来 push 数组
         return Result.build(commentDataVo,ResultCodeEnum.SUCCESS);
     }
