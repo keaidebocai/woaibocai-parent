@@ -51,6 +51,7 @@ public class CommentController {
                                   HttpServletRequest request) {
         if (replyOneCommentVo.getReplyCommentId().isEmpty() |
             replyOneCommentVo.getReplyCommentUserId().isEmpty() |
+            userId.isEmpty() | userId.equals("undefined") |
             replyOneCommentVo.getContent().isEmpty() |
             replyOneCommentVo.getArticleId().isEmpty() |
             replyOneCommentVo.getParentId().isEmpty()) {
