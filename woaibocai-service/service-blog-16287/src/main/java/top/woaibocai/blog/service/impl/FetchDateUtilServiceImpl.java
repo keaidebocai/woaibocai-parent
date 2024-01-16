@@ -206,7 +206,7 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         commentDataVo.setSendUserAvater(send.getMyKey());
         commentDataVo.setSendUserNickName(send.getMyValue());
         commentDataVo.setReplyUserAvater(reply.getMyKey());
-        commentDataVo.setSendUserNickName(reply.getMyValue());
+        commentDataVo.setReplyUserNickName(reply.getMyValue());
         Map<String,Object> map = objectMapper.convertValue(commentDataVo, Map.class);
         hashOperationSSO.putAll(RedisKeyEnum.BLOG_COMMENT_ALL.comment(id),map);
         return commentDataVo;

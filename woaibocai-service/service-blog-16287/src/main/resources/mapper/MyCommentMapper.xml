@@ -37,7 +37,7 @@
     </insert>
     <select id="selectUserNameAndAvaterByUserId" resultType="top.woaibocai.model.Do.KeyAndValue">
         SELECT
-            avatar AS myKey,user_name AS myValue
+            avatar AS myKey,nick_name AS myValue
         FROM
             user
         WHERE
