@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
         String token = UUID.randomUUID().toString().replace("-", "");
         String refresh_token = UUID.randomUUID().toString().replace("-", "");
         hashOperationSSS.putAll("user:token:" + token,map);
-        redisTemplateString.expire("user:token:" + token,10,TimeUnit.MINUTES);
+        redisTemplateString.expire("user:token:" + token,10,TimeUnit.HOURS);
         hashOperationSSS.putAll("user:refresh_token:" + refresh_token,map);
         redisTemplateString.expire("user:refresh_token:" + refresh_token,15, TimeUnit.DAYS);
         // 5. 把新 refresh_token 放进数据库 里
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
         String token = UUID.randomUUID().toString().replace("-", "");
         // 放入redis
         hashOperationSSS.putAll("user:token:" + token,refreshTokenUserInfo);
-        redisTemplateString.expire("user:token:" + token,10,TimeUnit.MINUTES);
+        redisTemplateString.expire("user:token:" + token,10,TimeUnit.HOURS);
         // 转化json字符串
         LoginVo loginVo = new LoginVo();
         loginVo.setToken(token);
