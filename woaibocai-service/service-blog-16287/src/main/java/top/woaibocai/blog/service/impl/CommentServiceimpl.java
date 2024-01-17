@@ -64,7 +64,13 @@ public class CommentServiceimpl implements CommentService {
         if (articleSubTotal == 0L) {
             Map<String,Object> map = new HashMap<>();
             map.put("total",0L);
-            map.put("114514","第一条评论你来发！");
+            List<OneCommentVo> oneCommentVoList = new ArrayList<>();
+            OneCommentVo oneCommentVo = new OneCommentVo();
+            List<CommentDataVo> commentDataVoList = new ArrayList<>();
+            CommentDataVo commentDataVo = new CommentDataVo();
+            commentDataVoList.add(commentDataVo);
+            oneCommentVo.setOneCommentVoList(commentDataVoList);
+            map.put("comment",oneCommentVoList);
             return Result.build(map,ResultCodeEnum.SUCCESS);
         }
 
@@ -171,7 +177,9 @@ public class CommentServiceimpl implements CommentService {
         // 用 gateway 做验证了所以这里不可能为空
         KeyAndValue avaterAndUserName = myCommentMapper.selectUserNameAndAvaterByUserId(oneCommentDto.getUserId());
         String id = UUID.randomUUID().toString().replace("-", "");
+        // 插入数据库
         myCommentMapper.saveComment(oneCommentDto,id);
+        // 存入redis做准备
         OneCommentVo oneCommentVo = new OneCommentVo();
         oneCommentVo.setId(id);
         oneCommentVo.setSendId(oneCommentDto.getUserId());
@@ -184,11 +192,15 @@ public class CommentServiceimpl implements CommentService {
         // 2. 存 redis
         Map<String,String> map = objectMapper.convertValue(oneCommentVo,Map.class);
         hashOperationSSO.putAll(RedisKeyEnum.BLOG_COMMENT_ALL.comment(id),map);
-        // 查询以及评论列表再redis中是否存在 方便添加列表
+        // 查询一级评论列表在redis中是否存在 方便添加列表
         Long hasSize = listOperationSS.size(RedisKeyEnum.BLOG_COMMENT_ARTICLE.articleUrl(oneCommentDto.getArticleId()));
+        // redis 中不存在就 初始化redis  存在就直接添加id
         if (hasSize == 0L) {
             fetchDateUtilService.initOneCommentList(oneCommentDto.getArticleId());
+            hashOperationSSO.increment(RedisKeyEnum.BLOG_COMMENT_COUNT,oneCommentDto.getArticleId(),1L);
+            return Result.build(oneCommentVo,ResultCodeEnum.SUCCESS);
         }
+        // 如果不是0 那就有可以直接加
         listOperationSS.rightPush(RedisKeyEnum.BLOG_COMMENT_ARTICLE.articleUrl(oneCommentDto.getArticleId()),id);
         // 总评论数 +1
         hashOperationSSO.increment(RedisKeyEnum.BLOG_COMMENT_COUNT,oneCommentDto.getArticleId(),1L);
