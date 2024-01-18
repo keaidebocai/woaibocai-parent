@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.woaibocai.blog.service.BlogInfoService;
+import top.woaibocai.common.feign.QCloudFeignClint;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.vo.blog.BlogInfoVo;
 import top.woaibocai.model.vo.blog.tag.TagCloudVo;
@@ -26,6 +27,8 @@ public class BlogInfoController {
     @Resource
     private BlogInfoService blogInfoService;
 
+    @Resource
+    private QCloudFeignClint qCloudFeignClint;
     @Operation(summary = "站点概要文章数之类的")
     @GetMapping("blogInfo")
     public Result<BlogInfoVo> blogInfo() {
@@ -35,6 +38,12 @@ public class BlogInfoController {
     @GetMapping("tagCloud")
     public Result<List<TagCloudVo>> tagCloud(){
         return blogInfoService.tagCloud();
+    }
+    @Operation(summary = "远程调用:test")
+    @GetMapping("test")
+    public String test(){
+        String testString = qCloudFeignClint.getTestString();
+        return testString;
     }
 
 }

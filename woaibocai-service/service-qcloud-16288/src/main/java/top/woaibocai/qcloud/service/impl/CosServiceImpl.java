@@ -21,6 +21,7 @@ import top.woaibocai.qcloud.utils.ConstantPropertiesUtils;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -80,6 +81,13 @@ public class CosServiceImpl implements CosService {
                 + fileName;
         return url;
     }
+
+    @Override
+    public List<String> userUpload(List<MultipartFile> files) {
+
+        return null;
+    }
+
     COSClient createCOSClient() {
         // 设置用户身份信息。
         // SECRETID 和 SECRETKEY 请登录访问管理控制台 https://console.cloud.tencent.com/cam/capi 进行查看和管理

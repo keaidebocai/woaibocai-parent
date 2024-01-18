@@ -3,10 +3,7 @@ package top.woaibocai.qcloud.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
@@ -27,5 +24,10 @@ public class CosController {
         String url = cosService.uploadThumbnail(file);
         System.out.println(url);
         return Result.build(url, ResultCodeEnum.SUCCESS);
+    }
+    @Operation(description = "远程调用：test")
+    @GetMapping("test")
+    public String test(){
+        return "success";
     }
 }
