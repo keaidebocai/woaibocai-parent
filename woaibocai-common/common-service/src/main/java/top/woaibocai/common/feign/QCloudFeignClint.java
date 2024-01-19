@@ -2,11 +2,17 @@ package top.woaibocai.common.feign;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @FeignClient(value = "woaibocai-service-qcloud-16288")
 public interface QCloudFeignClint {
-    @Operation(summary = "远程调用: test")
-    @GetMapping("bcblog/cos/test")
-    public String getTestString();
+    @Operation(summary = "远程调用: 用户批量上传图片 userUpload")
+    @PostMapping(value = "/api/blog/cos/userUpload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public List<String> userUpload(@RequestPart List<MultipartFile> files) throws IOException;
 }
