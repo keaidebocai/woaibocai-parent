@@ -41,3 +41,7 @@ Vue3、Element-plus、Nuxt3、ES6
 > * 这个报错是在 categoryMapper 的 categoryOfUrlNameIcon 中 报错原因是使用子查询时没有将 update_time 使用 GROUP BY 进行聚合 因为mysql8 默认限制了 sql_mode=only_full_group_by 也就也就是说你必须要用 GROUP BY 聚合。
 > * 解决: 
 > * 把 update_time 用 MAX(update_time) 区分一下
+> *2024-1-19*
+> * 今天又又又踩坑啦！ Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: feign.codec.EncodeException: Error converting request body] with root cause
+> * 这个问题出现在使用远程对用 feign 时 传 MultipartFile 类型的文件时 没有指定提交内容类型 "Content-Type" 为 "multipart/form-data "
+> * **解决方案:** 在 **feign 客户端** 的post请求上写 consumes = MediaType.MULTIPART_FORM_DATA_VALUE 指定类型为 **multipart/form-data** 然后在添加 @RequestPart 不然就只能接收到一个文件，无法实现多文件上传 即可解决 本质上 feign 也是 HTTP 请求所以说也要符合规则
