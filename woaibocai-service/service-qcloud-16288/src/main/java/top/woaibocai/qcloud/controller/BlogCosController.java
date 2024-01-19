@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import top.woaibocai.qcloud.service.CosService;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +27,26 @@ public class BlogCosController {
     private CosService cosService;
 
     @Operation(summary = "远程调用:用户上传图片")
-    @PostMapping("auth/userUpload")
-    public List<String> userUpload(List<MultipartFile> files) {
+    @PostMapping("userUpload")
+    public List<String> userUpload(List<MultipartFile> files) throws IOException{
+        // 创建一个 布尔类型的值来判断后缀是否规范
+        boolean isLegal = true;
+        for (MultipartFile file : files) {
+            if (file.isEmpty()) return null;
+            if (file.getSize() > 1000000) {
+                isLegal = false; break;
+            }
+            String imageType = file.getOriginalFilename()
+                    .substring(file.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
+            if (!(imageType.equals("jpg") | imageType.equals("jpeg") | imageType.equals("gif") | imageType.equals("png"))) {
+                isLegal = false;
+                break;
+            }
+
+        }
+        if (!isLegal) {
+            return null;
+        }
         return cosService.userUpload(files);
     }
 }

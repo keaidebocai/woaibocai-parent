@@ -4,13 +4,19 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import top.woaibocai.blog.service.CommentService;
 import top.woaibocai.blog.utils.IPutil;
+import top.woaibocai.common.feign.QCloudFeignClint;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.blog.comment.OneCommentDto;
 import top.woaibocai.model.dto.blog.comment.ReplyOneCommentDto;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @program: woaibocai-parent
@@ -24,6 +30,8 @@ import top.woaibocai.model.dto.blog.comment.ReplyOneCommentDto;
 public class CommentController {
     @Resource
     private CommentService commentService;
+    @Resource
+    private QCloudFeignClint qCloudFeignClint;
     @Operation(summary = "根据文章id获取评论")
     @GetMapping("/{articleId}/{current}/{size}")
     public Result getCommentByArticleId(@PathVariable String articleId,
@@ -61,5 +69,12 @@ public class CommentController {
         replyOneCommentVo.setSendCommentUserId(userId);
         replyOneCommentVo.setAddress(iPutil.getIpAddr(request));
         return commentService.replyOneComment(replyOneCommentVo);
+    }
+
+    @Operation(summary = "评论区上传图片")
+    @PostMapping(value = "auth/uploadImageByComment")
+    public Result<List<String>> uploadImageByComment(List<MultipartFile> files) throws IOException {
+        List<String> urls = qCloudFeignClint.userUpload(files);
+        return Result.build(urls,ResultCodeEnum.SUCCESS);
     }
 }

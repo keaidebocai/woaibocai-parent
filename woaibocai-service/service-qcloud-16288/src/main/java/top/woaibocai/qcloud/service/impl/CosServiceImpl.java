@@ -21,6 +21,7 @@ import top.woaibocai.qcloud.utils.ConstantPropertiesUtils;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -83,9 +84,34 @@ public class CosServiceImpl implements CosService {
     }
 
     @Override
-    public List<String> userUpload(List<MultipartFile> files) {
+    public List<String> userUpload(List<MultipartFile> files) throws IOException {
 
-        return null;
+        // 创建 url
+        List<String> urls = new ArrayList<>();
+        // 创建 cos实例
+        COSClient cosClient = createCOSClient();
+        String bucketName = ConstantPropertiesUtils.BUCKET;
+        String keyModel = "/bcblog/userUplaodImage/";
+
+        for (MultipartFile file : files) {
+            InputStream inputStream = new BufferedInputStream(file.getInputStream());
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(file.getSize());
+            // 设置 key 值
+            String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+            String datePath = new DateTime().toString("yyyy/MM/dd");
+            String key = keyModel + datePath + "/" + uuid + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")).toLowerCase();
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName,key,inputStream,objectMetadata);
+            // 上传
+            PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+            // 拼接 url
+            String url = ConstantPropertiesUtils.URL + key;
+            System.out.println(url);
+            urls.add(url);
+        }
+        // 关闭 cosClient
+        cosClient.shutdown();
+        return urls;
     }
 
     COSClient createCOSClient() {

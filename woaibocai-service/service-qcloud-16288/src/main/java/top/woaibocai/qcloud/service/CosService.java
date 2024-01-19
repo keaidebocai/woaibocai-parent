@@ -8,5 +8,5 @@ import java.util.List;
 public interface CosService {
     String uploadThumbnail(MultipartFile file) throws IOException;
 
-    List<String> userUpload(List<MultipartFile> files);
+    List<String> userUpload(List<MultipartFile> files) throws IOException;
 }

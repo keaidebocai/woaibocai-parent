@@ -26,9 +26,6 @@ import java.util.List;
 public class BlogInfoController {
     @Resource
     private BlogInfoService blogInfoService;
-
-    @Resource
-    private QCloudFeignClint qCloudFeignClint;
     @Operation(summary = "站点概要文章数之类的")
     @GetMapping("blogInfo")
     public Result<BlogInfoVo> blogInfo() {
@@ -38,12 +35,6 @@ public class BlogInfoController {
     @GetMapping("tagCloud")
     public Result<List<TagCloudVo>> tagCloud(){
         return blogInfoService.tagCloud();
-    }
-    @Operation(summary = "远程调用:test")
-    @GetMapping("test")
-    public String test(){
-        String testString = qCloudFeignClint.getTestString();
-        return testString;
     }
 
 }
