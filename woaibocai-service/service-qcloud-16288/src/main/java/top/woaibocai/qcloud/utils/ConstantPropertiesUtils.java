@@ -25,6 +25,8 @@ public class ConstantPropertiesUtils implements InitializingBean {
     //存储桶的名称
     @Value("${qcloud.cos.file.bucket}")
     private String bucket;
+    @Value("${qcloud.cos.file.url}")
+    private String url;
 
     //定义公开的静态量
     //密钥id
@@ -35,6 +37,7 @@ public class ConstantPropertiesUtils implements InitializingBean {
     public static String COS_REGION;
     //存储桶的名称
     public static String BUCKET;
+    public static String URL;
 
     @Override
     public void afterPropertiesSet() throws Exception{
@@ -46,6 +49,7 @@ public class ConstantPropertiesUtils implements InitializingBean {
         COS_REGION = cosRegion;
         //存储桶的名称
         BUCKET = bucket;
+        URL = url;
     }
 
 }
