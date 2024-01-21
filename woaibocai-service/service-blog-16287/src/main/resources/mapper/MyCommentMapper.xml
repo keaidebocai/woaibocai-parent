@@ -35,6 +35,16 @@
              #{replyOneCommentVo.address})
 
     </insert>
+    <update id="synchronizeComemntLike">
+        <foreach collection="list" item="kv" index="index" separator=";">
+            UPDATE
+            blog_comment
+            SET
+            comment_like_count=#{kv.v}
+            WHERE
+            id=#{kv.k}
+        </foreach>
+    </update>
     <select id="selectUserNameAndAvaterByUserId" resultType="top.woaibocai.model.Do.KeyAndValue">
         SELECT
             avatar AS myKey,nick_name AS myValue

@@ -10,7 +10,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 import top.woaibocai.blog.mapper.ArticleMapper;
+import top.woaibocai.blog.mapper.MyCommentMapper;
 import top.woaibocai.blog.service.FetchDateUtilService;
+import top.woaibocai.model.Do.KeyValue;
 import top.woaibocai.model.common.RedisKeyEnum;
 import top.woaibocai.model.entity.blog.Article;
 import top.woaibocai.model.vo.blog.BlogInfoVo;
@@ -35,6 +37,8 @@ public class ArticleTask {
     private ArticleMapper articleMapper;
     @Resource
     private FetchDateUtilService fetchDateUtilService;
+    @Resource
+    private MyCommentMapper myCommentMapper;
     // 每小时的 5n 分钟 同步一次浏览量
     @Scheduled(cron = "0 0,5,10,15,20,25,30,35,40,45,50,55 * * * ? ")
     @Transactional
@@ -88,5 +92,17 @@ public class ArticleTask {
         // 更新 "blog:fetchDate:blogInfo" 的 articleViewCount
         hashOperationSSO.put(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO,"articleViewCount",viewTotal);
         System.out.println("================同步成功================");
+    }
+    @Scheduled(cron = "0 0 3 * * ? ")
+    @Transactional
+    @PostConstruct
+    public void synchronizeComemntLike() {
+        Map<String, Object> entries = hashOperationSSO.entries(RedisKeyEnum.BLOG_COMMENT_LIKE);
+        if (!entries.isEmpty()) {
+            List<KeyValue<String,Integer>> commentOfLikeCount = new ArrayList<>();
+            entries.forEach((key,value) -> commentOfLikeCount.add(new KeyValue<>(key,(Integer) value)));
+            myCommentMapper.synchronizeComemntLike(commentOfLikeCount);
+            System.out.println("==============================点赞同步成功==============================");
+        }
     }
 }

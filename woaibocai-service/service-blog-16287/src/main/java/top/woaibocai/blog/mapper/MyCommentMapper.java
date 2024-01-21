@@ -3,6 +3,7 @@ package top.woaibocai.blog.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import top.woaibocai.model.Do.KeyAndValue;
+import top.woaibocai.model.Do.KeyValue;
 import top.woaibocai.model.dto.blog.comment.OneCommentDto;
 import top.woaibocai.model.dto.blog.comment.ReplyOneCommentDto;
 import top.woaibocai.model.vo.blog.comment.CommentDataVo;
@@ -28,4 +29,6 @@ public interface MyCommentMapper {
     List<String> selectTwoCommentIdByOneId(String oneCommentId);
 
     CommentDataVo selectCommentDataVo(String id);
+
+    void synchronizeComemntLike(List<KeyValue<String, Integer>> list);
 }
