@@ -10,4 +10,8 @@ public interface CommentService {
     Result sendOneComment(OneCommentDto oneCommentDto);
 
     Result replyOneComment(ReplyOneCommentDto replyOneCommentVo);
+
+    Result<Long> likeThisComment(String commentId);
+
+    Result<Long> quitLikeThisComment(String commentId);
 }

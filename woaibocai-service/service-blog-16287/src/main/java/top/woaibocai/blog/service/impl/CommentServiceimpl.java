@@ -253,4 +253,16 @@ public class CommentServiceimpl implements CommentService {
         // 给前端返回 数据 用来 push 数组
         return Result.build(commentDataVo,ResultCodeEnum.SUCCESS);
     }
+
+    @Override
+    public Result<Long> likeThisComment(String commentId) {
+        Long likeCount = hashOperationSSO.increment(RedisKeyEnum.BLOG_COMMENT_ALL.comment(commentId), "likeCount", 1);
+        return Result.build(likeCount,200,"点赞成功!");
+    }
+
+    @Override
+    public Result<Long> quitLikeThisComment(String commentId) {
+        Long likeCount = hashOperationSSO.increment(RedisKeyEnum.BLOG_COMMENT_ALL.comment(commentId), "likeCount", -1);
+        return Result.build(likeCount,200,"取消点赞成功!");
+    }
 }

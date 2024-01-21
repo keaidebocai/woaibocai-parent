@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.woaibocai.blog.service.CommentService;
@@ -76,5 +75,15 @@ public class CommentController {
     public Result<List<String>> uploadImageByComment(List<MultipartFile> files) throws IOException {
         List<String> urls = qCloudFeignClint.userUpload(files);
         return Result.build(urls,ResultCodeEnum.SUCCESS);
+    }
+    @Operation(summary = "点赞")
+    @GetMapping("like/{commentId}")
+    public Result<Long> likeThisComment(@PathVariable String commentId) {
+        return commentService.likeThisComment(commentId);
+    }
+    @Operation(summary = "取消点赞")
+    @GetMapping("quitLike/{commentId}")
+    public Result<Long> quitLikeThisComment(@PathVariable String commentId) {
+        return commentService.quitLikeThisComment(commentId);
     }
 }
