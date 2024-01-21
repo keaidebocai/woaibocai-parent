@@ -50,6 +50,7 @@
             blog_comment
         WHERE
            is_deleted=0 AND parent_id='0' AND blog_article_id=#{articleId}
+        ORDER BY create_time ASC
     </select>
     <select id="selectOneCommentById" resultType="top.woaibocai.model.vo.blog.comment.OneCommentVo">
         SELECT
@@ -80,6 +81,7 @@
         FROM
             blog_comment
         WHERE is_deleted=0 AND parent_id=#{oneCommentId}
+        ORDER BY create_time ASC
     </select>
     <select id="selectCommentDataVo" resultType="top.woaibocai.model.vo.blog.comment.CommentDataVo">
         SELECT
