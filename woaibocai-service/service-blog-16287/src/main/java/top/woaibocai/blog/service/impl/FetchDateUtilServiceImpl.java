@@ -185,6 +185,7 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         Map<String,Object> map = objectMapper.convertValue(oneCommentVo, Map.class);
         // 初始化redis
         hashOperationSSO.putAll(RedisKeyEnum.BLOG_COMMENT_ALL.comment(oneCommentId),map);
+        hashOperationSSO.put(RedisKeyEnum.BLOG_COMMENT_LIKE,oneCommentId,oneCommentVo.getLikeCount());
         return oneCommentVo;
     }
 
@@ -209,6 +210,7 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         commentDataVo.setReplyUserNickName(reply.getMyValue());
         Map<String,Object> map = objectMapper.convertValue(commentDataVo, Map.class);
         hashOperationSSO.putAll(RedisKeyEnum.BLOG_COMMENT_ALL.comment(id),map);
+        hashOperationSSO.put(RedisKeyEnum.BLOG_COMMENT_LIKE,id,commentDataVo.getLikeCount());
         return commentDataVo;
     }
 
