@@ -25,9 +25,4 @@ public class CosController {
         System.out.println(url);
         return Result.build(url, ResultCodeEnum.SUCCESS);
     }
-    @Operation(description = "远程调用：test")
-    @GetMapping("test")
-    public String test(){
-        return "success";
-    }
 }

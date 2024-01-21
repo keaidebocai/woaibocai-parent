@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import top.woaibocai.qcloud.service.CosService;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
