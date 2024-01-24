@@ -23,4 +23,6 @@ public interface ArticleMapper {
     List<String> selectArticleUrlByTagUrl(String tagUrl);
 
     List<String> selectArticleUrlByCategoryUrl(String categoryUrl);
+
+    String about(String id);
 }

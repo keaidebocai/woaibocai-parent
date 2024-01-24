@@ -29,6 +29,8 @@ public enum RedisKeyEnum {
     public static final String BLOG_COMMENT_COUNT = "blog:comment:count";
     public static final String BLOG_COMMENT_LIKE = "blog:comment:like";
     public static final String BLOG_LINK_ALL = "blog:link:all";
+    public static final String BLOG_ABOUT = "blog:about";
+    public static final String BLOG_LINK = "blog:link";
     private String prefix ;      // 业务状态码
 
     RedisKeyEnum(String prefix) {
