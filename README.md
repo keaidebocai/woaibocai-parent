@@ -45,3 +45,5 @@ Vue3、Element-plus、Nuxt3、ES6
 > * 今天又又又踩坑啦！ Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: feign.codec.EncodeException: Error converting request body] with root cause
 > * 这个问题出现在使用远程对用 feign 时 传 MultipartFile 类型的文件时 没有指定提交内容类型 "Content-Type" 为 "multipart/form-data "
 > * **解决方案:** 在 **feign 客户端** 的post请求上写 consumes = MediaType.MULTIPART_FORM_DATA_VALUE 指定类型为 **multipart/form-data** 然后在添加 @RequestPart 不然就只能接收到一个文件，无法实现多文件上传 即可解决 本质上 feign 也是 HTTP 请求所以说也要符合规则
+> *2024-1-21*
+> * 不要忘了写ip归属地 和 后台管理需要重新写了
