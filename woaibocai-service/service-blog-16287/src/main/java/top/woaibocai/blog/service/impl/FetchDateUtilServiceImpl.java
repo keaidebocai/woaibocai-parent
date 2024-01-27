@@ -213,13 +213,6 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         return commentDataVo;
     }
 
-    // 初始化并返回 该FriendsOrLink 的所有二级评论id 没有就返回空数组
-    @Override
-    public List<String> initOneCommentListByFriendsOrLink(String oneCommentId) {
-        List<String> list = myCommentMapper.selectTwoCommentIdByOneId(oneCommentId);
-        return list;
-    }
-
     private Map<String, Integer> getTagHasArtilceCountMap() {
         // 从 redis 上 key "blog:fetchDate:tagHasArtilceCountMap" 获取 tagHasArtilceCountMap
         Map<String, Integer> tagHasArtilceCountMap = hashOperationsSSI.entries(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
