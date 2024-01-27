@@ -27,4 +27,6 @@ public interface FetchDateUtilService {
     List<String> initTwoCommentListByOneId(String oneCommentId);
 
     CommentDataVo initTwoCommentById(String id);
+    // 初始化并返回 该FriendsOrLink 的所有二级评论id
+    List<String> initOneCommentListByFriendsOrLink(String oneCommentId);
 }

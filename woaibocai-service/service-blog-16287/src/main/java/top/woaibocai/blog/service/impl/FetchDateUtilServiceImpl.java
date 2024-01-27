@@ -158,7 +158,6 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
     public Long getThisArticleCommentTotal(String articleId) {
         // 获取该文章的所有评论总数
         Integer total = hashOperationsSSI.get(RedisKeyEnum.BLOG_COMMENT_COUNT, articleId);
-        System.out.println(total);
          // 是null 证明key不存在要初始化整个hash
         if (total == null) {
             // 查询数据库 更新所有文章的总评论数
@@ -212,6 +211,13 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         hashOperationSSO.putAll(RedisKeyEnum.BLOG_COMMENT_ALL.comment(id),map);
         hashOperationSSO.put(RedisKeyEnum.BLOG_COMMENT_LIKE,id,commentDataVo.getLikeCount());
         return commentDataVo;
+    }
+
+    // 初始化并返回 该FriendsOrLink 的所有二级评论id 没有就返回空数组
+    @Override
+    public List<String> initOneCommentListByFriendsOrLink(String oneCommentId) {
+        List<String> list = myCommentMapper.selectTwoCommentIdByOneId(oneCommentId);
+        return list;
     }
 
     private Map<String, Integer> getTagHasArtilceCountMap() {

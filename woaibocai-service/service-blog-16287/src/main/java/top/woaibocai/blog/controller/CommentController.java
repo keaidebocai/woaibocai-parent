@@ -86,9 +86,4 @@ public class CommentController {
     public Result<Long> quitLikeThisComment(@PathVariable String commentId) {
         return commentService.quitLikeThisComment(commentId);
     }
-    @Operation(summary = "友链评论获取")
-    @GetMapping("like/getComment")
-    public Result getLikeComment() {
-        return Result.build(null,ResultCodeEnum.SUCCESS);
-    }
 }

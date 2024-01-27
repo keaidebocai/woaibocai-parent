@@ -15,7 +15,6 @@ import top.woaibocai.model.common.RedisKeyEnum;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.blog.comment.OneCommentDto;
-import top.woaibocai.model.vo.blog.article.BlogArticleVo;
 import top.woaibocai.model.vo.blog.comment.CommentDataVo;
 import top.woaibocai.model.vo.blog.comment.OneCommentVo;
 import top.woaibocai.model.dto.blog.comment.ReplyOneCommentDto;
@@ -45,20 +44,24 @@ public class CommentServiceimpl implements CommentService {
     private FetchDateUtilService fetchDateUtilService;
     @Override
     public Result getCommentByArticleId(String articleId,Long current,Long size) {
-        // 查看该文章是否真实存在
-        Map<String, Object> articleAndUrl = hashOperationSSO.entries(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
-        // 如果是null 那就要初始化redis
-        Boolean hasKey = null;
-        if (articleAndUrl.isEmpty()) {
-            Map<String, String> articleIdAndUrlMap = fetchDateUtilService.getArticleIdAndUrlMap();
-            hasKey = articleIdAndUrlMap.containsKey(articleId);
-        } else {
-            hasKey = articleAndUrl.containsKey(articleId);
+        boolean isFriendsOrLink = articleId.contains("114514");
+        if (!isFriendsOrLink) {
+            // 查看该文章是否真实存在
+            Map<String, Object> articleAndUrl = hashOperationSSO.entries(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
+            // 如果是null 那就要初始化redis
+            Boolean hasKey = null;
+            if (articleAndUrl.isEmpty()) {
+                Map<String, String> articleIdAndUrlMap = fetchDateUtilService.getArticleIdAndUrlMap();
+                hasKey = articleIdAndUrlMap.containsKey(articleId);
+            } else {
+                hasKey = articleAndUrl.containsKey(articleId);
+            }
+
+            if (!hasKey) {
+                return Result.build("虚空获取",ResultCodeEnum.DATA_ERROR);
+            }
         }
 
-        if (!hasKey) {
-            return Result.build("虚空获取",ResultCodeEnum.DATA_ERROR);
-        }
         // 获取该文章的所有评论总数  并初始化
         Long articleSubTotal = fetchDateUtilService.getThisArticleCommentTotal(articleId);
         if (articleSubTotal == 0L) {
@@ -163,15 +166,19 @@ public class CommentServiceimpl implements CommentService {
 
     @Override
     public Result sendOneComment(OneCommentDto oneCommentDto) {
-        // 判断 BLOG_FETCHDATE_ARTICLE_AND_URL 是否在 redis 中
-        Map articleIds = hashOperationSSO.entries(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
-        if (articleIds.isEmpty()) {
-            articleIds = fetchDateUtilService.getArticleIdAndUrlMap();
+        boolean contains = oneCommentDto.getArticleId().contains("114514");
+        if (!contains) {
+            // 判断 BLOG_FETCHDATE_ARTICLE_AND_URL 是否在 redis 中
+            Map articleIds = hashOperationSSO.entries(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
+            if (articleIds.isEmpty()) {
+                articleIds = fetchDateUtilService.getArticleIdAndUrlMap();
+            }
+            boolean hasArticle =  articleIds.containsKey(oneCommentDto.getArticleId());
+            if (!hasArticle) {
+                return Result.build("你评论了一个没有的文章，如评！",ResultCodeEnum.DATA_ERROR);
+            }
         }
-        boolean hasArticle =  articleIds.containsKey(oneCommentDto.getArticleId());
-        if (!hasArticle) {
-            return Result.build("你评论了一个没有的文章，如评！",ResultCodeEnum.DATA_ERROR);
-        }
+
         // 1. 存 数据库
         // 获取该用户的头像和用户名
         // 用 gateway 做验证了所以这里不可能为空
