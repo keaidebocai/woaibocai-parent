@@ -22,7 +22,6 @@ public class CosController {
     @PostMapping("uploadThumbnail")
     public Result uploadThumbnail(MultipartFile file) throws IOException {
         String url = cosService.uploadThumbnail(file);
-        System.out.println(url);
         return Result.build(url, ResultCodeEnum.SUCCESS);
     }
 }

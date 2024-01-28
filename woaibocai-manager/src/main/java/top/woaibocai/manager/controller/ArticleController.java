@@ -40,9 +40,9 @@ public class ArticleController {
         return Result.build(null, ResultCodeEnum.SUCCESS);
     }
     @Operation(summary = "删除文章")
-    @DeleteMapping("deleteById/{id}")
-    public Result DeletedArticleById(@PathVariable Integer id){
-        articleService.deletedArticleById(id);
+    @DeleteMapping("deleteById/{id}/{url}")
+    public Result DeletedArticleById(@PathVariable String id,@PathVariable String url){
+        articleService.deletedArticleById(id,url);
         return Result.build(null, ResultCodeEnum.SUCCESS);
     }
     @PostMapping("writeArticle")

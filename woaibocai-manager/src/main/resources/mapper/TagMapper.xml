@@ -4,19 +4,23 @@
     <insert id="insertTag">
         insert into
             blog_tag
-            (id,tag_name,remark,create_time,update_time)
+            (id,tag_name,tag_url,color,remark,create_time,update_time)
             value
-            (#{id},#{tagName},#{remark},now(),now())
+            (#{id},#{tagName},#{tagUrl},#{color},#{remark},now(),now())
     </insert>
     <update id="deleted">
         UPDATE blog_tag SET is_deleted=1 WHERE id=#{id}
     </update>
     <update id="updateTag">
-        UPDATE blog_tag SET tag_name=#{tagName},remark=#{remark},update_time=now() WHERE id=#{id}
+        UPDATE blog_tag
+        SET
+            tag_name=#{tagName},remark=#{remark},tag_url=#{tagUrl},color=#{color},update_time=now()
+        WHERE
+            id=#{id}
     </update>
     <select id="findByTageName" resultType="top.woaibocai.model.entity.blog.Tag">
         SELECT
-            id,tag_name,remark
+            id,tag_name,remark,tag_url,color
         FROM
             blog_tag
         <where>

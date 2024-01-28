@@ -3,12 +3,14 @@ package top.woaibocai.manager.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.common.utils.BeanCopyUtils;
 import top.woaibocai.manager.mapper.ArticleMapper;
 import top.woaibocai.manager.mapper.ArticleTagMapper;
 import top.woaibocai.manager.service.ArticleService;
+import top.woaibocai.model.common.RedisKeyEnum;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.article.QueryArticleCriteria;
@@ -35,7 +37,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource
     private ArticleTagMapper articleTagMapper;
     @Resource
-    private RedisTemplate<String,String> redisTemplate;
+    private RedisTemplate<String,Object> redisTemplateObject;
     @Override
     public Result<IPage<ArticleStatusPageVo>> findPage(Integer current, Integer size, QueryArticleCriteria queryArticleCriteria) {
         IPage<ArticleStatusPageVo> page = new Page<>(current,size);
@@ -46,11 +48,18 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void updateArticleStatus(UpdateArticleStatusDto updateArticleStatusDto) {
         articleMapper.updateArticleStatus(updateArticleStatusDto);
+        // 删除 fetchDate 的
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
+        // 删除文章在redis上
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_ARTICLE.articleUrl(updateArticleStatusDto.getUrl()));
     }
 
     @Override
-    public void deletedArticleById(Integer id) {
+    public void deletedArticleById(String id,String url) {
         articleMapper.deletedArticleById(id);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_ARTICLE.articleUrl(url));
     }
 
     @Override
@@ -66,6 +75,11 @@ public class ArticleServiceImpl implements ArticleService {
             tagVo.setArticleTagId(tagId);
         }
         articleTagMapper.insertArticleTag(id,tags);
+        // 删除 fetchDate 的
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_AERICLE_INDEX);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 
@@ -94,6 +108,13 @@ public class ArticleServiceImpl implements ArticleService {
             tagVo.setArticleTagId(tagId);
         }
         articleTagMapper.insertArticleTag(writeArticleDto.getId(),tags);
+        // 删除 fetchDate 的
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
+        // 删除文章在redis上
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_ARTICLE.articleUrl(writeArticleDto.getUrl()));
+
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 }

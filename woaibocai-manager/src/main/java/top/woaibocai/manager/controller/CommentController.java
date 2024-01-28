@@ -22,8 +22,9 @@ public class CommentController {
         return commentService.list(current,size,queryCommentDto);
     }
     @Operation(summary = "删除评论")
-    @DeleteMapping("delete/{id}")
-    public Result deleteById(@PathVariable String id){
-        return commentService.deleteById(id);
+    @DeleteMapping("delete/{id}/{blogArticleId}")
+    public Result deleteById(@PathVariable String id,
+                             @PathVariable String blogArticleId){
+        return commentService.deleteById(id,blogArticleId);
     }
 }

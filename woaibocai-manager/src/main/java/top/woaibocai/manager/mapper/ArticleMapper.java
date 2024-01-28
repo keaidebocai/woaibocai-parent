@@ -16,7 +16,7 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     void updateArticleStatus(UpdateArticleStatusDto updateArticleStatusDto);
 
-    void deletedArticleById(Integer id);
+    void deletedArticleById(String id);
 
     void writeArticle(WriteArticleDto writeArticleDto);
 

@@ -32,6 +32,8 @@ public class Category implements Serializable {
      */
     @Schema(description = "分类url")
     private String categoryUrl;
+    @Schema(description = "icon url")
+    private String categoryIconUrl;
 
     /**
      * 描述

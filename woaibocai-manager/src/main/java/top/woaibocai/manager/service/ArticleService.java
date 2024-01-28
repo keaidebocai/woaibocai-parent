@@ -12,7 +12,7 @@ public interface ArticleService {
 
     void updateArticleStatus(UpdateArticleStatusDto updateArticleStatusDto);
 
-    void deletedArticleById(Integer id);
+    void deletedArticleById(String id,String url);
 
     Result writeArticle(WriteArticleDto writeArticleDto);
 

@@ -4,9 +4,9 @@
     <insert id="writeArticle">
         INSERT INTO
             blog_article
-            (id,user_id,title,summary,content,blog_category_id,thumbnail,is_top,is_commont,status,create_time,update_time)
+            (id,url,user_id,title,summary,content,blog_category_id,thumbnail,is_top,is_commont,status,create_time,update_time)
         VALUE
-            (#{id},20010628,#{title},#{summary},#{content},#{blogCategoryId},#{thumbnail},#{isTop},#{isCommont},#{status},now(),now())
+            (#{id},#{url},20010628,#{title},#{summary},#{content},#{blogCategoryId},#{thumbnail},#{isTop},#{isCommont},#{status},now(),now())
     </insert>
     <update id="updateArticleStatus">
         update
@@ -33,7 +33,7 @@
     <!--IPage<ArticlePageVo> findPage(@Param("page") IPage<ArticlePageVo> page);-->
     <select id="findPage" resultType="top.woaibocai.model.vo.manager.ArticleStatusPageVo">
         select
-            id,title,is_top,view_count,is_commont,status,is_deleted,create_time,update_time
+            id,title,is_top,view_count,is_commont,status,is_deleted,create_time,update_time,url
         from
             blog_article
         <where>
@@ -64,7 +64,7 @@
     </select>
     <select id="mySelectById" resultType="top.woaibocai.model.entity.blog.Article">
         SELECT
-            id,blog_category_id,title,summary,thumbnail,content,status,is_commont,is_top
+            id,blog_category_id,title,summary,thumbnail,content,status,is_commont,is_top,url
         FROM
             blog_article
         WHERE

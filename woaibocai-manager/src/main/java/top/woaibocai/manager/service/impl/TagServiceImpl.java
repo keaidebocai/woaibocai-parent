@@ -4,9 +4,11 @@ import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.manager.mapper.TagMapper;
 import top.woaibocai.manager.service.TagService;
+import top.woaibocai.model.common.RedisKeyEnum;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.tag.QueryTagDto;
@@ -21,6 +23,8 @@ import java.util.UUID;
 public class TagServiceImpl implements TagService {
     @Resource
     private TagMapper tagMapper;
+    @Resource
+    private RedisTemplate<String,Object> redisTemplateObject;
     @Override
     public Result findByTageName(Integer current, Integer size, QueryTagDto queryTagDto) {
         //先放进IPage容器里
@@ -37,17 +41,28 @@ public class TagServiceImpl implements TagService {
         }
         if (!StringUtils.isEmpty(queryTagDto.getId())){
             tagMapper.updateTag(queryTagDto);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_TAG_ALL_INFO);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
             return Result.build(null,114,"更新成功!");
         }
         String id = UUID.randomUUID().toString().replace("-", "");
         queryTagDto.setId(id);
         tagMapper.insertTag(queryTagDto);
+        // 删除 redis
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_TAG_ALL_INFO);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 
     @Override
     public Result deleted(String id) {
         tagMapper.deleted(id);
+        // 删除 redis
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_TAG_ALL_INFO);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 

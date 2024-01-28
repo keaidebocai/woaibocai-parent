@@ -3,6 +3,7 @@ package top.woaibocai.qcloud.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ import java.util.List;
 @Tag(name = "cos文件上传")
 @RestController
 @RequestMapping("/api/blog/cos")
+@CrossOrigin
 public class BlogCosController {
     @Resource
     private CosService cosService;

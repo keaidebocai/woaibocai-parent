@@ -4,9 +4,9 @@
     <insert id="insertCategory">
         INSERT INTO
             blog_category
-        (id,category_name,description,create_time,update_time)
+        (id,category_name,category_url,category_icon_url,description,create_time,update_time)
         VALUE
-        (#{id},#{categoryName},#{description},now(),now())
+        (#{id},#{categoryName},#{categoryUrl},#{categoryIconUrl},#{description},now(),now())
     </insert>
     <update id="deletedById">
         UPDATE blog_category SET is_deleted=1 WHERE id=#{id}
@@ -15,13 +15,13 @@
         UPDATE
             blog_category
         SET
-            category_name=#{categoryName},description=#{description},update_time=now()
+            category_icon_url=#{categoryIconUrl},category_url=#{categoryUrl},category_name=#{categoryName},description=#{description},update_time=now()
         WHERE
             id=#{id}
     </update>
     <select id="queryList" resultType="top.woaibocai.model.entity.blog.Category">
         SELECT
-            id,category_name,description
+            id,category_name,description,category_icon_url,category_url
         FROM
             blog_category
         <where>

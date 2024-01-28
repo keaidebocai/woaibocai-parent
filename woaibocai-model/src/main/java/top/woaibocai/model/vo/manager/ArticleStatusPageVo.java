@@ -56,4 +56,9 @@ public class ArticleStatusPageVo {
      */
     @Schema(description = "修改时间")
     private LocalDateTime updateTime;
+    /**
+     * url
+     */
+    @Schema(description = "文章的url")
+    private String url;
 }

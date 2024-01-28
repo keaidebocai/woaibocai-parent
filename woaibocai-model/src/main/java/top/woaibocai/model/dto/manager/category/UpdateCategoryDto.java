@@ -23,4 +23,16 @@ public class UpdateCategoryDto {
      */
     @Schema(description = "描述")
     private String description;
+
+    /**
+     * icon url
+     */
+    @Schema(description = "icon url")
+    private String categoryIconUrl;
+    /**
+     * url
+     */
+    @Schema(description = "url")
+    private String categoryUrl;
+
 }

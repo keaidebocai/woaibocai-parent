@@ -30,4 +30,9 @@ public class WriteArticleDto {
     private String isCommont;
     @Schema(description = "置顶")
     private String isTop;
+    /**
+     * url
+     */
+    @Schema(description = "文章的url")
+    private String url;
 }

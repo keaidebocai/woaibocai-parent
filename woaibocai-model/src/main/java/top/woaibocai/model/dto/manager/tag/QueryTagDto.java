@@ -11,4 +11,8 @@ public class QueryTagDto {
     private String tagName;
     @Schema(description = "标签备注")
     private String remark;
+    @Schema(description = "url")
+    private String tagUrl;
+    @Schema(description = "color")
+    private String color;
 }

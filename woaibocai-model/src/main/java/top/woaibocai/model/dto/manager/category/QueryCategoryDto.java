@@ -14,4 +14,15 @@ public class QueryCategoryDto {
      */
     @Schema(description = "分类名")
     private String categoryName;
+
+    /**
+     * icon url
+     */
+    @Schema(description = "icon url")
+    private String categoryIconUrl;
+    /**
+     * url
+     */
+    @Schema(description = "url")
+    private String categoryUrl;
 }

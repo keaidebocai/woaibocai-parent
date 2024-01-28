@@ -73,11 +73,8 @@ public class CosServiceImpl implements CosService {
         // 确认本进程不再使用 cosClient 实例之后，关闭即可
         cosClient.shutdown();
         //需要把cos上传到的文件路径返回
-        String url = "https://"
-                + ConstantPropertiesUtils.BUCKET
-                + ".cos."
-                + ConstantPropertiesUtils.COS_REGION
-                + ".myqcloud.com"
+        String url =
+                ConstantPropertiesUtils.URL
                 + "/bcblog/thumbnail/"
                 + fileName;
         return url;

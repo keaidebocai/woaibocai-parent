@@ -44,6 +44,11 @@ public class UpdateArticleStatusDto {
      */
     @Schema(description = "是否发布(0:否,1:是)")
     private String status;
+    /**
+     * url
+     */
+    @Schema(description = "文章的url")
+    private String url;
 
 
 }

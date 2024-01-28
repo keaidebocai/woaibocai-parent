@@ -4,9 +4,11 @@ import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.manager.mapper.CategoryMapper;
 import top.woaibocai.manager.service.CategoryService;
+import top.woaibocai.model.common.RedisKeyEnum;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.category.QueryCategoryDto;
@@ -21,6 +23,8 @@ import java.util.UUID;
 public class CategoryServiceImpl implements CategoryService {
     @Resource
     private CategoryMapper categoryMapper;
+    @Resource
+    private RedisTemplate<String,Object> redisTemplateObject;
     @Override
     public Result list(Integer current, Integer size, QueryCategoryDto queryCategoryDto) {
         IPage<Category> iPage = new Page<>(current,size);
@@ -30,12 +34,16 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Result deletedById(String id) {
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_CATEGORY_INFO);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
         categoryMapper.deletedById(id);
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 
     @Override
     public Result putOfCategory(UpdateCategoryDto updateCategoryDto) {
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_CATEGORY_INFO);
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
         if (StringUtils.isEmpty(updateCategoryDto.getId())){
             String id = UUID.randomUUID().toString().replace("-", "");
             updateCategoryDto.setId(id);
