@@ -54,12 +54,16 @@ public class ArticleServiceImpl implements ArticleService {
         redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
         // 删除文章在redis上
         redisTemplateObject.delete(RedisKeyEnum.BLOG_ARTICLE.articleUrl(updateArticleStatusDto.getUrl()));
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
     }
 
     @Override
     public void deletedArticleById(String id,String url) {
         articleMapper.deletedArticleById(id);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_ARTICLE.articleUrl(url));
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
     }
 
     @Override
@@ -80,6 +84,8 @@ public class ArticleServiceImpl implements ArticleService {
         redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_AERICLE_INDEX);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 
@@ -92,6 +98,8 @@ public class ArticleServiceImpl implements ArticleService {
         //查articleTag表再赋值
         List<TagVo> tagVoList = articleTagMapper.selectByArticleId(writeArticleDto.getId());
         writeArticleDto.setTags(tagVoList);
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
         return Result.build(writeArticleDto,ResultCodeEnum.SUCCESS);
     }
 
@@ -112,6 +120,8 @@ public class ArticleServiceImpl implements ArticleService {
         redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
         // 删除文章在redis上
         redisTemplateObject.delete(RedisKeyEnum.BLOG_ARTICLE.articleUrl(writeArticleDto.getUrl()));
 

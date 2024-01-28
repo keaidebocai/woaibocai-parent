@@ -41,6 +41,8 @@ public class CommentServiceImpl implements CommentService {
         redisTemplateObject.delete(RedisKeyEnum.BLOG_COMMENT_ALL.comment(id));
         redisTemplateObject.delete(RedisKeyEnum.BLOG_COMMENT_ARTICLE.comment(blogArticleId));
         redisTemplateObject.delete(RedisKeyEnum.BLOG_COMMENT_COUNT);
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 

@@ -22,4 +22,11 @@
             is_deleted=0
         ORDER BY update_time ASC
     </select>
+    <select id="selectTagUrlAndTime" resultType="top.woaibocai.model.vo.blog.other.Sitemap">
+        SELECT
+            tag_url AS loc,update_time AS lastmod
+        FROM
+            blog_tag
+        WHERE is_deleted=0 ORDER BY update_time ASC
+    </select>
 </mapper>

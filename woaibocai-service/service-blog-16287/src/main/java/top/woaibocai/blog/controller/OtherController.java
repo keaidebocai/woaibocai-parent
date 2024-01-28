@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.woaibocai.blog.service.OtherService;
 import top.woaibocai.model.common.Result;
+import top.woaibocai.model.vo.blog.other.Sitemap;
+
+import java.util.List;
 
 /**
  * @program: woaibocai-parent
@@ -30,5 +33,10 @@ public class OtherController {
     @GetMapping("link")
     public Result<String> link() {
         return otherService.link();
+    }
+    @Operation(summary = "sitemap")
+    @GetMapping("sitemap")
+    public List<Sitemap> sitemaps() {
+        return otherService.sitemap();
     }
 }

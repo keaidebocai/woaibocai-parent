@@ -36,6 +36,8 @@ public class CategoryServiceImpl implements CategoryService {
     public Result deletedById(String id) {
         redisTemplateObject.delete(RedisKeyEnum.BLOG_CATEGORY_INFO);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
         categoryMapper.deletedById(id);
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
@@ -44,6 +46,8 @@ public class CategoryServiceImpl implements CategoryService {
     public Result putOfCategory(UpdateCategoryDto updateCategoryDto) {
         redisTemplateObject.delete(RedisKeyEnum.BLOG_CATEGORY_INFO);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
         if (StringUtils.isEmpty(updateCategoryDto.getId())){
             String id = UUID.randomUUID().toString().replace("-", "");
             updateCategoryDto.setId(id);

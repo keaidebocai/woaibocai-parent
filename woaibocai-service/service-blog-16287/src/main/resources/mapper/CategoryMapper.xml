@@ -30,4 +30,11 @@
         ORDER BY update_time ASC
 
     </select>
+    <select id="selectCategoryUrlAndTime" resultType="top.woaibocai.model.vo.blog.other.Sitemap">
+        SELECT
+            category_url AS loc,update_time AS lastmod
+        FROM
+            blog_category
+        WHERE is_deleted=0 ORDER BY update_time ASC
+    </select>
 </mapper>

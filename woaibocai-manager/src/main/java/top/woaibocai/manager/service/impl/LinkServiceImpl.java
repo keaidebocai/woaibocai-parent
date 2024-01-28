@@ -41,6 +41,8 @@ public class LinkServiceImpl implements LinkService {
         }
         linkMapper.putStatus(linkPutStatusDto);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_LINK);
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
         return Result.build(null,200,"更新成功!");
     }
 
@@ -48,6 +50,8 @@ public class LinkServiceImpl implements LinkService {
     public Result deleteById(String id) {
         linkMapper.deleteById(id);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_LINK);
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
         return Result.build(null,200,"删除成功!");
     }
 
@@ -58,6 +62,8 @@ public class LinkServiceImpl implements LinkService {
         linkMapper.insertLink(insertLinkDto);
         LinkVo linkVo = BeanCopyUtils.copyBean(insertLinkDto, LinkVo.class);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_LINK);
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
         return Result.build(null,200,"添加成功!");
     }
 }

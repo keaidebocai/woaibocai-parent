@@ -3,6 +3,7 @@ package top.woaibocai.blog.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import top.woaibocai.model.entity.blog.Article;
 import top.woaibocai.model.vo.blog.article.BlogArticleVo;
+import top.woaibocai.model.vo.blog.other.Sitemap;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface ArticleMapper {
     List<String> selectArticleUrlByCategoryUrl(String categoryUrl);
 
     String about(String id);
+
+    List<Sitemap> selectArticleUrlAndTime();
 }

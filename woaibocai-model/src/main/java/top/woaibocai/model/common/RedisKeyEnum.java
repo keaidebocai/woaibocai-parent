@@ -31,6 +31,7 @@ public enum RedisKeyEnum {
     public static final String BLOG_LINK_ALL = "blog:link:all";
     public static final String BLOG_ABOUT = "blog:about";
     public static final String BLOG_LINK = "blog:link";
+    public static final String BLOG_SITEMAP = "blog:sitemap";
     private String prefix ;      // 业务状态码
 
     RedisKeyEnum(String prefix) {

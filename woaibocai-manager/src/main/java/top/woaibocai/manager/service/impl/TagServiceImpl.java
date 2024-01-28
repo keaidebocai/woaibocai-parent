@@ -44,6 +44,8 @@ public class TagServiceImpl implements TagService {
             redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
             redisTemplateObject.delete(RedisKeyEnum.BLOG_TAG_ALL_INFO);
             redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+            // 删除redis上的站点地图
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
             return Result.build(null,114,"更新成功!");
         }
         String id = UUID.randomUUID().toString().replace("-", "");
@@ -53,6 +55,8 @@ public class TagServiceImpl implements TagService {
         redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_TAG_ALL_INFO);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 
@@ -63,6 +67,8 @@ public class TagServiceImpl implements TagService {
         redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_TAG_ALL_INFO);
         redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+        // 删除redis上的站点地图
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 
