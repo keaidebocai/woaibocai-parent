@@ -1,5 +1,7 @@
 package top.woaibocai.blog.controller;
 
+import com.jthinking.common.util.ip.IPInfo;
+import com.jthinking.common.util.ip.IPInfoUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -47,7 +49,8 @@ public class CommentController {
             return Result.build("虚空评论，出现异常！", ResultCodeEnum.DATA_ERROR);
         }
         IPutil iPutil = new IPutil();
-        oneCommentDto.setAddress(iPutil.getIpAddr(request));
+        IPInfo ipInfo = IPInfoUtils.getIpInfo(iPutil.getIpAddr(request));
+        oneCommentDto.setAddress(ipInfo.getProvince());
         oneCommentDto.setUserId(userId);
         return commentService.sendOneComment(oneCommentDto);
     }
@@ -65,8 +68,9 @@ public class CommentController {
             return Result.build("虚空评论，数据异常！", ResultCodeEnum.DATA_ERROR);
         }
         IPutil iPutil = new IPutil();
+        IPInfo ipInfo = IPInfoUtils.getIpInfo(iPutil.getIpAddr(request));
+        replyOneCommentVo.setAddress(ipInfo.getProvince());
         replyOneCommentVo.setSendCommentUserId(userId);
-        replyOneCommentVo.setAddress(iPutil.getIpAddr(request));
         return commentService.replyOneComment(replyOneCommentVo);
     }
 
