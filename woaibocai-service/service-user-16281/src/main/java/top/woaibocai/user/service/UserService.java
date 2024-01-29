@@ -16,4 +16,5 @@ public interface UserService {
     Result getUserInfo(String newToken);
 
     Result logout(LoginVo loginVo);
+
 }
