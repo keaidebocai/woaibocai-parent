@@ -11,7 +11,10 @@ public enum RedisKeyEnum {
     BLOG_COMMENT_ALL("blog:comment:all"),
     // blog:comment:articleId?:pComment
     BLOG_COMMENT_ARTICLE("blog:comment:article"),
-    BLOG_COMMENT_ONECOMMENT("blog:comment:onecomment");
+    BLOG_COMMENT_ONECOMMENT("blog:comment:onecomment"),
+    BLOG_REGISTER_EMAIL("blog:register:email"),
+    BLOG_LOGIN_COUNT("blog:login:count"),
+    BLOG_FORGOT_EMAIL("blog:forgot:email");
 
     //文章的索引 redis数据类型: list: String String
     public static final String BLOG_AERICLE_INDEX = "blog:article:index";
@@ -63,6 +66,14 @@ public enum RedisKeyEnum {
         return sb.toString();
     }
     public String comment(String... values) {
+        StringBuffer sb = new StringBuffer(45);
+        sb.append(this.prefix);
+        for (String value : values) {
+            sb.append(":").append(value);
+        }
+        return sb.toString();
+    }
+    public String common(String... values) {
         StringBuffer sb = new StringBuffer(45);
         sb.append(this.prefix);
         for (String value : values) {
