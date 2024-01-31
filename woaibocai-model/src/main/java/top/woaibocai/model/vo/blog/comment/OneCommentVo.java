@@ -36,7 +36,7 @@ public class OneCommentVo {
     private String content;
 
     @Schema(description = "点赞量")
-    private Long likeCount ;
+    private Integer likeCount ;
     @Schema(description = "地点")
     private String address;
     @Schema(description = "子评论集合")

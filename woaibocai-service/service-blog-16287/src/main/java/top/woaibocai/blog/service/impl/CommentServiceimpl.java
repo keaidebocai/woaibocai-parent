@@ -195,6 +195,7 @@ public class CommentServiceimpl implements CommentService {
         oneCommentVo.setCreateTime(LocalDateTime.now());
         oneCommentVo.setSendUserAvater(avaterAndUserName.getMyKey());
         oneCommentVo.setSandUserNickName(avaterAndUserName.getMyValue());
+        oneCommentVo.setLikeCount(0);
 
         // 2. 存 redis
         Map<String,String> map = objectMapper.convertValue(oneCommentVo,Map.class);
@@ -204,13 +205,13 @@ public class CommentServiceimpl implements CommentService {
         // redis 中不存在就 初始化redis  存在就直接添加id
         if (hasSize == 0L) {
             fetchDateUtilService.initOneCommentList(oneCommentDto.getArticleId());
-            hashOperationSSO.increment(RedisKeyEnum.BLOG_COMMENT_COUNT,oneCommentDto.getArticleId(),1L);
+            hashOperationSSO.increment(RedisKeyEnum.BLOG_COMMENT_COUNT,oneCommentDto.getArticleId(),1);
             return Result.build(oneCommentVo,ResultCodeEnum.SUCCESS);
         }
         // 如果不是0 那就有可以直接加
         listOperationSS.rightPush(RedisKeyEnum.BLOG_COMMENT_ARTICLE.articleUrl(oneCommentDto.getArticleId()),id);
         // 总评论数 +1
-        hashOperationSSO.increment(RedisKeyEnum.BLOG_COMMENT_COUNT,oneCommentDto.getArticleId(),1L);
+        hashOperationSSO.increment(RedisKeyEnum.BLOG_COMMENT_COUNT,oneCommentDto.getArticleId(),1);
         return Result.build(oneCommentVo,ResultCodeEnum.SUCCESS);
     }
 
@@ -251,6 +252,7 @@ public class CommentServiceimpl implements CommentService {
         commentDataVo.setParentId(replyOneCommentVo.getParentId());
         commentDataVo.setAddress(replyOneCommentVo.getAddress());
         commentDataVo.setReplyCommentId(replyOneCommentVo.getReplyCommentId());
+        commentDataVo.setLikeCount(0);
         // 插入数据库完事了，把数据推上 redis 然后 给list集合 在右边 push 上去
         Map map = objectMapper.convertValue(commentDataVo, Map.class);
         hashOperationSSO.putAll(RedisKeyEnum.BLOG_COMMENT_ALL.comment(id),map);

@@ -47,7 +47,7 @@ public class CommentDataVo {
     private String parentId;
 
     @Schema(description = "点赞量")
-    private Long likeCount ;
+    private Integer likeCount ;
 
     @Schema(description = "地点")
     private String address;
