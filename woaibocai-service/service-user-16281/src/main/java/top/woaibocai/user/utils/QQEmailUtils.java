@@ -37,6 +37,7 @@ public class QQEmailUtils {
             javaMailSender.send(mailMessage);
         } catch (MessagingException e) {
             log.error("发送邮件失败",e);
+            e.printStackTrace();
             return false;
         }
         return true;
