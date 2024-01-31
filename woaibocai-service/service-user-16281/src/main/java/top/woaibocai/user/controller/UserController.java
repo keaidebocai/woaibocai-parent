@@ -9,6 +9,7 @@ import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.dto.manager.UserRegisterDto;
 import top.woaibocai.model.dto.user.AuthorizationsDto;
+import top.woaibocai.model.dto.user.UserForgotDto;
 import top.woaibocai.model.vo.LoginVo;
 import top.woaibocai.user.service.UserService;
 import top.woaibocai.user.utils.QQEmailUtils;
@@ -27,8 +28,6 @@ import top.woaibocai.user.utils.QQEmailUtils;
 public class UserController {
     @Resource
     private UserService userService;
-    @Resource
-    private QQEmailUtils qqEmailUtils;
     @Operation(summary = "用户登录")
     @PostMapping("login")
     public Result<String> login(@RequestBody UserLoginDto userLoginDto) {
@@ -37,6 +36,12 @@ public class UserController {
     @Operation(summary = "注册demo")
     @PostMapping("register")
     public Result register(@RequestBody UserRegisterDto userRegisterDto) {
+        if (userRegisterDto.getUserName().isEmpty() | userRegisterDto.getPassword().isEmpty() | userRegisterDto.getPassword().isEmpty() | userRegisterDto.getNickName().isEmpty() | userRegisterDto.getEmail().isEmpty() | userRegisterDto.getCode().isEmpty()){
+            return Result.build(null,204,"看看什么没写吧!");
+        }
+        if (!userRegisterDto.getEmail().matches("^[a-zA-Z0-9._%+-]+@(qq\\.com|foxmail\\.com|gmail\\.com|163\\.com|aliyun\\.com)$")) {
+            return Result.build(null,204,"邮箱格式不正确!");
+        }
         return userService.register(userRegisterDto);
     }
     @Operation(summary = "刷新token")
@@ -56,11 +61,35 @@ public class UserController {
     public Result logout(@RequestBody LoginVo loginVo){
         return userService.logout(loginVo);
     }
-    @Operation(summary = "邮箱验证测试")
-    @GetMapping("email/{emial}")
-    public Result email(@PathVariable String emial) {
-        String html = "<h1>注册验证码:114514</h1><img style='width: 360px;height:360px' src='https://cdn.likebocai.com/bcblog/public/src/avatar-3.jpg'/><br><p>验证码5分钟有效.</p>";
-        Boolean title = qqEmailUtils.sendHtml("【菠菜的小窝】欢迎加入菠菜的小窝!", html, emial);
-        return Result.build(title, ResultCodeEnum.SUCCESS);
+    @Operation(summary = "邮箱验证码")
+    @GetMapping("registerEmail/{email}")
+    public Result email(@PathVariable String email) {
+        if (!email.matches("^[a-zA-Z0-9._%+-]+@(qq\\.com|foxmail\\.com|gmail\\.com|163\\.com|aliyun\\.com)$")) {
+            return Result.build(null,204,"邮箱格式不支持!");
+        }
+        return userService.registerEmail(email);
     }
+    @Operation(summary = "忘记密码")
+    @PostMapping("forgot")
+    public Result forgot(@RequestBody UserForgotDto userForgotDto) {
+        if (userForgotDto.getUserName().isEmpty() | userForgotDto.getPassword().isEmpty() | userForgotDto.getEmail().isEmpty() | userForgotDto.getCode().isEmpty()){
+            return Result.build(null,204,"看看什么没写吧!");
+        }
+        if (!userForgotDto.getEmail().matches("^[a-zA-Z0-9._%+-]+@(qq\\.com|foxmail\\.com|gmail\\.com|163\\.com|aliyun\\.com)$")) {
+            return Result.build(null,204,"邮箱格式不正确!");
+        }
+        return userService.forgot(userForgotDto);
+    }
+    @Operation(summary = "忘记密码的邮箱验证")
+    @GetMapping("forgotEmail/{email}/{userName}")
+    public Result forgotEmail(@PathVariable String email,@PathVariable String userName) {
+        if (!email.matches("^[a-zA-Z0-9._%+-]+@(qq\\.com|foxmail\\.com|gmail\\.com|163\\.com|aliyun\\.com)$")) {
+            return Result.build(null,204,"邮箱格式不支持!");
+        }
+        if (userName.isEmpty()) {
+            return Result.build(null,204,"用户名不能为空!");
+        }
+        return userService.forgotEmail(email,userName);
+    }
+
 }

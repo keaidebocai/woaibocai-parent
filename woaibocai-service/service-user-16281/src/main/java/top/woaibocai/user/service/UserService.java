@@ -4,6 +4,7 @@ import top.woaibocai.model.common.Result;
 import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.dto.manager.UserRegisterDto;
 import top.woaibocai.model.dto.user.AuthorizationsDto;
+import top.woaibocai.model.dto.user.UserForgotDto;
 import top.woaibocai.model.vo.LoginVo;
 
 public interface UserService {
@@ -17,4 +18,9 @@ public interface UserService {
 
     Result logout(LoginVo loginVo);
 
+    Result registerEmail(String email);
+
+    Result forgot(UserForgotDto userForgotDto);
+
+    Result forgotEmail(String email,String userName);
 }

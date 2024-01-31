@@ -4,12 +4,15 @@
     <insert id="register">
         INSERT INTO
             user
-            (id, user_name, password, email, create_time, update_time)
+            (id, user_name, nick_name, password, email, create_time, update_time)
             VALUE
-            (#{id},#{userRegisterDto.userName},#{userRegisterDto.password},#{userRegisterDto.email},now(),now())
+            (#{id},#{userRegisterDto.userName},#{userRegisterDto.nickName},#{userRegisterDto.password},#{userRegisterDto.email},now(),now())
     </insert>
     <update id="updateRefreshTokenById">
         UPDATE user SET refresh_token=#{refreshToken},update_time=now() WHERE id=#{id}
+    </update>
+    <update id="updatePasswordById">
+        UPDATE user SET password=#{password} ,update_time=now() WHERE id=#{id}
     </update>
 
     <select id="selectByUserName" resultType="top.woaibocai.model.Do.user.UserLoginDo">
@@ -33,5 +36,23 @@
             user
         WHERE
             id=#{id}
+    </select>
+    <select id="nickNameValidate" resultType="java.lang.Integer">
+        SELECT count(*) FROM user WHERE nick_name=#{nickName}
+    </select>
+    <select id="selectIdEmailByUserName" resultType="top.woaibocai.model.common.User">
+        SELECT
+            id,email
+        FROM
+            user
+        WHERE
+            user_name=#{userName}
+    </select>
+    <select id="selectUserNameByEmail" resultType="java.lang.String">
+        SELECT
+            user_name
+        FROM
+            user
+        WHERE email=#{email}
     </select>
 </mapper>

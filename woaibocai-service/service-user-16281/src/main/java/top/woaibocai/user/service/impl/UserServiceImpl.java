@@ -9,17 +9,22 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.common.utils.MD5util;
 import top.woaibocai.model.Do.user.UserLoginDo;
+import top.woaibocai.model.common.RedisKeyEnum;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.common.User;
 import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.dto.manager.UserRegisterDto;
 import top.woaibocai.model.dto.user.AuthorizationsDto;
+import top.woaibocai.model.dto.user.UserForgotDto;
 import top.woaibocai.model.vo.LoginVo;
 import top.woaibocai.model.vo.user.UserInfoVo;
 import top.woaibocai.user.mapper.UserMapper;
 import top.woaibocai.user.service.UserService;
+import top.woaibocai.user.utils.QQEmailUtils;
 
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -36,11 +41,22 @@ public class UserServiceImpl implements UserService {
     @Resource
     private RedisTemplate<String,String> redisTemplateString;
     @Resource
+    private RedisTemplate<String,Integer> redisTemplateObject;
+    @Resource
     private UserMapper userMapper;
+    @Resource
+    private QQEmailUtils qqEmailUtils;
     @Resource
     private ObjectMapper objectMapper;
     @Override
     public Result<String> login(UserLoginDto userLoginDto) {
+        // 用redis查
+        Integer count = redisTemplateObject.opsForValue().get(RedisKeyEnum.BLOG_LOGIN_COUNT.common(userLoginDto.getUserName()));
+        if (count == null) {
+            redisTemplateObject.opsForValue().set(RedisKeyEnum.BLOG_LOGIN_COUNT.common(userLoginDto.getUserName()),1,10,TimeUnit.MINUTES);
+        } else if (count >= 5){
+            return Result.build(null,204,"该账号短时间内错误登录过多，封禁10分钟!");
+        }
         // 1.查user表
         UserLoginDo userData = userMapper.selectByUserName(userLoginDto.getUserName());
         // 没有用户 返回
@@ -51,6 +67,7 @@ public class UserServiceImpl implements UserService {
         // 2.将dto密码用 MD5Util 解析后与数据库中的对比
         //不正确就返回
         if (!userData.getPassword().equals(MD5util.onlySaltPass(userLoginDto.getPassword()))) {
+            redisTemplateObject.opsForValue().increment(RedisKeyEnum.BLOG_LOGIN_COUNT.common(userLoginDto.getUserName()),1);
             return Result.build(null, ResultCodeEnum.LOGIN_ERROR);
         }
         // 检查 status 如果值为 1 则为 封禁状态
@@ -88,6 +105,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result register(UserRegisterDto userRegisterDto) {
+        String code = redisTemplateString.opsForValue().get(RedisKeyEnum.BLOG_REGISTER_EMAIL.common(userRegisterDto.getEmail()));
+        if (code == null) {
+            return Result.build(null,204,"验证码过期!");
+        }
+        if (!code.equals(userRegisterDto.getCode())) {
+            return Result.build(null,204,"验证码错误!");
+        }
         // 1.先查数据库中 userName 是否相等
         Integer userNameNum = userMapper.userNameValidate(userRegisterDto.getUserName());
         if (userNameNum != 0) {
@@ -98,6 +122,11 @@ public class UserServiceImpl implements UserService {
         if (emailNum != 0) {
             return Result.build(null,ResultCodeEnum.EMAIL_IS_EXISTS);
         }
+        // 昵称不能重复
+        Integer nickNameValidate = userMapper.nickNameValidate(userRegisterDto.getNickName());
+        if (nickNameValidate != 0) {
+            return Result.build(null,204,"你和别人想到了同一个昵称诶!");
+        }
         // 3.把密码加密 整合插入
         String md5Pwd = MD5util.onlySaltPass(userRegisterDto.getPassword());
         userRegisterDto.setPassword(md5Pwd);
@@ -106,6 +135,7 @@ public class UserServiceImpl implements UserService {
         if (flag.equals(false)) {
             return Result.build(null,ResultCodeEnum.DATA_ERROR);
         }
+        redisTemplateString.delete(RedisKeyEnum.BLOG_REGISTER_EMAIL.common(userRegisterDto.getEmail()));
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 
@@ -152,5 +182,77 @@ public class UserServiceImpl implements UserService {
 //        String token = redisTemplate.opsForValue().get("user:token:" + loginVo.getToken());
         redisTemplateString.delete("user:token:" + loginVo.getToken());
         return Result.build(null,ResultCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public Result registerEmail(String email) {
+        // 先查询 数据库中是否有相同的邮箱
+        Integer isEmail = userMapper.emailValidate(email);
+        if (isEmail > 0) {
+            return Result.build(null,204,"此邮箱已注册过！");
+        }
+        // 生成 6位数字验证码
+        Random random = new Random();
+        String code = String.valueOf(random.nextInt(900000) + 100000);
+        // 发送邮件 如果失败了就抛出 并返回失败
+        String html = "<h1>注册验证码:"+ code +"</h1><img style='width: 360px;height:360px' src='https://cdn.likebocai.com/bcblog/public/src/avatar-3.jpg'/><br><p>验证码5分钟有效.</p>";
+        Boolean title = qqEmailUtils.sendHtml("【菠菜的小窝】欢迎加入菠菜的小窝!", html, email);
+        if (!title) {
+            return Result.build(null,204,"邮件服务器出现异常请稍后再试！");
+        }
+        // 推上 redis 过期时间设置为5分钟
+        redisTemplateString.opsForValue().set(RedisKeyEnum.BLOG_REGISTER_EMAIL.common(email), code,5,TimeUnit.MINUTES);
+        return Result.build(null,200,"请及时查看邮箱!");
+    }
+
+    @Override
+    public Result forgot(UserForgotDto userForgotDto) {
+        // code
+        String code = redisTemplateString.opsForValue().get(RedisKeyEnum.BLOG_FORGOT_EMAIL.common(userForgotDto.getEmail()));
+        if (code == null) {
+            return Result.build(null,204,"验证码过期!");
+        }
+        if (!code.equals(userForgotDto.getCode())) {
+            return Result.build(null,204,"验证码错误!");
+        }
+        // 根据 userName 查询 id和邮箱
+        User user = userMapper.selectIdEmailByUserName(userForgotDto.getUserName());
+        if (user == null) {
+            return Result.build(null,204,"用户不存在");
+        }
+        if (!user.getEmail().equals(userForgotDto.getEmail())) {
+            return Result.build(null,204,"这不是你的邮箱!你邮箱呢?");
+        }
+        // 3.把密码加密 整合插入
+        String md5Pwd = MD5util.onlySaltPass(userForgotDto.getPassword());
+        userForgotDto.setPassword(md5Pwd);
+        // 修改密码 懒了不想写返回影响行数了，摆！
+        userMapper.updatePasswordById(user.getId(),userForgotDto.getPassword());
+        redisTemplateObject.delete(RedisKeyEnum.BLOG_FORGOT_EMAIL.common(userForgotDto.getEmail()));
+        return Result.build(null,ResultCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public Result forgotEmail(String email,String userName) {
+        // 根据邮箱 查 用户名
+        String name = userMapper.selectUserNameByEmail(email);
+        if (name == null) {
+            return Result.build(null,204,"该邮箱尚未注册");
+        }
+        if (!name.equals(userName)) {
+            return Result.build(null,204,"请查看邮箱/用户名是否匹配。");
+        }
+        // 生成 6位数字验证码
+        Random random = new Random();
+        String code = String.valueOf(random.nextInt(900000) + 100000);
+        // 发送邮件 如果失败了就抛出 并返回失败
+        String html = "<h1>验证码:"+ code +"</h1><br><p>验证码5分钟有效.</p>";
+        Boolean title = qqEmailUtils.sendHtml("【菠菜的小窝】忘记密码", html, email);
+        if (!title) {
+            return Result.build(null,204,"邮件服务器出现异常请稍后再试！");
+        }
+        // 推上 redis 过期时间设置为5分钟
+        redisTemplateString.opsForValue().set(RedisKeyEnum.BLOG_FORGOT_EMAIL.common(email), code,5,TimeUnit.MINUTES);
+        return Result.build(null,200,"请及时查看邮箱!");
     }
 }
