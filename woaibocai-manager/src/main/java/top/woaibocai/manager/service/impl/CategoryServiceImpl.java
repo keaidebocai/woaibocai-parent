@@ -4,6 +4,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.manager.mapper.CategoryMapper;
@@ -34,20 +35,28 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Result deletedById(String id) {
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_CATEGORY_INFO);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
-        // 删除redis上的站点地图
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+        redisTemplateObject.executePipelined((RedisCallback<Void>) connection ->{
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_CATEGORY_INFO);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+            // 删除redis上的站点地图
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_RSS);
+            return null;
+        });
         categoryMapper.deletedById(id);
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 
     @Override
     public Result putOfCategory(UpdateCategoryDto updateCategoryDto) {
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_CATEGORY_INFO);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
-        // 删除redis上的站点地图
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+        redisTemplateObject.executePipelined((RedisCallback<Void>) connection ->{
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_CATEGORY_INFO);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+            // 删除redis上的站点地图
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_RSS);
+            return null;
+        });
         if (StringUtils.isEmpty(updateCategoryDto.getId())){
             String id = UUID.randomUUID().toString().replace("-", "");
             updateCategoryDto.setId(id);

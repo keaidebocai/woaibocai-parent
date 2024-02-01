@@ -3,6 +3,7 @@ package top.woaibocai.manager.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.common.utils.BeanCopyUtils;
@@ -40,18 +41,26 @@ public class LinkServiceImpl implements LinkService {
             linkPutStatusDto.setStatus("1");
         }
         linkMapper.putStatus(linkPutStatusDto);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_LINK);
-        // 删除redis上的站点地图
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+        redisTemplateObject.executePipelined((RedisCallback<Void>) connection ->{
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_LINK);
+            // 删除redis上的站点地图
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_RSS);
+            return null;
+        });
         return Result.build(null,200,"更新成功!");
     }
 
     @Override
     public Result deleteById(String id) {
         linkMapper.deleteById(id);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_LINK);
-        // 删除redis上的站点地图
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+        redisTemplateObject.executePipelined((RedisCallback<Void>) connection ->{
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_LINK);
+            // 删除redis上的站点地图
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_RSS);
+            return null;
+        });
         return Result.build(null,200,"删除成功!");
     }
 
@@ -61,9 +70,13 @@ public class LinkServiceImpl implements LinkService {
         insertLinkDto.setId(id);
         linkMapper.insertLink(insertLinkDto);
         LinkVo linkVo = BeanCopyUtils.copyBean(insertLinkDto, LinkVo.class);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_LINK);
-        // 删除redis上的站点地图
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+        redisTemplateObject.executePipelined((RedisCallback<Void>) connection ->{
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_LINK);
+            // 删除redis上的站点地图
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_RSS);
+            return null;
+        });
         return Result.build(null,200,"添加成功!");
     }
 }

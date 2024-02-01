@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.common.utils.BeanCopyUtils;
@@ -17,11 +18,14 @@ import top.woaibocai.model.dto.manager.article.QueryArticleCriteria;
 import top.woaibocai.model.dto.manager.article.UpdateArticleStatusDto;
 import top.woaibocai.model.dto.manager.article.WriteArticleDto;
 import top.woaibocai.model.entity.blog.Article;
+import top.woaibocai.model.vo.blog.comment.CommentDataVo;
 import top.woaibocai.model.vo.manager.ArticleStatusPageVo;
 import top.woaibocai.model.vo.manager.TagVo;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -48,22 +52,31 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void updateArticleStatus(UpdateArticleStatusDto updateArticleStatusDto) {
         articleMapper.updateArticleStatus(updateArticleStatusDto);
-        // 删除 fetchDate 的
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
-        // 删除文章在redis上
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_ARTICLE.articleUrl(updateArticleStatusDto.getUrl()));
-        // 删除redis上的站点地图
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+        redisTemplateObject.executePipelined((RedisCallback<Void>) connection ->{
+            // 删除 fetchDate 的
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
+            // 删除文章在redis上
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_ARTICLE.articleUrl(updateArticleStatusDto.getUrl()));
+            // 删除redis上的站点地图
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_RSS);
+            return null;
+        });
+
     }
 
     @Override
     public void deletedArticleById(String id,String url) {
         articleMapper.deletedArticleById(id);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_ARTICLE.articleUrl(url));
-        // 删除redis上的站点地图
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+        redisTemplateObject.executePipelined((RedisCallback<Void>) connection ->{
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_ARTICLE.articleUrl(url));
+            // 删除redis上的站点地图
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_RSS);
+            return null;
+        });
     }
 
     @Override
@@ -79,13 +92,17 @@ public class ArticleServiceImpl implements ArticleService {
             tagVo.setArticleTagId(tagId);
         }
         articleTagMapper.insertArticleTag(id,tags);
-        // 删除 fetchDate 的
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_AERICLE_INDEX);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
-        // 删除redis上的站点地图
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+        redisTemplateObject.executePipelined((RedisCallback<Void>) connection ->{
+            // 删除 fetchDate 的
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_AERICLE_INDEX);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
+            // 删除redis上的站点地图
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_RSS);
+            return null;
+        });
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 
@@ -99,7 +116,11 @@ public class ArticleServiceImpl implements ArticleService {
         List<TagVo> tagVoList = articleTagMapper.selectByArticleId(writeArticleDto.getId());
         writeArticleDto.setTags(tagVoList);
         // 删除redis上的站点地图
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+        redisTemplateObject.executePipelined((RedisCallback<Void>) connection ->{
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_RSS);
+            return null;
+        });
         return Result.build(writeArticleDto,ResultCodeEnum.SUCCESS);
     }
 
@@ -116,15 +137,18 @@ public class ArticleServiceImpl implements ArticleService {
             tagVo.setArticleTagId(tagId);
         }
         articleTagMapper.insertArticleTag(writeArticleDto.getId(),tags);
-        // 删除 fetchDate 的
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
-        // 删除redis上的站点地图
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
-        // 删除文章在redis上
-        redisTemplateObject.delete(RedisKeyEnum.BLOG_ARTICLE.articleUrl(writeArticleDto.getUrl()));
-
+        redisTemplateObject.executePipelined((RedisCallback<Void>) connection ->{
+            // 删除 fetchDate 的
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_ARTICLE_AND_URL);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_BLOG_INFO);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_FETCHDATE_TAG_HAS_ARTICLE_COUNT_MAP);
+            // 删除redis上的站点地图
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_SITEMAP);
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_RSS);
+            // 删除文章在redis上
+            redisTemplateObject.delete(RedisKeyEnum.BLOG_ARTICLE.articleUrl(writeArticleDto.getUrl()));
+            return null;
+        });
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 }
