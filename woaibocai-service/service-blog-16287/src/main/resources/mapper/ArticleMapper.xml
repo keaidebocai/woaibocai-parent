@@ -115,4 +115,14 @@
             blog_article
         WHERE is_deleted=0 ORDER BY update_time ASC
     </select>
+    <select id="selectRSSOfArticle" resultType="top.woaibocai.model.vo.blog.other.RSSVo">
+        SELECT
+            title,
+            url,
+            update_time AS date,
+            summary AS description
+        FROM
+            blog_article
+        WHERE is_deleted=0 ORDER BY update_time DESC
+    </select>
 </mapper>

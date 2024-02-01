@@ -8,8 +8,7 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import top.woaibocai.model.vo.blog.comment.CommentDataVo;
-import top.woaibocai.model.vo.blog.link.LinkVo;
+import top.woaibocai.model.vo.blog.other.RSSVo;
 
 /**
  * @program: woaibocai-parent
@@ -54,6 +53,28 @@ public class RedisConfig {
     @Bean
     public HashOperations<String,String,Object> hashOperationSSO(RedisTemplate<String,Object> redisTemplateObject) {
         return redisTemplateObject.opsForHash();
+    }
+    @Bean
+    public RedisTemplate<String, RSSVo> redisTemplateOtherObject(LettuceConnectionFactory lettuceConnectionFactory) {
+        RedisTemplate<String, RSSVo> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(lettuceConnectionFactory);
+
+        //设置key序列化方式String
+        // RedisSerializer.string() 等价于 new StringRedisSerializer()
+        redisTemplate.setKeySerializer(RedisSerializer.string());
+
+        // 设置value的序列化方式json，使用GenericJackson2JsonRedisSerializer替换默认序列化
+        // RedisSerializer.json() 等价于 new GenericJackson2JsonRedisSerializer()
+        redisTemplate.setValueSerializer(RedisSerializer.json());
+
+        // 设置hash的key的序列化方式
+        redisTemplate.setHashKeySerializer(RedisSerializer.string());
+
+        // 设置hash的value的序列化方式
+        redisTemplate.setHashValueSerializer(RedisSerializer.json());
+        // 使配置生效
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
     }
     @Bean
     public RedisTemplate<String,String> redisTemplateString(LettuceConnectionFactory lettuceConnectionFactory) {

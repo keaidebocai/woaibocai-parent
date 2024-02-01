@@ -3,11 +3,13 @@ package top.woaibocai.blog.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.woaibocai.blog.service.OtherService;
 import top.woaibocai.model.common.Result;
+import top.woaibocai.model.vo.blog.other.RSSVo;
 import top.woaibocai.model.vo.blog.other.Sitemap;
 
 import java.util.List;
@@ -38,5 +40,10 @@ public class OtherController {
     @GetMapping("sitemap")
     public List<Sitemap> sitemaps() {
         return otherService.sitemap();
+    }
+    @Operation(summary = "RSS")
+    @GetMapping("RSS")
+    public List<RSSVo> RSS(){
+        return otherService.RSS();
     }
 }

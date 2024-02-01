@@ -83,7 +83,6 @@ public class UserServiceImpl implements UserService {
         // 把userinfo 放进redis里
         UserInfoVo userInfoVo = userMapper.userInfo(userData.getId());
         Map map = objectMapper.convertValue(userInfoVo, Map.class);
-        System.out.println(userInfoVo);
         // 4.创建 token 和 refresh_token 放进redis中
         String token = UUID.randomUUID().toString().replace("-", "");
         String refresh_token = UUID.randomUUID().toString().replace("-", "");

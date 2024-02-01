@@ -29,4 +29,13 @@
             blog_tag
         WHERE is_deleted=0 ORDER BY update_time ASC
     </select>
+    <select id="selectTagIdAndTagName" resultType="top.woaibocai.model.Do.KeyValue">
+        SELECT
+            id AS k,
+            tag_name AS v
+        FROM
+            blog_tag
+        WHERE
+            is_deleted=0
+    </select>
 </mapper>

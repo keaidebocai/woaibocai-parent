@@ -27,4 +27,6 @@ public interface FetchDateUtilService {
     List<String> initTwoCommentListByOneId(String oneCommentId);
 
     CommentDataVo initTwoCommentById(String id);
+
+    Map<String, List<String>> getAllUrlOfTags();
 }

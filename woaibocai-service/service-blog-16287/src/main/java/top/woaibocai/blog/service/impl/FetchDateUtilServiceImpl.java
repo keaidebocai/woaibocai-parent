@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import top.woaibocai.blog.mapper.ArticleMapper;
-import top.woaibocai.blog.mapper.ArticleTagMapper;
-import top.woaibocai.blog.mapper.BlogInfoMapper;
-import top.woaibocai.blog.mapper.MyCommentMapper;
+import top.woaibocai.blog.mapper.*;
 import top.woaibocai.blog.service.FetchDateUtilService;
 import top.woaibocai.model.Do.KeyAndValue;
+import top.woaibocai.model.Do.KeyValue;
+import top.woaibocai.model.Do.blog.ArticleHasTagsDo;
 import top.woaibocai.model.Do.blog.TagHasArticleCountDo;
 import top.woaibocai.model.common.RedisKeyEnum;
 import top.woaibocai.model.entity.blog.Article;
@@ -20,10 +20,7 @@ import top.woaibocai.model.vo.blog.comment.CommentDataVo;
 import top.woaibocai.model.vo.blog.comment.OneCommentVo;
 import top.woaibocai.model.vo.blog.tag.TagInfo;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +39,8 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
     private BlogInfoMapper blogInfoMapper;
     @Resource
     private MyCommentMapper myCommentMapper;
+    @Resource
+    private TagMapper tagMapper;
     @Resource
     private HashOperations<String,String,String> hashOperationSSS ;
     @Resource
@@ -211,6 +210,26 @@ public class FetchDateUtilServiceImpl implements FetchDateUtilService {
         hashOperationSSO.putAll(RedisKeyEnum.BLOG_COMMENT_ALL.comment(id),map);
         hashOperationSSO.put(RedisKeyEnum.BLOG_COMMENT_LIKE,id,commentDataVo.getLikeCount());
         return commentDataVo;
+    }
+
+    @Override
+    public Map<String, List<String>> getAllUrlOfTags() {
+        Map<String, String> articleIdAndUrlMap = this.getArticleIdAndUrlMap();
+        // 查询所有文章id 所对应的所有标签
+        List<ArticleHasTagsDo> articleHasTagsDos = articleTagMapper.articleHasTags();
+        List<KeyValue<String,String>> kv = tagMapper.selectTagIdAndTagName();
+        Map<String,String> tagidName = new HashMap<>();
+        kv.forEach(item -> tagidName.put(item.getK(),item.getV()));
+        Map<String,List<String>> finallData = new HashMap<>();
+        articleHasTagsDos.forEach(articleHasTagsDo -> {
+            String[] tagIds = articleHasTagsDo.getTagIdListString().split(",");
+            List<String> tagNameList = new ArrayList<>();
+            for (String id : tagIds) {
+                tagNameList.add(tagidName.get(id));
+            }
+            finallData.put(articleIdAndUrlMap.get(articleHasTagsDo.getArticleId()),tagNameList);
+        });
+        return finallData;
     }
 
     private Map<String, Integer> getTagHasArtilceCountMap() {
