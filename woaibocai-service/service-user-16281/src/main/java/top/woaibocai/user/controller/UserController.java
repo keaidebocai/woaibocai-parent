@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import top.woaibocai.common.feign.QCloudFeignClint;
 import top.woaibocai.model.common.Result;
 import top.woaibocai.model.common.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.UserLoginDto;
@@ -11,8 +13,11 @@ import top.woaibocai.model.dto.manager.UserRegisterDto;
 import top.woaibocai.model.dto.user.AuthorizationsDto;
 import top.woaibocai.model.dto.user.UserForgotDto;
 import top.woaibocai.model.vo.LoginVo;
+import top.woaibocai.model.vo.user.UserInfoVo;
 import top.woaibocai.user.service.UserService;
 import top.woaibocai.user.utils.QQEmailUtils;
+
+import java.io.IOException;
 
 
 /**
@@ -28,6 +33,8 @@ import top.woaibocai.user.utils.QQEmailUtils;
 public class UserController {
     @Resource
     private UserService userService;
+    @Resource
+    private QCloudFeignClint qCloudFeignClint;
     @Operation(summary = "用户登录")
     @PostMapping("login")
     public Result<String> login(@RequestBody UserLoginDto userLoginDto) {
@@ -53,11 +60,10 @@ public class UserController {
     @GetMapping("auth/getUserInfo")
     public Result getUserInfo(@RequestHeader("Authorization") String token){
         String newToken = token.replace("Bearer ", "");
-        System.out.println(newToken);
         return userService.getUserInfo(newToken);
     }
     @Operation(summary = "退出账号")
-    @PostMapping("logout")
+    @PostMapping("auth/logout")
     public Result logout(@RequestBody LoginVo loginVo){
         return userService.logout(loginVo);
     }
@@ -91,5 +97,18 @@ public class UserController {
         }
         return userService.forgotEmail(email,userName);
     }
-
+    @Operation(summary = "用户上传头像")
+    @PostMapping("auth/userLoadAvatar")
+    public Result<String> userLoadAvatar(MultipartFile file) throws IOException {
+        Result result = qCloudFeignClint.userUploadAvatar(file);
+        return Result.build(result.getData(),ResultCodeEnum.SUCCESS);
+    }
+    @Operation(summary = "修改用户信息")
+    @PostMapping("auth/updateUserInfo")
+    public Result updateUserInfo(@RequestBody UserInfoVo userInfoVo) {
+        if (userInfoVo.getUserId().isEmpty() | userInfoVo.getNickName().isEmpty() | userInfoVo.getSex().isEmpty() | userInfoVo.getAvatar().isEmpty()) {
+            return Result.build(null,204,"看看你少些什么东西啦!");
+        }
+        return userService.updateUserInfo(userInfoVo);
+    }
 }

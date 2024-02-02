@@ -2,6 +2,7 @@ package top.woaibocai.user;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
  **/
 @SpringBootApplication(scanBasePackages = {"top.woaibocai.user","top.woaibocai.common","top.woaibocai.model"})
 @ComponentScan(basePackages = {"top.woaibocai"})
+@EnableFeignClients(basePackages = {"top.woaibocai.common"})
 public class ServiceUserApplication16281 {
     public static void main(String[] args) {
         SpringApplication.run(ServiceUserApplication16281.class,args);

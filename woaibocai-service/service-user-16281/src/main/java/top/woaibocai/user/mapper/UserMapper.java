@@ -28,4 +28,6 @@ public interface UserMapper {
     User selectIdEmailByUserName(String userName);
 
     String selectUserNameByEmail(String email);
+
+    void updateUserInfo(UserInfoVo userInfoVo);
 }

@@ -254,4 +254,15 @@ public class UserServiceImpl implements UserService {
         redisTemplateString.opsForValue().set(RedisKeyEnum.BLOG_FORGOT_EMAIL.common(email), code,5,TimeUnit.MINUTES);
         return Result.build(null,200,"请及时查看邮箱!");
     }
+
+    @Override
+    public Result updateUserInfo(UserInfoVo userInfoVo) {
+        // 查询 昵称是否重复
+        Integer integer = userMapper.nickNameValidate(userInfoVo.getNickName());
+        if (integer > 1) {
+            return Result.build(null,204,"昵称重复!");
+        }
+        userMapper.updateUserInfo(userInfoVo);
+        return Result.build(null,ResultCodeEnum.SUCCESS);
+    }
 }

@@ -6,6 +6,7 @@ import top.woaibocai.model.dto.manager.UserRegisterDto;
 import top.woaibocai.model.dto.user.AuthorizationsDto;
 import top.woaibocai.model.dto.user.UserForgotDto;
 import top.woaibocai.model.vo.LoginVo;
+import top.woaibocai.model.vo.user.UserInfoVo;
 
 public interface UserService {
     Result<String> login(UserLoginDto userLoginDto);
@@ -23,4 +24,6 @@ public interface UserService {
     Result forgot(UserForgotDto userForgotDto);
 
     Result forgotEmail(String email,String userName);
+
+    Result updateUserInfo(UserInfoVo userInfoVo);
 }
