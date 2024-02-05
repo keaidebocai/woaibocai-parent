@@ -1,6 +1,7 @@
 package top.woaibocai.blog.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -20,6 +21,8 @@ public class IPutil {
     private static final String HEADER_HTTP_FORWARDED = "HTTP_X_FORWARDED_FOR";
     private static final String LOCAL_IP = "127.0.0.1";
     private static final String LOCAL_HOST = "localhost";
+    private static final String HEADER_X_CLIENT_IP = "x-client-ip";
+    private static final String X_REAL_IP = "x-real-ip";
     /**
      * 获取 IP 地址
      *
@@ -48,7 +51,13 @@ public class IPutil {
         if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
-
+        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
+            ip = request.getHeader(HEADER_X_CLIENT_IP);
+        }
+        //X_REAL_IP
+        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
+            ip = request.getHeader(X_REAL_IP);
+        }
         // 本机访问
         if (LOCAL_IP.equalsIgnoreCase(ip) || LOCAL_HOST.equalsIgnoreCase(ip) || "0:0:0:0:0:0:0:1".equalsIgnoreCase(ip)) {
             // 根据网卡取本机配置的 IP
@@ -56,7 +65,11 @@ public class IPutil {
                 InetAddress localHost = InetAddress.getLocalHost();
                 ip = localHost.getHostAddress();
             } catch (UnknownHostException e) {
+
                 e.printStackTrace();
+            }
+            finally {
+                System.out.println(ip+"=============================================================");
             }
         }
 

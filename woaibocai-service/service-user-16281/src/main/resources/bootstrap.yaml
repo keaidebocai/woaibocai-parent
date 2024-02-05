@@ -6,15 +6,15 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 192.168.31.9:8848
+        server-addr: 111.231.25.128:8848
         group: WOAIBOCAI_GROUP
         username: nacos
-        password: nacos
+        password: Fyk@20010628
       config:
-        server-addr: 192.168.31.9:8848
+        server-addr: 111.231.25.128:8848
 #        group: WOAIBOCAI_SERVICE_BLOG_GROUP
         username: nacos
-        password: nacos
+        password: Fyk@20010628
         file-extension: yaml
         shared-configs[0]:
           data-id: woaibocai-service-user-16281.yaml

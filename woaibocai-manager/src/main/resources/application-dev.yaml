@@ -5,9 +5,9 @@ spring:
   # Redis的相关配置
   data:
     redis:
-      host: 192.168.31.9
+      host: 127.0.0.1
       port: 6379
-      password: Fyk@20010628
+#      password: Fyk@20010628
       database: 0
       connect-timeout: 1800000
       lettuce:

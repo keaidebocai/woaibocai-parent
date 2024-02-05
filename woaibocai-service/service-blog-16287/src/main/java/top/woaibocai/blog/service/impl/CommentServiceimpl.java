@@ -161,6 +161,7 @@ public class CommentServiceimpl implements CommentService {
         Map<String,Object> map = new HashMap<>();
         map.put("comment",oneCommentVoList);
         map.put("total",articleSubTotal);
+        System.out.println(map);
         return Result.build(map,ResultCodeEnum.SUCCESS);
     }
 

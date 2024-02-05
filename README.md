@@ -47,3 +47,4 @@ Vue3、Element-plus、Nuxt3、ES6
 > * **解决方案:** 在 **feign 客户端** 的post请求上写 consumes = MediaType.MULTIPART_FORM_DATA_VALUE 指定类型为 **multipart/form-data** 然后在添加 @RequestPart 不然就只能接收到一个文件，无法实现多文件上传 即可解决 本质上 feign 也是 HTTP 请求所以说也要符合规则
 > *2024-1-21*
 > * ~~不要忘了写ip归属~~地 和 ~~后台管理需要重新写了~~ ~~about、link的评论区: 一级评论、回复评论所维护的列表type=1、2~~
+> * nginx转发获取不到ip
