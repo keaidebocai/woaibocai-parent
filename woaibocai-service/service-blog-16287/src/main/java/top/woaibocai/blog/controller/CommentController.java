@@ -44,13 +44,17 @@ public class CommentController {
     @PostMapping("/auth/sendOneComment")
     public Result sendOneComment(@RequestBody OneCommentDto oneCommentDto,
                                                       @RequestHeader("114514") String userId,
-                                                      HttpServletRequest request) {
+                                                      @RequestHeader("x-forwarded-for") String ip) {
         if (oneCommentDto.getArticleId().isEmpty() | oneCommentDto.getContent().isEmpty()) {
             return Result.build("虚空评论，出现异常！", ResultCodeEnum.DATA_ERROR);
         }
         IPutil iPutil = new IPutil();
-        IPInfo ipInfo = IPInfoUtils.getIpInfo(iPutil.getIpAddr(request));
-        oneCommentDto.setAddress(ipInfo.getProvince());
+        IPInfo ipInfo = IPInfoUtils.getIpInfo(iPutil.getIpAddr(ip));
+        String addree = ipInfo.getProvince();
+        if (addree == null) {
+            addree = ipInfo.getCountry();
+        }
+        oneCommentDto.setAddress(addree);
         oneCommentDto.setUserId(userId);
         return commentService.sendOneComment(oneCommentDto);
     }
@@ -58,7 +62,7 @@ public class CommentController {
     @PostMapping("/auth/replyOneComment")
     public Result replyOneComment(@RequestBody ReplyOneCommentDto replyOneCommentVo,
                                   @RequestHeader("114514") String userId,
-                                  HttpServletRequest request) {
+                                  @RequestHeader("x-forwarded-for") String ip) {
         if (replyOneCommentVo.getReplyCommentId().isEmpty() |
             replyOneCommentVo.getReplyCommentUserId().isEmpty() |
             userId.isEmpty() | userId.equals("undefined") |
@@ -68,8 +72,13 @@ public class CommentController {
             return Result.build("虚空评论，数据异常！", ResultCodeEnum.DATA_ERROR);
         }
         IPutil iPutil = new IPutil();
-        IPInfo ipInfo = IPInfoUtils.getIpInfo(iPutil.getIpAddr(request));
-        replyOneCommentVo.setAddress(ipInfo.getProvince());
+        IPInfo ipInfo = IPInfoUtils.getIpInfo(iPutil.getIpAddr(ip));
+        String addree = ipInfo.getProvince();
+        if (addree == null) {
+            addree = ipInfo.getCountry();
+        }
+        System.out.println(ip);
+        replyOneCommentVo.setAddress(addree);
         replyOneCommentVo.setSendCommentUserId(userId);
         return commentService.replyOneComment(replyOneCommentVo);
     }

@@ -13,51 +13,16 @@ import java.net.UnknownHostException;
  * @create: 2024-01-13 17:16
  **/
 public class IPutil {
-    private static final String UNKNOWN = "unknown";
-    private static final String HEADER_FORWARDED = "x-forwarded-for";
-    private static final String HEADER_PROXY = "Proxy-Client-IP";
-    private static final String HEADER_WL_PROXY = "WL-Proxy-Client-IP";
-    private static final String HEADER_HTTP = "HTTP_CLIENT_IP";
-    private static final String HEADER_HTTP_FORWARDED = "HTTP_X_FORWARDED_FOR";
     private static final String LOCAL_IP = "127.0.0.1";
     private static final String LOCAL_HOST = "localhost";
-    private static final String HEADER_X_CLIENT_IP = "x-client-ip";
-    private static final String X_REAL_IP = "x-real-ip";
     /**
      * 获取 IP 地址
      *
-     * @param request
+     * @param ip
      * @return
      */
-    public String getIpAddr(HttpServletRequest request) {
-        String ip = request.getHeader(HEADER_FORWARDED);
-
-        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getHeader(HEADER_PROXY);
-        }
-
-        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getHeader(HEADER_WL_PROXY);
-        }
-
-        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getHeader(HEADER_HTTP);
-        }
-
-        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getHeader(HEADER_HTTP_FORWARDED);
-        }
-
-        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getHeader(HEADER_X_CLIENT_IP);
-        }
-        //X_REAL_IP
-        if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getHeader(X_REAL_IP);
-        }
+    public String getIpAddr(String ip) {
+        ip = ip.substring(0,ip.indexOf(","));
         // 本机访问
         if (LOCAL_IP.equalsIgnoreCase(ip) || LOCAL_HOST.equalsIgnoreCase(ip) || "0:0:0:0:0:0:0:1".equalsIgnoreCase(ip)) {
             // 根据网卡取本机配置的 IP
