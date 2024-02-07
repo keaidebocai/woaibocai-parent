@@ -8,7 +8,7 @@
             SET
                  view_count=#{article.viewCount}
             WHERE
-                id=#{article.url}
+                url=#{article.url}
         </foreach>
     </update>
     <select id="selectAllArticle" resultType="top.woaibocai.model.vo.blog.article.BlogArticleVo">
