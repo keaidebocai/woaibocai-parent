@@ -24,6 +24,7 @@ import top.woaibocai.user.service.UserService;
 import top.woaibocai.user.utils.QQEmailUtils;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -190,6 +191,10 @@ public class UserServiceImpl implements UserService {
         if (isEmail > 0) {
             return Result.build(null,204,"此邮箱已注册过！");
         }
+        // 检查redis中是否有此邮箱
+        if (!Objects.requireNonNull(redisTemplateString.opsForValue().get(RedisKeyEnum.BLOG_REGISTER_EMAIL.common(email))).isEmpty()) {
+            return Result.build(null,200,"此邮箱的验证码尚未过期！");
+        }
         // 生成 6位数字验证码
         Random random = new Random();
         String code = String.valueOf(random.nextInt(900000) + 100000);
@@ -233,6 +238,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result forgotEmail(String email,String userName) {
+        // 检查redis中是否有此邮箱
+        if (!Objects.requireNonNull(redisTemplateString.opsForValue().get(RedisKeyEnum.BLOG_FORGOT_EMAIL.common(email))).isEmpty()) {
+            return Result.build(null,200,"此邮箱的验证码尚未过期！");
+        }
         // 根据邮箱 查 用户名
         String name = userMapper.selectUserNameByEmail(email);
         if (name == null) {
