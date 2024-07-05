@@ -47,7 +47,6 @@ public class ArticleController {
     }
     @PostMapping("writeArticle")
     public Result test(@RequestBody WriteArticleDto writeArticleDto){
-        System.out.println(writeArticleDto);
         return articleService.writeArticle(writeArticleDto);
     }
     @Operation(summary = "修改文章数据回显")
