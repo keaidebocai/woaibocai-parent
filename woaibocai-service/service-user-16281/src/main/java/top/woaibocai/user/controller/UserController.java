@@ -15,7 +15,7 @@ import top.woaibocai.model.dto.user.UserForgotDto;
 import top.woaibocai.model.vo.LoginVo;
 import top.woaibocai.model.vo.user.UserInfoVo;
 import top.woaibocai.user.service.UserService;
-import top.woaibocai.user.utils.QQEmailUtils;
+
 
 import java.io.IOException;
 
