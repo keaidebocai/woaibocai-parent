@@ -63,7 +63,7 @@ public class UserController {
         return userService.getUserInfo(newToken);
     }
     @Operation(summary = "退出账号")
-    @PostMapping("auth/logout")
+    @PostMapping("logout")
     public Result logout(@RequestBody LoginVo loginVo){
         return userService.logout(loginVo);
     }
@@ -105,10 +105,11 @@ public class UserController {
     }
     @Operation(summary = "修改用户信息")
     @PostMapping("auth/updateUserInfo")
-    public Result updateUserInfo(@RequestBody UserInfoVo userInfoVo) {
+    public Result updateUserInfo(@RequestBody UserInfoVo userInfoVo,@RequestHeader("Authorization") String token) {
         if (userInfoVo.getUserId().isEmpty() | userInfoVo.getNickName().isEmpty() | userInfoVo.getSex().isEmpty() | userInfoVo.getAvatar().isEmpty()) {
             return Result.build(null,204,"看看你少些什么东西啦!");
         }
-        return userService.updateUserInfo(userInfoVo);
+        String newToken = token.replace("Bearer ", "");
+        return userService.updateUserInfo(userInfoVo,newToken);
     }
 }

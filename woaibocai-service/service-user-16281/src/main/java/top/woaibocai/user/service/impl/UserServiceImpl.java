@@ -4,6 +4,8 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,7 @@ import java.util.concurrent.TimeUnit;
  **/
 @Service
 public class UserServiceImpl implements UserService {
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     @Resource
     private HashOperations<String,String,String> hashOperationSSS;
     @Resource
@@ -173,13 +176,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result logout(LoginVo loginVo) {
         //先删除 refresh_token
-        Long size = hashOperationSSS.size("user:refresh_token:" + loginVo.getRefresh_token());
-        if (size != 0L) {
-//            redisTemplateString.delete("user:refresh_token:" + loginVo.getRefresh_token());
-            redisTemplateString.delete("user:refresh_token:" + loginVo.getRefresh_token());
-        }
+        redisTemplateString.delete("user:refresh_token:" + loginVo.getRefresh_token());
         //删除 token
-//        String token = redisTemplate.opsForValue().get("user:token:" + loginVo.getToken());
         redisTemplateString.delete("user:token:" + loginVo.getToken());
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
@@ -192,7 +190,7 @@ public class UserServiceImpl implements UserService {
             return Result.build(null,204,"此邮箱已注册过！");
         }
         // 检查redis中是否有此邮箱
-        if (!Objects.requireNonNull(redisTemplateString.opsForValue().get(RedisKeyEnum.BLOG_REGISTER_EMAIL.common(email))).isEmpty()) {
+        if (!StringUtils.isEmpty(redisTemplateString.opsForValue().get(RedisKeyEnum.BLOG_REGISTER_EMAIL.common(email)))) {
             return Result.build(null,200,"此邮箱的验证码尚未过期！");
         }
         // 生成 6位数字验证码
@@ -265,7 +263,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result updateUserInfo(UserInfoVo userInfoVo) {
+    public Result updateUserInfo(UserInfoVo userInfoVo,String token) {
         // 查询 昵称是否重复
         Integer integer = userMapper.nickNameValidate(userInfoVo.getNickName());
         if (integer > 1) {

@@ -25,5 +25,5 @@ public interface UserService {
 
     Result forgotEmail(String email,String userName);
 
-    Result updateUserInfo(UserInfoVo userInfoVo);
+    Result updateUserInfo(UserInfoVo userInfoVo,String token);
 }
