@@ -10,7 +10,7 @@ import top.woaibocai.common.utils.AuthContextUtil;
 import top.woaibocai.manager.mapper.UserMapper;
 import top.woaibocai.manager.service.UserService;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.Enum.ResultCodeEnum;
 import top.woaibocai.model.common.User;
 import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.vo.LoginVo;

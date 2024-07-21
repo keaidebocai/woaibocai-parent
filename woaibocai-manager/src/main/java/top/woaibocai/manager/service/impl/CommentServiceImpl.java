@@ -7,20 +7,12 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.manager.mapper.CommentMapper;
-import top.woaibocai.manager.mapper.UserMapper;
 import top.woaibocai.manager.service.CommentService;
-import top.woaibocai.model.common.RedisKeyEnum;
+import top.woaibocai.model.Enum.RedisKeyEnum;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.common.ResultCodeEnum;
-import top.woaibocai.model.common.User;
+import top.woaibocai.model.Enum.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.comment.QueryCommentDto;
-import top.woaibocai.model.entity.blog.Comment;
 import top.woaibocai.model.vo.manager.CommentVo;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class CommentServiceImpl implements CommentService {

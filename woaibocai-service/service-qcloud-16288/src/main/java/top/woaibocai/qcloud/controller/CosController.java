@@ -6,7 +6,7 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.Enum.ResultCodeEnum;
 import top.woaibocai.qcloud.service.CosService;
 
 import java.io.IOException;

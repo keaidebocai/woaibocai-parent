@@ -5,9 +5,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.blog.mapper.CategoryMapper;
 import top.woaibocai.blog.service.HeaderService;
-import top.woaibocai.model.common.RedisKeyEnum;
+import top.woaibocai.model.Enum.RedisKeyEnum;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.Enum.ResultCodeEnum;
 import top.woaibocai.model.vo.blog.category.CategoryUrlNameIconVo;
 
 import java.util.List;

@@ -4,16 +4,14 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.woaibocai.common.utils.MD5util;
 import top.woaibocai.model.Do.user.UserLoginDo;
-import top.woaibocai.model.common.RedisKeyEnum;
+import top.woaibocai.model.Enum.RedisKeyEnum;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.Enum.ResultCodeEnum;
 import top.woaibocai.model.common.User;
 import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.dto.manager.UserRegisterDto;
@@ -39,7 +37,6 @@ import java.util.concurrent.TimeUnit;
  **/
 @Service
 public class UserServiceImpl implements UserService {
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     @Resource
     private HashOperations<String,String,String> hashOperationSSS;
     @Resource

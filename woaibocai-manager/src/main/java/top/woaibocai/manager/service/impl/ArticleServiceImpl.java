@@ -3,7 +3,6 @@ package top.woaibocai.manager.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -11,21 +10,18 @@ import top.woaibocai.common.utils.BeanCopyUtils;
 import top.woaibocai.manager.mapper.ArticleMapper;
 import top.woaibocai.manager.mapper.ArticleTagMapper;
 import top.woaibocai.manager.service.ArticleService;
-import top.woaibocai.model.common.RedisKeyEnum;
+import top.woaibocai.model.Enum.RedisKeyEnum;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.Enum.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.article.QueryArticleCriteria;
 import top.woaibocai.model.dto.manager.article.UpdateArticleStatusDto;
 import top.woaibocai.model.dto.manager.article.WriteArticleDto;
 import top.woaibocai.model.entity.blog.Article;
-import top.woaibocai.model.vo.blog.comment.CommentDataVo;
 import top.woaibocai.model.vo.manager.ArticleStatusPageVo;
 import top.woaibocai.model.vo.manager.TagVo;
 
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**

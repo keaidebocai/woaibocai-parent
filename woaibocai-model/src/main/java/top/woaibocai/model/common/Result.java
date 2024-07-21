@@ -2,6 +2,7 @@ package top.woaibocai.model.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import top.woaibocai.model.Enum.ResultCodeEnum;
 
 @Data
 @Schema(description = "响应结果实体类")

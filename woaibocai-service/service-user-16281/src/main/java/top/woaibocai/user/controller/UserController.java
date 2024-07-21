@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.woaibocai.common.feign.QCloudFeignClint;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.Enum.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.UserLoginDto;
 import top.woaibocai.model.dto.manager.UserRegisterDto;
 import top.woaibocai.model.dto.user.AuthorizationsDto;

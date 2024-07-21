@@ -7,7 +7,7 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import top.woaibocai.manager.service.ArticleService;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.Enum.ResultCodeEnum;
 import top.woaibocai.model.dto.manager.article.QueryArticleCriteria;
 import top.woaibocai.model.dto.manager.article.UpdateArticleStatusDto;
 import top.woaibocai.model.dto.manager.article.WriteArticleDto;

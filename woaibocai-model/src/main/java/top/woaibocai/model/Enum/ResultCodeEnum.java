@@ -1,4 +1,4 @@
-package top.woaibocai.model.common;
+package top.woaibocai.model.Enum;
 
 import lombok.Getter;
 
@@ -19,7 +19,8 @@ public enum ResultCodeEnum {
 
     STOCK_LESS( 219, "库存不足"),
 
-    LOGIN_NOLL(401,"没有权限！")
+    LOGIN_NOLL(401,"没有权限！"),
+    IP_EXCEEDED(403,"菠菜拒收了你的信件，因为一个ip 24h 只能发送5封邮件！")
 
 
     ;

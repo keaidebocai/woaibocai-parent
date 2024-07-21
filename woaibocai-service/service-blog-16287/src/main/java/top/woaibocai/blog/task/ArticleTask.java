@@ -13,7 +13,7 @@ import top.woaibocai.blog.mapper.ArticleMapper;
 import top.woaibocai.blog.mapper.MyCommentMapper;
 import top.woaibocai.blog.service.FetchDateUtilService;
 import top.woaibocai.model.Do.KeyValue;
-import top.woaibocai.model.common.RedisKeyEnum;
+import top.woaibocai.model.Enum.RedisKeyEnum;
 import top.woaibocai.model.entity.blog.Article;
 import top.woaibocai.model.vo.blog.BlogInfoVo;
 import top.woaibocai.model.vo.blog.article.BlogArticleVo;

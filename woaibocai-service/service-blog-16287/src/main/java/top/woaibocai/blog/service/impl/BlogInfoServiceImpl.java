@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import top.woaibocai.blog.mapper.TagMapper;
 import top.woaibocai.blog.service.BlogInfoService;
 import top.woaibocai.blog.service.FetchDateUtilService;
-import top.woaibocai.model.common.RedisKeyEnum;
+import top.woaibocai.model.Enum.RedisKeyEnum;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.Enum.ResultCodeEnum;
 import top.woaibocai.model.vo.blog.BlogInfoVo;
 import top.woaibocai.model.vo.blog.tag.TagCloudVo;
 

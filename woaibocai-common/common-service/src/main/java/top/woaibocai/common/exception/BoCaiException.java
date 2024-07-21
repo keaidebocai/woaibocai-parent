@@ -1,7 +1,7 @@
 package top.woaibocai.common.exception;
 
 import lombok.Data;
-import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.Enum.ResultCodeEnum;
 
 
 /**

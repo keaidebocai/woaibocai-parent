@@ -20,4 +20,6 @@ public class UserInfoVo {
     private String sex;
     @Schema(description = "用户id")
     private String userId;
+    @Schema(description = "用户邮箱")
+    private String email;
 }

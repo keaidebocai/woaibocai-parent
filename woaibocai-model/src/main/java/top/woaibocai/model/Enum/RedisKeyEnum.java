@@ -1,4 +1,4 @@
-package top.woaibocai.model.common;
+package top.woaibocai.model.Enum;
 
 import lombok.Getter;
 
@@ -14,7 +14,8 @@ public enum RedisKeyEnum {
     BLOG_COMMENT_ONECOMMENT("blog:comment:onecomment"),
     BLOG_REGISTER_EMAIL("blog:register:email"),
     BLOG_LOGIN_COUNT("blog:login:count"),
-    BLOG_FORGOT_EMAIL("blog:forgot:email");
+    BLOG_FORGOT_EMAIL("blog:forgot:email"),
+    EMAIL_USER_HOUR_MAX("email:user:hour:max"),;
 
     //文章的索引 redis数据类型: list: String String
     public static final String BLOG_AERICLE_INDEX = "blog:article:index";
@@ -36,6 +37,11 @@ public enum RedisKeyEnum {
     public static final String BLOG_LINK = "blog:link";
     public static final String BLOG_SITEMAP = "blog:sitemap";
     public static final String BLOG_RSS = "blog:rss";
+
+    // "email:day:max"
+    public static final String EMAIL_DAY_MAX = "email:day:max";
+
+    public static final String EMAIL_S_MAX = "email:s:max";
     private String prefix ;      // 业务状态码
 
     RedisKeyEnum(String prefix) {

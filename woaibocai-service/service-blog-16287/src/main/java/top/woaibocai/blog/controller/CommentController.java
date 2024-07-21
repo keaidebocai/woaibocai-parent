@@ -5,14 +5,13 @@ import com.jthinking.common.util.ip.IPInfoUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.woaibocai.blog.service.CommentService;
 import top.woaibocai.blog.utils.IPutil;
 import top.woaibocai.common.feign.QCloudFeignClint;
 import top.woaibocai.model.common.Result;
-import top.woaibocai.model.common.ResultCodeEnum;
+import top.woaibocai.model.Enum.ResultCodeEnum;
 import top.woaibocai.model.dto.blog.comment.OneCommentDto;
 import top.woaibocai.model.dto.blog.comment.ReplyOneCommentDto;
 

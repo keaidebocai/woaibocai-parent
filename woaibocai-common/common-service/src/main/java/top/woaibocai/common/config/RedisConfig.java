@@ -132,4 +132,26 @@ public class RedisConfig {
     public HashOperations<String,String,Integer> hashOperationSSI(RedisTemplate<String,Integer> redisTemplateInteger) {
         return redisTemplateInteger.opsForHash();
     }
+    @Bean
+    public RedisTemplate<String,Long> redisTemplateLong(LettuceConnectionFactory lettuceConnectionFactory) {
+        RedisTemplate<String, Long> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(lettuceConnectionFactory);
+
+        //设置key序列化方式String
+        // RedisSerializer.string() 等价于 new StringRedisSerializer()
+        redisTemplate.setKeySerializer(RedisSerializer.string());
+
+        // 设置value的序列化方式json，使用GenericJackson2JsonRedisSerializer替换默认序列化
+        // RedisSerializer.json() 等价于 new GenericJackson2JsonRedisSerializer()
+        redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Long.class));
+
+        // 设置hash的key的序列化方式
+        redisTemplate.setHashKeySerializer(RedisSerializer.string());
+
+        // 设置hash的value的序列化方式
+        redisTemplate.setHashValueSerializer(RedisSerializer.json());
+        // 使配置生效
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
 }
