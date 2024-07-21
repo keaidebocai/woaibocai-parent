@@ -67,12 +67,12 @@ public class EmailServiceImpl implements EmailService {
         // 如果 邮寄时间的间隔 小与 4294967000L 。那就让过期时间在 3000L - epochMilli 之间随机；大于 那就在 3000L - 4294967000L 之间随机
         Long max = epochMilli - 4294967000L < 0 ? epochMilli : 4294967000L;
         String randomed = RandomUtils.randomBetween(max, 0L);
-        // TODO: 将 信件id 和 到达时间的时间戳 发送到 rabbitMQ 上
+        // 将 信件id 和 到达时间的时间戳 发送到 rabbitMQ 上
         rabbitMqUtils.convertAndSend(RabbitMqEnum.AWAIT_LETTER,emailId + ";" + instant.toEpochMilli(),message -> {
             message.getMessageProperties().setExpiration(randomed);
             return message;
         });
-        // TODO : ip 限流
+        //  ip 限流
         ipThrottlingUtils.increment(ip);
         log.info("{}: 已发送到 exchange.email.deliver.letter 交换机上，将于 {} 投递，初始过期时间为：{}毫秒", emailId, localDateTime, randomed);
         return Result.build(null, ResultCodeEnum.SUCCESS);
