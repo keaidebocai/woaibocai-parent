@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.woaibocai.user.mapper.EmailErrLogMapper">
+    <select id="listenEmailComputeErrLog">
+        INSERT INTO email_err_log
+        (id,email_id,err_reason,is_handle)
+        VALUES
+        (#{id},#{emailId},#{errReason},'N')
+    </select>
+</mapper>

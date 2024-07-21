@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.woaibocai.user.mapper.EmailContentMapper">
+    <insert id="emailWritingEmail">
+        INSERT INTO
+            email_content
+        (id,user_id,title,sender_email,recipient_email,is_public,content,writing_email_time,delivery_time)
+        VALUES
+            (#{id},#{userId},#{title},#{senderEmail},#{recipientEmail},#{isPublic},#{content},NOW(),#{deliveryTime})
+    </insert>
+    <update id="updateisDeliverySucceed">
+        UPDATE email_content SET is_delivery='Y' WHERE id=#{emailId}
+    </update>
+    <select id="selectEmailById" resultType="top.woaibocai.model.entity.email.Content">
+        SELECT
+            id,
+            user_id AS userId,
+            title,
+            sender_email AS senderEmail,
+            recipient_email AS recipientEmail,
+            is_public AS isPublic,
+            is_delivery AS isDelivery,
+            content,
+            writing_email_time AS writingEmailTime,
+            delivery_time AS deliveryTime
+        FROM
+            email_content
+        WHERE
+            id=#{emailId}
+
+    </select>
+</mapper>
