@@ -40,6 +40,8 @@ public class ListenDeliverQueue {
     @Resource
     private RedisTemplate<String, Long> redisTemplateLong;
     @Resource
+    private RedisTemplate<String,String> redisTemplateString;
+    @Resource
     private QQEmailUtils qqEmailUtils;
     // 监听 计算队列
     @RabbitListener(queues = {RabbitMqEnum.QUEUE_EMAIL_COMPUTE_LETTER})
@@ -215,6 +217,18 @@ public class ListenDeliverQueue {
         redisTemplateLong.opsForValue().increment(RedisKeyEnum.EMAIL_DAY_MAX);
         redisTemplateLong.opsForValue().increment(RedisKeyEnum.EMAIL_S_MAX);
         redisTemplateLong.opsForValue().increment(RedisKeyEnum.EMAIL_USER_HOUR_MAX.common(content.getRecipientEmail()));
+        // 把发送的 isPublic Y W 的 发完后给redis 加
+        if (!"N".equals(content.getIsPublic())) {
+            // 最新投递
+            redisTemplateString.opsForList().leftPush(RedisKeyEnum.EMAIL_PUBLIC_LIST_DELIVERY,emailId);
+            if ("W".equals(content.getIsPublic())) {
+                // zset
+                redisTemplateString.opsForZSet().add(RedisKeyEnum.EMAIL_PUBLIC_ZSET_SELECTION,emailId,0);
+            }
+        }
+
+        // 删除 hash 的值 保持数据的一致性
+        redisTemplateString.delete(RedisKeyEnum.EMAIL_PUBLIC_HASH.common(emailId));
         channel.basicAck(deliveryTag,false);
     }
 
