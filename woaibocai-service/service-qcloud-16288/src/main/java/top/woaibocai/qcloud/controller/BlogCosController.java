@@ -34,7 +34,7 @@ public class BlogCosController {
         boolean isLegal = true;
         for (MultipartFile file : files) {
             if (file.isEmpty()) return null;
-            if (file.getSize() > 1000000) {
+            if (file.getSize() > 20000000) {
                 isLegal = false; break;
             }
             String imageType = file.getOriginalFilename()
