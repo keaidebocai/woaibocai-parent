@@ -5,6 +5,8 @@ import com.jthinking.common.util.ip.IPInfoUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.woaibocai.blog.service.CommentService;
@@ -41,12 +43,9 @@ public class CommentController {
     }
     @Operation(summary = "发送一级评论")
     @PostMapping("/auth/sendOneComment")
-    public Result sendOneComment(@RequestBody OneCommentDto oneCommentDto,
-                                                      @RequestHeader("114514") String userId,
+    public Result sendOneComment(@RequestBody @Valid OneCommentDto oneCommentDto,
+                                                      @RequestHeader("114514") @NotNull(message = "用户id不能为空") String userId,
                                                       @RequestHeader("x-forwarded-for") String ip) {
-        if (oneCommentDto.getArticleId().isEmpty() | oneCommentDto.getContent().isEmpty()) {
-            return Result.build("虚空评论，出现异常！", ResultCodeEnum.DATA_ERROR);
-        }
         IPutil iPutil = new IPutil();
         IPInfo ipInfo = IPInfoUtils.getIpInfo(iPutil.getIpAddr(ip));
         String addree = ipInfo.getProvince();
@@ -59,17 +58,9 @@ public class CommentController {
     }
     @Operation(summary = "回复一级评论")
     @PostMapping("/auth/replyOneComment")
-    public Result replyOneComment(@RequestBody ReplyOneCommentDto replyOneCommentVo,
-                                  @RequestHeader("114514") String userId,
+    public Result replyOneComment(@RequestBody @Valid ReplyOneCommentDto replyOneCommentVo,
+                                  @RequestHeader("114514") @NotNull(message = "用户id不能为空") String userId,
                                   @RequestHeader("x-forwarded-for") String ip) {
-        if (replyOneCommentVo.getReplyCommentId().isEmpty() |
-            replyOneCommentVo.getReplyCommentUserId().isEmpty() |
-            userId.isEmpty() | userId.equals("undefined") |
-            replyOneCommentVo.getContent().isEmpty() |
-            replyOneCommentVo.getArticleId().isEmpty() |
-            replyOneCommentVo.getParentId().isEmpty()) {
-            return Result.build("虚空评论，数据异常！", ResultCodeEnum.DATA_ERROR);
-        }
         IPutil iPutil = new IPutil();
         IPInfo ipInfo = IPInfoUtils.getIpInfo(iPutil.getIpAddr(ip));
         String addree = ipInfo.getProvince();

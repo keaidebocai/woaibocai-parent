@@ -13,23 +13,30 @@ import lombok.Data;
 @Data
 @Schema(description = "回复一级评论")
 public class ReplyOneCommentDto {
-    @NotNull
+
+    @NotNull(message = "回复评论的id不能为空")
     @Schema(description = "回复评论的id")
     private String replyCommentId;
 
     @Schema(description = "发送者id")
     private String sendCommentUserId;
-    @NotNull
+
+    @NotNull(message = "回复评论的id不能为空")
     @Schema(description = "被回复的用户id")
     private String replyCommentUserId;
-    @NotNull
+
+    @NotNull(message = "内容不能为空")
     @Schema(description = "内容")
     private String content;
+
     @Schema(description = "ip")
     private String address;
-    @NotNull
+
+    @NotNull(message = "文章id不能为空")
     @Schema(description = "文章id")
     private String articleId;
+
+    @NotNull(message = "父评论不能为空")
     @Schema(description = "父评论")
     private String parentId;
 }
