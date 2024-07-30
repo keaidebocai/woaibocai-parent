@@ -15,7 +15,9 @@ public enum RedisKeyEnum {
     BLOG_REGISTER_EMAIL("blog:register:email"),
     BLOG_LOGIN_COUNT("blog:login:count"),
     BLOG_FORGOT_EMAIL("blog:forgot:email"),
-    EMAIL_USER_HOUR_MAX("email:user:hour:max"),;
+    EMAIL_USER_HOUR_MAX("email:user:hour:max"),
+    EMAIL_PUBLIC_HASH("email:public:hash"),
+   ;
 
     //文章的索引 redis数据类型: list: String String
     public static final String BLOG_AERICLE_INDEX = "blog:article:index";
@@ -42,6 +44,10 @@ public enum RedisKeyEnum {
     public static final String EMAIL_DAY_MAX = "email:day:max";
 
     public static final String EMAIL_S_MAX = "email:s:max";
+
+    public static final String EMAIL_PUBLIC_ZSET_SELECTION = "email:public:zset:selection";
+    public static final String EMAIL_PUBLIC_LIST_DELIVERY = "email:public:list:delivery";
+    public static final String EMAIL_PUBLIC_LIST_WRITING = "email:public:list:writing";
     private String prefix ;      // 业务状态码
 
     RedisKeyEnum(String prefix) {
