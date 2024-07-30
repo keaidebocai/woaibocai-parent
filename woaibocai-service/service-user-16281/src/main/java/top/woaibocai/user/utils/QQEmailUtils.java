@@ -66,7 +66,7 @@ public class QQEmailUtils {
         // 需要借助 Helper 类
         MimeMessageHelper helper = new MimeMessageHelper(noticeMailMessage);
         try {
-            String time = content.getDeliveryTime().toString().substring(0, 9).replaceFirst("-","年").replaceFirst("-","月");
+            String time = content.getDeliveryTime().toString().substring(0, 10).replaceFirst("-","年").replaceFirst("-","月");
             String stringBuilder = "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<title>菠菜的小窝-时光邮局</title>\n</head>\n<body>\n "
                     + "<div style='background-color: #a0cfff;text-align: center;display: flex;justify-content: center;align-items: center;height:100px;'>\n"
                     + "<h1 style='color: #409EFF;'>菠菜的小窝</h1>\n"
