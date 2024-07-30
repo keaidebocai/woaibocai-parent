@@ -43,7 +43,7 @@ public class UserController {
     @Operation(summary = "注册demo")
     @PostMapping("register")
     public Result register(@RequestBody UserRegisterDto userRegisterDto) {
-        if (userRegisterDto.getUserName().isEmpty() | userRegisterDto.getPassword().isEmpty() | userRegisterDto.getPassword().isEmpty() | userRegisterDto.getNickName().isEmpty() | userRegisterDto.getEmail().isEmpty() | userRegisterDto.getCode().isEmpty()){
+        if (userRegisterDto.getUserName().isEmpty() || userRegisterDto.getPassword().isEmpty() || userRegisterDto.getPassword().isEmpty() || userRegisterDto.getNickName().isEmpty() || userRegisterDto.getEmail().isEmpty() || userRegisterDto.getCode().isEmpty()){
             return Result.build(null,204,"看看什么没写吧!");
         }
         if (!userRegisterDto.getEmail().matches("^[a-zA-Z0-9._%+-]+@(qq\\.com|foxmail\\.com|gmail\\.com|163\\.com|aliyun\\.com)$")) {
@@ -78,7 +78,7 @@ public class UserController {
     @Operation(summary = "忘记密码")
     @PostMapping("forgot")
     public Result forgot(@RequestBody UserForgotDto userForgotDto) {
-        if (userForgotDto.getUserName().isEmpty() | userForgotDto.getPassword().isEmpty() | userForgotDto.getEmail().isEmpty() | userForgotDto.getCode().isEmpty()){
+        if (userForgotDto.getUserName().isEmpty() || userForgotDto.getPassword().isEmpty() || userForgotDto.getEmail().isEmpty() || userForgotDto.getCode().isEmpty()){
             return Result.build(null,204,"看看什么没写吧!");
         }
         if (!userForgotDto.getEmail().matches("^[a-zA-Z0-9._%+-]+@(qq\\.com|foxmail\\.com|gmail\\.com|163\\.com|aliyun\\.com)$")) {
@@ -106,7 +106,7 @@ public class UserController {
     @Operation(summary = "修改用户信息")
     @PostMapping("auth/updateUserInfo")
     public Result updateUserInfo(@RequestBody UserInfoVo userInfoVo,@RequestHeader("Authorization") String token) {
-        if (userInfoVo.getUserId().isEmpty() | userInfoVo.getNickName().isEmpty() | userInfoVo.getSex().isEmpty() | userInfoVo.getAvatar().isEmpty()) {
+        if (userInfoVo.getUserId().isEmpty() || userInfoVo.getNickName().isEmpty() || userInfoVo.getSex().isEmpty() || userInfoVo.getAvatar().isEmpty()) {
             return Result.build(null,204,"看看你少些什么东西啦!");
         }
         String newToken = token.replace("Bearer ", "");
