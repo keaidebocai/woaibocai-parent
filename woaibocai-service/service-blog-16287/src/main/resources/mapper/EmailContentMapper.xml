@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.woaibocai.blog.mapper.EmailContentMapper">
+    <select id="getEmailPublicVoById" resultType="top.woaibocai.model.entity.email.Content">
+        SELECT
+            id,
+            user_id AS userId,
+            is_public AS isPublic,
+            is_delivery AS isDelivery,
+            title,
+            content,
+            writing_email_time AS writingEmailTime,
+            delivery_time AS deliveryTime,
+            like_count AS likeCount
+        FROM
+            email_content
+        WHERE
+            id=#{emailId}
+    </select>
+    <select id="getEmailIdAndLikeCount" resultType="top.woaibocai.model.Do.KeyValue">
+        SELECT
+            id AS k,
+            like_count AS v
+        FROM
+            email_content
+        WHERE
+            is_public IN ('Y', 'W')
+    </select>
+    <select id="getNewDeliveryByDateOfYW" resultType="java.lang.String">
+        SELECT
+            id
+        FROM
+            email_content
+        WHERE
+            is_public IN ('Y', 'W') AND is_delivery = 'Y'
+        ORDER BY delivery_time DESC
+    </select>
+    <select id="getNewWritingByDateOfY" resultType="java.lang.String">
+        SELECT
+            id
+        FROM
+            email_content
+        WHERE
+            is_public='Y'
+        ORDER BY writing_email_time DESC
+    </select>
+    <select id="getUserInfoByUserId" resultType="top.woaibocai.model.Do.KeyValue">
+        SELECT
+            nick_name AS k,
+            avatar AS v
+        FROM
+            user
+        WHERE
+            id=#{userId}
+
+    </select>
+    <select id="getYesDeliveryTotal" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM email_content
+        WHERE is_delivery = 'Y'
+    </select>
+    <select id="NoDeliveryTotal" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM email_content
+        WHERE is_delivery = 'N'
+    </select>
+</mapper>

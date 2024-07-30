@@ -13,4 +13,6 @@ import top.woaibocai.model.entity.email.Content;
 
 public interface EmailService {
     Result emailWritingEmail(ContentDto content,String ip);
+
+    Result emailLike(String emailId);
 }

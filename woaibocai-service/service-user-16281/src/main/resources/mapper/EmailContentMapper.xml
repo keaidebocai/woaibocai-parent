@@ -11,6 +11,9 @@
     <update id="updateisDeliverySucceed">
         UPDATE email_content SET is_delivery='Y' WHERE id=#{emailId}
     </update>
+    <update id="updateLikeCount">
+        UPDATE email_content SET like_count=like_count + 1 WHERE id=#{emailId}
+    </update>
     <select id="selectEmailById" resultType="top.woaibocai.model.entity.email.Content">
         SELECT
             id,
@@ -28,5 +31,21 @@
         WHERE
             id=#{emailId}
 
+    </select>
+    <select id="getEmailPublicVoById" resultType="top.woaibocai.model.entity.email.Content">
+        SELECT
+            id,
+            user_id AS userId,
+            is_public AS isPublic,
+            is_delivery AS isDelivery,
+            title,
+            content,
+            writing_email_time AS writingEmailTime,
+            delivery_time AS deliveryTime,
+            like_count AS likeCount
+        FROM
+            email_content
+        WHERE
+            id=#{emailId}
     </select>
 </mapper>

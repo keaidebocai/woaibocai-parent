@@ -20,6 +20,10 @@ public interface EmailContentMapper extends BaseMapper<Content> {
     Content selectEmailById(String emailId);
 
     void updateisDeliverySucceed(String emailId);
+
+    void updateLikeCount(String emailId);
+
+    Content getEmailPublicVoById(String emailId);
 }
 
 

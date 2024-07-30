@@ -31,9 +31,16 @@ public class EmailController {
     @Operation(summary = "用户-编写邮件")
     @PostMapping("writing")
     public Result emailWritingEmail(@RequestBody @Valid ContentDto content,@RequestHeader("x-forwarded-for") String ip) {
+        String[] split = ip.split(",");
+        ip = split[0];
         Boolean exceed = ipThrottlingUtils.isExceed(ip);
-        System.out.println(ip);
         if (exceed) return Result.build(null, ResultCodeEnum.IP_EXCEEDED);
         return emailService.emailWritingEmail(content,ip);
+    }
+
+    @Operation(summary = "用户-点赞信件")
+    @GetMapping("like/{emailId}")
+    public Result emailLike(@PathVariable("emailId") String emailId) {
+        return emailService.emailLike(emailId);
     }
 }
